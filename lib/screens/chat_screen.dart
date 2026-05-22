@@ -76,33 +76,69 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            CircleAvatar(
-              radius: 20,
-              backgroundImage: widget.otherUser.photoUrls.isNotEmpty
-                  ? NetworkImage(widget.otherUser.photoUrls.first)
-                  : null,
-              child: widget.otherUser.photoUrls.isEmpty
-                  ? Text(widget.otherUser.name.substring(0, 1).toUpperCase())
-                  : null,
-            ),
-            const SizedBox(width: 12),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+        title: StreamBuilder<User?>(
+          stream: _databaseService.getUserStream(widget.otherUser.id),
+          builder: (context, snapshot) {
+            final user = snapshot.data ?? widget.otherUser;
+            return Row(
               children: [
-                Text(
-                  widget.otherUser.name,
-                  style: const TextStyle(fontSize: 16),
+                CircleAvatar(
+                  radius: 20,
+                  backgroundImage: user.photoUrls.isNotEmpty
+                      ? NetworkImage(user.photoUrls.first)
+                      : null,
+                  child: user.photoUrls.isEmpty
+                      ? Text(user.name.substring(0, 1).toUpperCase())
+                      : null,
                 ),
-                const Text(
-                  'Çevrimiçi',
-                  style: TextStyle(fontSize: 12, color: Colors.green),
+                const SizedBox(width: 12),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      user.name,
+                      style: const TextStyle(fontSize: 16),
+                    ),
+                    if (user.isOnline)
+                      const Text(
+                        'Çevrimiçi',
+                        style: TextStyle(fontSize: 12, color: Colors.green),
+                      )
+                    else if (user.lastSeen != null)
+                      Text(
+                        'Son Görülme: ${AppUtils.formatTime(user.lastSeen!)}',
+                        style: const TextStyle(fontSize: 10, color: Colors.grey),
+                      ),
+                  ],
                 ),
               ],
-            ),
-          ],
+            );
+          }
         ),
+        actions: [
+          PopupMenuButton<String>(
+            onSelected: (value) async {
+              final currentUserId = Provider.of<AuthProvider>(context, listen: false).currentUser!.id;
+              if (value == 'block') {
+                await _databaseService.blockUser(currentUserId, widget.otherUser.id);
+                if (mounted) Navigator.pop(context); // Go back to matches screen
+              } else if (value == 'report') {
+                await _databaseService.reportUser(currentUserId, widget.otherUser.id, 'Rahatsız Edici / Spam');
+                if (mounted) Navigator.pop(context);
+              }
+            },
+            itemBuilder: (BuildContext context) => [
+              const PopupMenuItem(
+                value: 'report',
+                child: Text('Şikayet Et'),
+              ),
+              const PopupMenuItem(
+                value: 'block',
+                child: Text('Engelle', style: TextStyle(color: Colors.red)),
+              ),
+            ],
+          ),
+        ],
       ),
       body: Column(
         children: [

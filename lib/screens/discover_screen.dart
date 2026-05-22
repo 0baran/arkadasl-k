@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:shimmer/shimmer.dart';
 import '../services/auth_provider.dart';
 import '../services/database_service.dart';
 import '../services/location_service.dart';
@@ -65,6 +67,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
           currentUser.settings.minAge,
           currentUser.settings.maxAge,
           currentUser.settings.preferredGender,
+          currentUser.blockedUsers,
         );
 
         setState(() {
@@ -152,8 +155,20 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   Widget build(BuildContext context) {
     if (_isLoading) {
       return Scaffold(
+        backgroundColor: AppTheme.backgroundColor,
         body: Center(
-          child: CircularProgressIndicator(color: AppTheme.primaryColor),
+          child: Shimmer.fromColors(
+            baseColor: Colors.grey[300]!,
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              width: MediaQuery.of(context).size.width * 0.9,
+              height: MediaQuery.of(context).size.height * 0.65,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(30),
+              ),
+            ),
+          ),
         ),
       );
     }
@@ -321,15 +336,18 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         children: [
           // Profile Image
           user.photoUrls.isNotEmpty
-              ? Image.network(
-                  user.photoUrls.first,
+              ? CachedNetworkImage(
+                  imageUrl: user.photoUrls.first,
                   fit: BoxFit.cover,
-                  errorBuilder: (context, error, stackTrace) {
-                    return Container(
-                      decoration: const BoxDecoration(gradient: AppTheme.primaryGradient),
-                      child: const Icon(Icons.person, size: 100, color: Colors.white),
-                    );
-                  },
+                  placeholder: (context, url) => Shimmer.fromColors(
+                    baseColor: Colors.grey[300]!,
+                    highlightColor: Colors.grey[100]!,
+                    child: Container(color: Colors.white),
+                  ),
+                  errorWidget: (context, url, error) => Container(
+                    decoration: const BoxDecoration(gradient: AppTheme.primaryGradient),
+                    child: const Icon(Icons.person, size: 100, color: Colors.white),
+                  ),
                 )
               : Container(
                   decoration: const BoxDecoration(gradient: AppTheme.primaryGradient),

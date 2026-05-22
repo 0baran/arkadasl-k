@@ -1,4 +1,4 @@
-﻿// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_provider.dart';
@@ -58,8 +58,8 @@ class _SplashScreenState extends State<SplashScreen>
     // Firebase auth'a giriş yapmış ama profil henüz Firestore'dan çekilememişse bekle
     if (authProvider.isLoggedIn && !authProvider.isUserProfileComplete) {
       int retries = 0;
-      while (!authProvider.isUserProfileComplete && retries < 15) {
-        await Future.delayed(const Duration(milliseconds: 400));
+      while (!authProvider.isUserProfileComplete && retries < 25) {
+        await Future.delayed(const Duration(milliseconds: 500));
         retries++;
       }
     }
@@ -70,11 +70,17 @@ class _SplashScreenState extends State<SplashScreen>
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => const HomeScreen()),
       );
+    } else if (authProvider.isLoggedIn) {
+      // Profil hala yüklenemediyse ama giriş yapıldıysa, çıkış yapma.
+      // Belki internet yavaştır. Kullanıcıyı bir süre daha bekletebilir veya 
+      // veri bağlantısı kontrol edilebilir. Şimdilik Home'a atalım veya
+      // çıkış yapmadan Login ekranına atalım ama çıkış YAPMAYALIM.
+      // En doğrusu splash'te kalıp kullanıcıya "Bağlantı bekleniyor" göstermektir.
+      // Şimdilik hataya düşmemek için Login'e atalım ama authProvider.signOut() YAPMAYALIM.
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (_) => const LoginScreen()),
+      );
     } else {
-      // Eğer bir sorun olduysa Firebase Auth oturumunu kapat ki hatada takılı kalmasın
-      if (authProvider.isLoggedIn) {
-        await authProvider.signOut();
-      }
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => const LoginScreen()),
       );

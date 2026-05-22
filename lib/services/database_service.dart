@@ -162,24 +162,41 @@ class DatabaseService {
     int minAge,
     int maxAge,
     String preferredGender,
+    List<String> blockedUsers,
   ) async {
     try {
       final swipedSnapshot = await _firestore.collection('likes').doc(currentUserId).collection('liked').get();
       final swipedIds = swipedSnapshot.docs.map((d) => d.id).toSet();
       swipedIds.add(currentUserId);
+      swipedIds.addAll(blockedUsers);
 
       Query query = _firestore.collection('users');
       if (preferredGender != 'all' && preferredGender != 'everyone') {
         query = query.where('gender', isEqualTo: preferredGender);
       }
 
-      final usersSnapshot = await query.get();
+      // PRODUCTION FIX: Prevent pulling the entire database into memory. Limit to 500 potential candidates.
+      final usersSnapshot = await query.limit(500).get();
       List<User> nearbyUsers = [];
+      final now = DateTime.now();
 
       for (var doc in usersSnapshot.docs) {
         if (!swipedIds.contains(doc.id)) {
           final user = User.fromJson(doc.data() as Map<String, dynamic>);
           
+          // Calculate Age
+          int age = now.year - user.birthDate.year;
+          if (now.month < user.birthDate.month ||
+              (now.month == user.birthDate.month && now.day < user.birthDate.day)) {
+            age--;
+          }
+
+          // Age Filter
+          if (age < minAge || age > maxAge) {
+            continue;
+          }
+
+          // Distance Filter
           final distance = _calculateDistance(latitude, longitude, user.location.latitude, user.location.longitude);
           if (distance <= maxDistance) {
             nearbyUsers.add(user);
@@ -226,6 +243,32 @@ class DatabaseService {
       debugPrint('Swipes reset successfully');
     } catch (e) {
       debugPrint('Error resetting swipes: $e');
+    }
+  }
+
+  Future<void> blockUser(String currentUserId, String targetUserId) async {
+    try {
+      await _firestore.collection('users').doc(currentUserId).update({
+        'blockedUsers': FieldValue.arrayUnion([targetUserId])
+      });
+      final matchId = _getChatId(currentUserId, targetUserId);
+      await _firestore.collection('matches').doc(matchId).delete();
+    } catch (e) {
+      debugPrint('Error blocking user: $e');
+    }
+  }
+
+  Future<void> reportUser(String currentUserId, String targetUserId, String reason) async {
+    try {
+      await _firestore.collection('reports').add({
+        'reporterId': currentUserId,
+        'reportedId': targetUserId,
+        'reason': reason,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+      await blockUser(currentUserId, targetUserId);
+    } catch (e) {
+      debugPrint('Error reporting user: $e');
     }
   }
 }

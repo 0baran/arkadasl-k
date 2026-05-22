@@ -1,6 +1,6 @@
 ﻿{
-    "version":  "1.0.21",
-    "build":  22,
-    "apk_url":  "https://github.com/0baran/arkadasl-k/raw/main/arkadaslik_v1.0.21.apk",
-    "release_notes":  "Uygulama tam olarak üretime hazır (Production Ready) hale getirildi.\n- Firebase Crashlytics & Analytics eklendi\n- Gelişmiş Shimmer yükleme efektleri eklendi\n- Resim önbellekleme ile internet tasarrufu sağlandı\n- Algoritma performans iyileştirmeleri"
+    "version":  "1.0.23",
+    "build":  24,
+    "apk_url":  "https://github.com/0baran/arkadasl-k/raw/main/arkadaslik_v1.0.23.apk",
+    "release_notes":  "Yeni Özellikler ve Düzeltmeler:\n- Alt Navigasyon çubuğu hizalama sorunu çözüldü (SafeArea)\n- Çevrimiçi Durumu ve Son Görülme eklendi\n- Kullanıcı Engelleme ve Şikayet etme sistemi eklendi"
 }

@@ -14,6 +14,8 @@ class User {
   final DateTime? lastSeen;
   final bool isVerified;
   final bool isPremium;
+  final bool isOnline;
+  final List<String> blockedUsers;
   final UserSettings settings;
 
   User({
@@ -30,6 +32,8 @@ class User {
     this.lastSeen,
     this.isVerified = false,
     this.isPremium = false,
+    this.isOnline = false,
+    this.blockedUsers = const [],
     UserSettings? settings,
   }) : settings = settings ?? UserSettings();
 
@@ -48,6 +52,8 @@ class User {
       lastSeen: json['lastSeen'] != null ? _parseDate(json['lastSeen']) : null,
       isVerified: json['isVerified'] ?? false,
       isPremium: json['isPremium'] ?? false,
+      isOnline: json['isOnline'] ?? false,
+      blockedUsers: List<String>.from(json['blockedUsers'] ?? []),
       settings: json['settings'] != null
           ? UserSettings.fromJson(json['settings'])
           : UserSettings(),
@@ -69,6 +75,8 @@ class User {
       'lastSeen': lastSeen?.toIso8601String(),
       'isVerified': isVerified,
       'isPremium': isPremium,
+      'isOnline': isOnline,
+      'blockedUsers': blockedUsers,
       'settings': settings.toJson(),
     };
   }
@@ -87,6 +95,8 @@ class User {
     DateTime? lastSeen,
     bool? isVerified,
     bool? isPremium,
+    bool? isOnline,
+    List<String>? blockedUsers,
     UserSettings? settings,
   }) {
     return User(
@@ -103,6 +113,8 @@ class User {
       lastSeen: lastSeen ?? this.lastSeen,
       isVerified: isVerified ?? this.isVerified,
       isPremium: isPremium ?? this.isPremium,
+      isOnline: isOnline ?? this.isOnline,
+      blockedUsers: blockedUsers ?? this.blockedUsers,
       settings: settings ?? this.settings,
     );
   }

@@ -268,7 +268,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   final authProvider = Provider.of<AuthProvider>(context, listen: false);
                   if (authProvider.currentUser != null) {
                     await DatabaseService().resetSwipes(authProvider.currentUser!.id);
-                    if (mounted) {
+                    if (context.mounted) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('Tüm kaydırma geçmişi sıfırlandı! (Test Modu)')),
                       );
