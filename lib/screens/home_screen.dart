@@ -1,4 +1,4 @@
-﻿import 'dart:ui';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'discover_screen.dart';
 import 'matches_screen.dart';
@@ -38,8 +38,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
-      extendBody: true,
+      extendBody: false,
       body: IndexedStack(
         index: _currentIndex,
         children: _screens,
@@ -48,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Container(
           margin: const EdgeInsets.only(left: 24, right: 24, bottom: 16),
           decoration: BoxDecoration(
-            color: Colors.white.withValues(alpha: 0.9),
+            color: isDark ? const Color(0xFF2A2A35).withValues(alpha: 0.9) : Colors.white.withValues(alpha: 0.9),
             borderRadius: BorderRadius.circular(32),
             boxShadow: [
               BoxShadow(

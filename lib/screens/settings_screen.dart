@@ -285,6 +285,36 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
             const SizedBox(height: 16),
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.info_outline, color: Colors.blue),
+                title: const Text('Sürüm Notları'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('Sürüm Notları (v1.0.19)'),
+                      content: const SingleChildScrollView(
+                        child: Text(
+                          '• Alt menü barının karanlık moddaki bembeyaz görünme sorunu çözüldü.\n'
+                          '• Ekranın en altındaki butonların menünün altında kalma sorunu düzeltildi.\n'
+                          '• Ayarlar ve Profil ekranlarına sürüm bilgisi ve sürüm notları eklendi.\n'
+                          '• İki telefonun birbirini test edebilmesi için Yaş ve Mesafe sınırları geçici olarak devre dışı bırakıldı.',
+                        ),
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text('Kapat'),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
               child: OutlinedButton.icon(
@@ -315,7 +345,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 },
               ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 40),
           ],
         ),
       ),
