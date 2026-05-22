@@ -16,6 +16,9 @@ class User {
   final bool isPremium;
   final bool isOnline;
   final List<String> blockedUsers;
+  final String relationshipGoal;
+  final String jobTitle;
+  final String school;
   final UserSettings settings;
 
   User({
@@ -34,6 +37,9 @@ class User {
     this.isPremium = false,
     this.isOnline = false,
     this.blockedUsers = const [],
+    this.relationshipGoal = '',
+    this.jobTitle = '',
+    this.school = '',
     UserSettings? settings,
   }) : settings = settings ?? UserSettings();
 
@@ -54,6 +60,9 @@ class User {
       isPremium: json['isPremium'] ?? false,
       isOnline: json['isOnline'] ?? false,
       blockedUsers: List<String>.from(json['blockedUsers'] ?? []),
+      relationshipGoal: json['relationshipGoal'] ?? '',
+      jobTitle: json['jobTitle'] ?? '',
+      school: json['school'] ?? '',
       settings: json['settings'] != null
           ? UserSettings.fromJson(json['settings'])
           : UserSettings(),
@@ -77,6 +86,9 @@ class User {
       'isPremium': isPremium,
       'isOnline': isOnline,
       'blockedUsers': blockedUsers,
+      'relationshipGoal': relationshipGoal,
+      'jobTitle': jobTitle,
+      'school': school,
       'settings': settings.toJson(),
     };
   }
@@ -97,6 +109,9 @@ class User {
     bool? isPremium,
     bool? isOnline,
     List<String>? blockedUsers,
+    String? relationshipGoal,
+    String? jobTitle,
+    String? school,
     UserSettings? settings,
   }) {
     return User(
@@ -115,6 +130,9 @@ class User {
       isPremium: isPremium ?? this.isPremium,
       isOnline: isOnline ?? this.isOnline,
       blockedUsers: blockedUsers ?? this.blockedUsers,
+      relationshipGoal: relationshipGoal ?? this.relationshipGoal,
+      jobTitle: jobTitle ?? this.jobTitle,
+      school: school ?? this.school,
       settings: settings ?? this.settings,
     );
   }

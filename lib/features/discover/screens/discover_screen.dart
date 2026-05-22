@@ -305,7 +305,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                     itemWidth: MediaQuery.of(context).size.width * 0.9,
                     itemHeight: MediaQuery.of(context).size.height * 0.65,
                     itemBuilder: (context, index) {
-                      return _buildUserProfileCard(_nearbyUsers[index]);
+                      return _UserProfileCard(user: _nearbyUsers[index]);
                     },
                     onIndexChanged: (index) {
                       // Handle card swipe
@@ -323,7 +323,41 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     );
   }
 
-  Widget _buildUserProfileCard(User user) {
+}
+
+class _UserProfileCard extends StatefulWidget {
+  final User user;
+
+  const _UserProfileCard({required this.user});
+
+  @override
+  State<_UserProfileCard> createState() => _UserProfileCardState();
+}
+
+class _UserProfileCardState extends State<_UserProfileCard> {
+  int _currentPhotoIndex = 0;
+
+  void _handleTap(TapUpDetails details, double width) {
+    if (widget.user.photoUrls.isEmpty) return;
+    
+    final dx = details.localPosition.dx;
+    if (dx < width / 3) {
+      // Tap left
+      if (_currentPhotoIndex > 0) {
+        setState(() => _currentPhotoIndex--);
+      }
+    } else {
+      // Tap right
+      if (_currentPhotoIndex < widget.user.photoUrls.length - 1) {
+        setState(() => _currentPhotoIndex++);
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final user = widget.user;
+    
     return Card(
       elevation: 12,
       shadowColor: AppTheme.primaryColor.withValues(alpha: 0.3),
@@ -331,144 +365,226 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         borderRadius: BorderRadius.circular(30),
       ),
       clipBehavior: Clip.antiAlias,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          // Profile Image
-          user.photoUrls.isNotEmpty
-              ? CachedNetworkImage(
-                  imageUrl: user.photoUrls.first,
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) => Shimmer.fromColors(
-                    baseColor: Colors.grey[300]!,
-                    highlightColor: Colors.grey[100]!,
-                    child: Container(color: Colors.white),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          return GestureDetector(
+            onTapUp: (details) => _handleTap(details, constraints.maxWidth),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                // Profile Image
+                user.photoUrls.isNotEmpty
+                    ? CachedNetworkImage(
+                        imageUrl: user.photoUrls[_currentPhotoIndex],
+                        fit: BoxFit.cover,
+                        placeholder: (context, url) => Shimmer.fromColors(
+                          baseColor: Colors.grey[300]!,
+                          highlightColor: Colors.grey[100]!,
+                          child: Container(color: Colors.white),
+                        ),
+                        errorWidget: (context, url, error) => Container(
+                          decoration: const BoxDecoration(gradient: AppTheme.primaryGradient),
+                          child: const Icon(Icons.person, size: 100, color: Colors.white),
+                        ),
+                      )
+                    : Container(
+                        decoration: const BoxDecoration(gradient: AppTheme.primaryGradient),
+                        child: const Icon(Icons.person, size: 100, color: Colors.white),
+                      ),
+                      
+                // Photo Progress Bars
+                if (user.photoUrls.length > 1)
+                  Positioned(
+                    top: 12,
+                    left: 12,
+                    right: 12,
+                    child: Row(
+                      children: List.generate(user.photoUrls.length, (index) {
+                        return Expanded(
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 2),
+                            height: 4,
+                            decoration: BoxDecoration(
+                              color: _currentPhotoIndex == index 
+                                  ? Colors.white 
+                                  : Colors.white.withValues(alpha: 0.3),
+                              borderRadius: BorderRadius.circular(2),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.2),
+                                  blurRadius: 2,
+                                  offset: const Offset(0, 1),
+                                )
+                              ]
+                            ),
+                          ),
+                        );
+                      }),
+                    ),
                   ),
-                  errorWidget: (context, url, error) => Container(
-                    decoration: const BoxDecoration(gradient: AppTheme.primaryGradient),
-                    child: const Icon(Icons.person, size: 100, color: Colors.white),
-                  ),
-                )
-              : Container(
-                  decoration: const BoxDecoration(gradient: AppTheme.primaryGradient),
-                  child: const Icon(Icons.person, size: 100, color: Colors.white),
-                ),
 
-          // Rich Gradient Overlay
-          Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  Colors.transparent,
-                  Colors.transparent,
-                  Colors.black.withValues(alpha: 0.4),
-                  Colors.black.withValues(alpha: 0.9),
-                ],
-                stops: const [0.0, 0.5, 0.8, 1.0],
-              ),
-            ),
-          ),
-
-          // User Info (Glassmorphic)
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: ClipRRect(
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
-                child: Container(
-                  padding: const EdgeInsets.all(24),
+                // Rich Gradient Overlay
+                Container(
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        Colors.black.withValues(alpha: 0.1),
-                        Colors.black.withValues(alpha: 0.8),
-                      ]
-                    )
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              user.name,
-                              style: GoogleFonts.outfit(
-                                color: Colors.white,
-                                fontSize: 32,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            AppUtils.formatAge(user.birthDate),
-                            style: GoogleFonts.outfit(
-                              color: Colors.white.withValues(alpha: 0.9),
-                              fontSize: 26,
-                              fontWeight: FontWeight.w300,
-                            ),
-                          ),
-                          if (user.isVerified) ...[
-                            const SizedBox(width: 8),
-                            const Padding(
-                              padding: EdgeInsets.only(bottom: 6.0),
-                              child: Icon(Icons.verified, color: Colors.blue, size: 24),
-                            ),
-                          ]
-                        ],
-                      ),
-                      const SizedBox(height: 8),
-                      if (user.bio.isNotEmpty)
-                        Text(
-                          user.bio,
-                          style: GoogleFonts.outfit(
-                            color: Colors.white.withValues(alpha: 0.8),
-                            fontSize: 16,
-                            height: 1.3,
-                          ),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      const SizedBox(height: 16),
-                      if (user.interests.isNotEmpty)
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          children: user.interests.take(3).map((interest) {
-                            return Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                              decoration: BoxDecoration(
-                                color: Colors.white.withValues(alpha: 0.2),
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
-                              ),
-                              child: Text(
-                                interest,
-                                style: GoogleFonts.outfit(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            );
-                          }).toList(),
-                        ),
-                    ],
+                        Colors.transparent,
+                        Colors.transparent,
+                        Colors.black.withValues(alpha: 0.4),
+                        Colors.black.withValues(alpha: 0.9),
+                      ],
+                      stops: const [0.0, 0.5, 0.8, 1.0],
+                    ),
                   ),
                 ),
-              ),
+
+                // User Info (Glassmorphic)
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: ClipRRect(
+                    child: BackdropFilter(
+                      filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
+                      child: Container(
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              Colors.black.withValues(alpha: 0.1),
+                              Colors.black.withValues(alpha: 0.8),
+                            ]
+                          )
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (user.relationshipGoal.isNotEmpty)
+                              Container(
+                                margin: const EdgeInsets.only(bottom: 12),
+                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                                decoration: BoxDecoration(
+                                  gradient: const LinearGradient(colors: [Color(0xFFFF416C), Color(0xFFFF4B2B)]),
+                                  borderRadius: BorderRadius.circular(20),
+                                  boxShadow: [
+                                    BoxShadow(color: const Color(0xFFFF416C).withValues(alpha: 0.3), blurRadius: 8, offset: const Offset(0, 4))
+                                  ]
+                                ),
+                                child: Text(
+                                  '🎯 ${user.relationshipGoal}',
+                                  style: GoogleFonts.outfit(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
+                                ),
+                              ),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Expanded(
+                                  child: Text(
+                                    user.name,
+                                    style: GoogleFonts.outfit(
+                                      color: Colors.white,
+                                      fontSize: 32,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Text(
+                                  AppUtils.formatAge(user.birthDate),
+                                  style: GoogleFonts.outfit(
+                                    color: Colors.white.withValues(alpha: 0.9),
+                                    fontSize: 26,
+                                    fontWeight: FontWeight.w300,
+                                  ),
+                                ),
+                                if (user.isVerified) ...[
+                                  const SizedBox(width: 8),
+                                  const Padding(
+                                    padding: EdgeInsets.only(bottom: 6.0),
+                                    child: Icon(Icons.verified, color: Colors.blue, size: 24),
+                                  ),
+                                ]
+                              ],
+                            ),
+                            if (user.jobTitle.isNotEmpty || user.school.isNotEmpty)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),
+                                child: Row(
+                                  children: [
+                                    if (user.jobTitle.isNotEmpty)
+                                      Expanded(
+                                        child: Row(
+                                          children: [
+                                            const Icon(Icons.work_outline, color: Colors.white70, size: 16),
+                                            const SizedBox(width: 4),
+                                            Expanded(child: Text(user.jobTitle, style: GoogleFonts.outfit(color: Colors.white70, fontSize: 14), maxLines: 1, overflow: TextOverflow.ellipsis)),
+                                          ],
+                                        ),
+                                      ),
+                                    if (user.school.isNotEmpty)
+                                      Expanded(
+                                        child: Row(
+                                          children: [
+                                            const Icon(Icons.school_outlined, color: Colors.white70, size: 16),
+                                            const SizedBox(width: 4),
+                                            Expanded(child: Text(user.school, style: GoogleFonts.outfit(color: Colors.white70, fontSize: 14), maxLines: 1, overflow: TextOverflow.ellipsis)),
+                                          ],
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            const SizedBox(height: 8),
+                            if (user.bio.isNotEmpty)
+                              Text(
+                                user.bio,
+                                style: GoogleFonts.outfit(
+                                  color: Colors.white.withValues(alpha: 0.8),
+                                  fontSize: 16,
+                                  height: 1.3,
+                                ),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            const SizedBox(height: 16),
+                            if (user.interests.isNotEmpty)
+                              Wrap(
+                                spacing: 8,
+                                runSpacing: 8,
+                                children: user.interests.take(3).map((interest) {
+                                  return Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withValues(alpha: 0.2),
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
+                                    ),
+                                    child: Text(
+                                      interest,
+                                      style: GoogleFonts.outfit(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ),
-        ],
+          );
+        }
       ),
     );
   }

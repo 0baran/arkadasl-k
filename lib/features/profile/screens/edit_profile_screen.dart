@@ -19,6 +19,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _bioController = TextEditingController();
+  final _jobTitleController = TextEditingController();
+  final _schoolController = TextEditingController();
   final _interestsController = TextEditingController();
   final ImagePicker _imagePicker = ImagePicker();
   final StorageService _storageService = StorageService();
@@ -27,6 +29,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   List<String> _interests = [];
   DateTime? _birthDate;
   String _selectedGender = 'other';
+  String _relationshipGoal = '';
   bool _isLoading = false;
 
   @override
@@ -42,10 +45,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     if (user != null) {
       _nameController.text = user.name;
       _bioController.text = user.bio;
+      _jobTitleController.text = user.jobTitle;
+      _schoolController.text = user.school;
       _photoUrls = List.from(user.photoUrls);
       _interests = List.from(user.interests);
       _birthDate = user.birthDate;
       _selectedGender = user.gender;
+      _relationshipGoal = user.relationshipGoal;
       _interestsController.text = user.interests.join(', ');
     }
   }
@@ -54,6 +60,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   void dispose() {
     _nameController.dispose();
     _bioController.dispose();
+    _jobTitleController.dispose();
+    _schoolController.dispose();
     _interestsController.dispose();
     super.dispose();
   }
@@ -156,6 +164,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       final updatedUser = authProvider.currentUser!.copyWith(
         name: _nameController.text.trim(),
         bio: _bioController.text.trim(),
+        jobTitle: _jobTitleController.text.trim(),
+        school: _schoolController.text.trim(),
+        relationshipGoal: _relationshipGoal,
         photoUrls: _photoUrls,
         interests: _interests,
         birthDate: _birthDate,
@@ -261,7 +272,49 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   prefixIcon: Icon(Icons.info_outline),
                 ),
               ),
+              const SizedBox(height: 16),
 
+              // Job Title Field
+              TextFormField(
+                controller: _jobTitleController,
+                textCapitalization: TextCapitalization.words,
+                decoration: const InputDecoration(
+                  labelText: 'Meslek',
+                  prefixIcon: Icon(Icons.work_outline),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // School Field
+              TextFormField(
+                controller: _schoolController,
+                textCapitalization: TextCapitalization.words,
+                decoration: const InputDecoration(
+                  labelText: 'Okul',
+                  prefixIcon: Icon(Icons.school_outlined),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // Relationship Goal
+              DropdownButtonFormField<String>(
+                value: _relationshipGoal.isEmpty ? null : _relationshipGoal,
+                decoration: const InputDecoration(
+                  labelText: 'İlişki Hedefi',
+                  prefixIcon: Icon(Icons.favorite_border),
+                ),
+                items: const [
+                  DropdownMenuItem(value: 'Ciddi İlişki', child: Text('Ciddi İlişki 💍')),
+                  DropdownMenuItem(value: 'Yeni Arkadaşlar', child: Text('Yeni Arkadaşlar 🤝')),
+                  DropdownMenuItem(value: 'Henüz Emin Değilim', child: Text('Henüz Emin Değilim 🤔')),
+                  DropdownMenuItem(value: 'Sadece Eğlence', child: Text('Sadece Eğlence 🥂')),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    _relationshipGoal = value ?? '';
+                  });
+                },
+              ),
               const SizedBox(height: 16),
 
               // Birth Date
