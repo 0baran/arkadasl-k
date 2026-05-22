@@ -1,0 +1,138 @@
+import 'dart:convert';
+import 'dart:io';
+import 'package:flutter/material.dart';
+import 'package:package_info_plus/package_info_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../core/theme.dart';
+
+class UpdateService {
+  static const String githubRepo = "0baran/arkadasl-k"; 
+  
+  static String get _apiUrl => "https://api.github.com/repos/$githubRepo/releases/latest";
+  
+  static bool _isChecked = false;
+
+  static Future<void> checkForUpdates(BuildContext context) async {
+    if (_isChecked) return;
+    _isChecked = true;
+    
+    try {
+      if (githubRepo == "Sahip/RepoAdi") {
+        debugPrint("UpdateService: GitHub repo adı girilmediği için güncelleme kontrolü atlandı.");
+        return; 
+      }
+
+      final httpClient = HttpClient();
+      final request = await httpClient.getUrl(Uri.parse(_apiUrl));
+      request.headers.set('User-Agent', 'ArkadaslikApp-Updater');
+      final response = await request.close();
+
+      if (response.statusCode == 200) {
+        final responseBody = await response.transform(utf8.decoder).join();
+        final data = jsonDecode(responseBody);
+        
+        final latestVersionTag = data['tag_name']?.toString().replaceAll('v', '') ?? '';
+        final apkUrl = _extractApkUrl(data['assets']);
+
+        final packageInfo = await PackageInfo.fromPlatform();
+        final currentVersion = packageInfo.version;
+
+        if (_isUpdateAvailable(currentVersion, latestVersionTag) && apkUrl != null) {
+          if (context.mounted) {
+            _showUpdateDialog(context, latestVersionTag, apkUrl, data['body'] ?? '');
+          }
+        }
+      }
+    } catch (e) {
+      debugPrint("Update check failed: $e");
+    }
+  }
+
+  static bool _isUpdateAvailable(String current, String latest) {
+    try {
+      final v1 = current.split('.').map(int.parse).toList();
+      final v2 = latest.split('.').map(int.parse).toList();
+      
+      for (var i = 0; i < 3; i++) {
+        final num1 = i < v1.length ? v1[i] : 0;
+        final num2 = i < v2.length ? v2[i] : 0;
+        if (num2 > num1) return true;
+        if (num2 < num1) return false;
+      }
+    } catch (_) {}
+    return false;
+  }
+
+  static String? _extractApkUrl(List<dynamic>? assets) {
+    if (assets == null) return null;
+    for (var asset in assets) {
+      if (asset['name'].toString().endsWith('.apk')) {
+        return asset['browser_download_url'];
+      }
+    }
+    // Eğer doğrudan APK yoksa ama zip/kod varsa kullanıcıyı release sayfasına yönlendir:
+    return "https://github.com/$githubRepo/releases/latest";
+  }
+
+  static void _showUpdateDialog(BuildContext context, String version, String apkUrl, String releaseNotes) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Row(
+          children: [
+            const Icon(Icons.system_update, color: AppTheme.primaryColor),
+            const SizedBox(width: 8),
+            const Text('Yeni Güncelleme!', style: TextStyle(fontSize: 18)),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Sürüm $version yayınlandı. Hemen indirmek ister misiniz?', 
+              style: const TextStyle(fontWeight: FontWeight.bold)),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Text(
+                releaseNotes.isNotEmpty ? releaseNotes : "Hata düzeltmeleri ve performans iyileştirmeleri.", 
+                maxLines: 4, 
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontSize: 12, color: Colors.grey.shade700)
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text('Daha Sonra', style: TextStyle(color: Colors.grey)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppTheme.primaryColor,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+            onPressed: () async {
+              final uri = Uri.parse(apkUrl);
+              if (await canLaunchUrl(uri)) {
+                await launchUrl(uri, mode: LaunchMode.externalApplication);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('İndirme bağlantısı açılamadı!'))
+                );
+              }
+            },
+            child: const Text('Şimdi Güncelle'),
+          ),
+        ],
+      ),
+    );
+  }
+}

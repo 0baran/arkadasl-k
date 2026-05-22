@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "745109876782",
+    "project_id": "anonchat-40b98",
+    "storage_bucket": "anonchat-40b98.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:745109876782:android:cc224a6aeb8401639b2fbf",
+        "android_client_info": {
+          "package_name": "com.example.arkadaslik_uygulamasi"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "745109876782-hct5mjtd4cpt3e1t01a12sfa8dsd4qeh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.arkadaslik_uygulamasi",
+            "certificate_hash": "f06b536d2f3eb082aedf75c34dd0b89aa32df249"
+          }
+        },
+        {
+          "client_id": "745109876782-oqap2ve2q2558u738ku25nm1hqb4casc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAMMYVOd7xt16gK_J6_3_IJ0sWTMJ6uegs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "745109876782-oqap2ve2q2558u738ku25nm1hqb4casc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
