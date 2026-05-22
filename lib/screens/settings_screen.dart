@@ -1,7 +1,8 @@
-﻿// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_provider.dart';
+import '../services/database_service.dart';
 import '../core/constants.dart';
 import '../core/theme.dart';
 import 'login_screen.dart';
@@ -259,6 +260,30 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
             // Account Actions
             _buildSectionTitle('Hesap Yönetimi'),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () async {
+                  final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                  if (authProvider.currentUser != null) {
+                    await DatabaseService().resetSwipes(authProvider.currentUser!.id);
+                    if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Tüm kaydırma geçmişi sıfırlandı! (Test Modu)')),
+                      );
+                    }
+                  }
+                },
+                icon: const Icon(Icons.refresh),
+                label: const Text('Eşleşmeleri ve Kaydırmaları Sıfırla (Geliştirici)'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  backgroundColor: AppTheme.accentColor,
+                  foregroundColor: Colors.white,
+                ),
+              ),
+            ),
+            const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
               child: OutlinedButton.icon(

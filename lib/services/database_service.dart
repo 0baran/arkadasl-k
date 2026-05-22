@@ -179,6 +179,10 @@ class DatabaseService {
       for (var doc in usersSnapshot.docs) {
         if (!swipedIds.contains(doc.id)) {
           final user = User.fromJson(doc.data() as Map<String, dynamic>);
+          
+          final age = _calculateAge(user.birthDate);
+          if (age < minAge || age > maxAge) continue;
+
           final distance = _calculateDistance(latitude, longitude, user.location.latitude, user.location.longitude);
           if (distance <= maxDistance) {
             nearbyUsers.add(user);
@@ -214,5 +218,26 @@ class DatabaseService {
 
   double _toRadians(double degree) {
     return degree * (3.14159265359 / 180);
+  }
+
+  int _calculateAge(DateTime birthDate) {
+    final now = DateTime.now();
+    int age = now.year - birthDate.year;
+    if (now.month < birthDate.month || (now.month == birthDate.month && now.day < birthDate.day)) {
+      age--;
+    }
+    return age;
+  }
+
+  Future<void> resetSwipes(String currentUserId) async {
+    try {
+      final snapshot = await _firestore.collection('likes').doc(currentUserId).collection('liked').get();
+      for (var doc in snapshot.docs) {
+        await doc.reference.delete();
+      }
+      debugPrint('Swipes reset successfully');
+    } catch (e) {
+      debugPrint('Error resetting swipes: $e');
+    }
   }
 }

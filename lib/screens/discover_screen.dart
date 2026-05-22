@@ -1,4 +1,4 @@
-﻿import 'dart:ui';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:card_swiper/card_swiper.dart';
@@ -159,24 +159,50 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     }
 
     if (_errorMessage != null) {
+      final isPermissionError = _errorMessage!.contains('izni');
+      final isServiceError = _errorMessage!.contains('kapalı');
+
       return Scaffold(
         body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.error_outline, size: 64, color: AppTheme.errorColor),
-              const SizedBox(height: 16),
-              Text(
-                _errorMessage!,
-                style: GoogleFonts.outfit(color: AppTheme.errorColor, fontSize: 16),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: _loadNearbyUsers,
-                child: const Text('Tekrar Dene'),
-              ),
-            ],
+          child: Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  isPermissionError || isServiceError ? Icons.location_off : Icons.error_outline, 
+                  size: 64, 
+                  color: AppTheme.errorColor
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  _errorMessage!,
+                  style: GoogleFonts.outfit(color: AppTheme.errorColor, fontSize: 16),
+                  textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 24),
+                if (isPermissionError)
+                  ElevatedButton(
+                    onPressed: () async {
+                      await _locationService.openAppSettings();
+                    },
+                    child: const Text('Ayarlara Git'),
+                  ),
+                if (isServiceError)
+                  ElevatedButton(
+                    onPressed: () async {
+                      await _locationService.openLocationSettings();
+                    },
+                    child: const Text('Konumu Aç'),
+                  ),
+                if (isPermissionError || isServiceError)
+                  const SizedBox(height: 12),
+                OutlinedButton(
+                  onPressed: _loadNearbyUsers,
+                  child: const Text('Tekrar Dene'),
+                ),
+              ],
+            ),
           ),
         ),
       );
