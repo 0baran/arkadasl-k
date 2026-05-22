@@ -98,6 +98,8 @@ class _HomeScreenState extends State<HomeScreen> {
               filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -111,6 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ),
+      ),
       ),
     );
   }
@@ -126,40 +129,45 @@ class _HomeScreenState extends State<HomeScreen> {
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 300),
         curve: Curves.easeOutQuint,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
         decoration: BoxDecoration(
           color: isSelected ? selectedBg : Colors.transparent,
           borderRadius: BorderRadius.circular(24),
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              icon,
-              color: isSelected ? primaryColor : inactiveColor,
-              size: 26,
-            ),
-            AnimatedSize(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeOutQuint,
-              child: SizedBox(
-                width: isSelected ? null : 0,
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 8),
-                  child: Text(
-                    label,
-                    overflow: TextOverflow.clip,
-                    maxLines: 1,
-                    style: TextStyle(
-                      color: primaryColor,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 13,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          physics: const NeverScrollableScrollPhysics(),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                icon,
+                color: isSelected ? primaryColor : inactiveColor,
+                size: 24,
+              ),
+              AnimatedSize(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeOutQuint,
+                child: SizedBox(
+                  width: isSelected ? null : 0,
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 8),
+                    child: Text(
+                      label,
+                      overflow: TextOverflow.clip,
+                      maxLines: 1,
+                      softWrap: false,
+                      style: TextStyle(
+                        color: primaryColor,
+                        fontWeight: FontWeight.w700,
+                        fontSize: 13,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

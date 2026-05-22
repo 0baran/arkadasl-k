@@ -9,8 +9,20 @@ import 'core/constants.dart';
 import 'services/auth_provider.dart';
 import 'features/auth/screens/splash_screen.dart';
 
+import 'package:flutter/services.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Edge-to-edge UI (Modern Android Navigation Bar Update)
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      systemNavigationBarColor: Colors.transparent,
+      systemNavigationBarDividerColor: Colors.transparent,
+      statusBarColor: Colors.transparent,
+    ),
+  );
 
   try {
     await Firebase.initializeApp(
