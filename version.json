@@ -1,6 +1,6 @@
 {
-  "version": "1.0.3",
-  "build": 4,
+  "version": "1.0.6",
+  "build": 7,
   "apk_url": "https://github.com/0baran/arkadasl-k/raw/main/release.apk",
-  "release_notes": "Alt menü sekmeleri arasındaki geçişlerde yaşanan yükleme (sayfa yenilenme) sorunu çözüldü. Artık geçişler anlık ve pürüzsüz."
+  "release_notes": "Açılış ekranındaki (Splash Screen) senkronizasyon hatası giderildi. Uygulama kapatılıp açıldığında hesabın kalıcı olarak açık kalması (çıkış yapmaması) sağlandı."
 }
