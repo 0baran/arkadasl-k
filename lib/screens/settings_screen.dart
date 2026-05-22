@@ -17,6 +17,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
   int _minAge = 18;
   int _maxAge = 50;
   String _preferredGender = 'all';
+  bool _notificationsEnabled = true;
+  bool _showDistance = true;
 
   @override
   void initState() {
@@ -34,6 +36,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
         _minAge = settings.minAge;
         _maxAge = settings.maxAge;
         _preferredGender = settings.preferredGender;
+        _notificationsEnabled = settings.notificationsEnabled;
+        _showDistance = settings.showDistance;
       });
     }
   }
@@ -49,6 +53,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
           minAge: _minAge,
           maxAge: _maxAge,
           preferredGender: _preferredGender,
+          notificationsEnabled: _notificationsEnabled,
+          showDistance: _showDistance,
         ),
       );
 
@@ -209,16 +215,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
               title: 'Bildirimler',
               subtitle: 'Match ve mesaj bildirimleri',
               child: Switch(
-                value: Provider.of<AuthProvider>(context)
-                        .currentUser
-                        ?.settings
-                        .notificationsEnabled ??
-                    true,
+                value: _notificationsEnabled,
                 onChanged: (value) {
-                  // TODO: Implement notification toggle
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Bildirim ayarı yakında')),
-                  );
+                  setState(() {
+                    _notificationsEnabled = value;
+                  });
                 },
               ),
             ),
@@ -233,16 +234,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
               title: 'Mesafeyi Göster',
               subtitle: 'Diğer kullanıcılara mesafemi göster',
               child: Switch(
-                value: Provider.of<AuthProvider>(context)
-                        .currentUser
-                        ?.settings
-                        .showDistance ??
-                    true,
+                value: _showDistance,
                 onChanged: (value) {
-                  // TODO: Implement distance visibility toggle
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Mesafe ayarı yakında')),
-                  );
+                  setState(() {
+                    _showDistance = value;
+                  });
                 },
               ),
             ),

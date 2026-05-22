@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
@@ -83,7 +84,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
         final imageUrl = await _storageService.uploadProfileImage(
           authProvider.currentUser!.id,
-          image as dynamic, // File conversion needed
+          File(image.path),
         );
 
         setState(() {

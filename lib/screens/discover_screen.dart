@@ -9,6 +9,7 @@ import '../services/location_service.dart';
 import '../models/user.dart';
 import '../core/theme.dart';
 import '../core/utils.dart';
+import 'settings_screen.dart';
 
 class DiscoverScreen extends StatefulWidget {
   const DiscoverScreen({super.key});
@@ -245,7 +246,11 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                         child: IconButton(
                           icon: const Icon(Icons.tune),
                           color: AppTheme.primaryColor,
-                          onPressed: () {},
+                          onPressed: () {
+                            Navigator.of(context).push(
+                              MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                            );
+                          },
                         ),
                       )
                     ],

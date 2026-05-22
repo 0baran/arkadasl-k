@@ -42,6 +42,62 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
+  void _showForgotPasswordDialog() {
+    final emailController = TextEditingController(text: _emailController.text.trim());
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Şifre Sıfırla'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text('E-posta adresinize şifre sıfırlama bağlantısı gönderilecek.'),
+            const SizedBox(height: 16),
+            TextField(
+              controller: emailController,
+              decoration: const InputDecoration(
+                labelText: 'E-posta',
+                prefixIcon: Icon(Icons.email_outlined),
+              ),
+              keyboardType: TextInputType.emailAddress,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('İptal')),
+          ElevatedButton(
+            onPressed: () async {
+              final email = emailController.text.trim();
+              if (email.isEmpty || !AppUtils.isValidEmail(email)) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Geçerli bir e-posta girin')),
+                );
+                return;
+              }
+              try {
+                final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                await authProvider.sendPasswordResetEmail(email);
+                if (ctx.mounted) Navigator.pop(ctx);
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Şifre sıfırlama bağlantısı gönderildi!'), backgroundColor: AppTheme.successColor),
+                  );
+                }
+              } catch (e) {
+                if (mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Hata: $e'), backgroundColor: AppTheme.errorColor),
+                  );
+                }
+              }
+            },
+            child: const Text('Gönder'),
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> _login() async {
     if (!_formKey.currentState!.validate()) {
       return;
@@ -217,9 +273,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 Align(
                                   alignment: Alignment.centerRight,
                                   child: TextButton(
-                                    onPressed: () {
-                                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Şifre sıfırlama yakında')));
-                                    },
+                                    onPressed: _showForgotPasswordDialog,
                                     style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: const Size(50, 30)),
                                     child: const Text(AppStrings.forgotPassword, style: TextStyle(color: AppTheme.primaryColor)),
                                   ),
