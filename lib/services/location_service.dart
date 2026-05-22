@@ -60,6 +60,6 @@ class LocationService {
   }
 
   Future<void> openAppSettings() async {
-    await openAppSettings();
+    await Geolocator.openAppSettings();
   }
 }

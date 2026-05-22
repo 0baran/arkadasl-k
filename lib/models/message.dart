@@ -25,16 +25,23 @@ class Message {
       senderId: json['senderId'] ?? '',
       receiverId: json['receiverId'] ?? '',
       content: json['content'] ?? '',
-      type: MessageType.values.firstWhere(
-        (e) => e.toString() == 'MessageType.${json['type']}',
-        orElse: () => MessageType.text,
-      ),
+      type: _parseMessageType(json['type']),
       timestamp: json['timestamp'] is DateTime
           ? json['timestamp']
           : DateTime.parse(json['timestamp']),
       isRead: json['isRead'] ?? false,
       imageUrl: json['imageUrl'],
     );
+  }
+
+  static MessageType _parseMessageType(dynamic type) {
+    if (type is String) {
+      return MessageType.values.firstWhere(
+        (e) => e.name == type,
+        orElse: () => MessageType.text,
+      );
+    }
+    return MessageType.text;
   }
 
   Map<String, dynamic> toJson() {
@@ -72,7 +79,10 @@ class Message {
     );
   }
 
-  bool get isFromCurrentUser => senderId == receiverId;
+  bool isFromUser(String userId) => senderId == userId;
+
+  @Deprecated('Use isFromUser(String userId) instead')
+  bool get isFromCurrentUser => false;
 }
 
 enum MessageType {

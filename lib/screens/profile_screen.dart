@@ -6,6 +6,7 @@ import '../core/theme.dart';
 import '../core/utils.dart';
 import 'edit_profile_screen.dart';
 import 'settings_screen.dart';
+import 'login_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -33,7 +34,10 @@ class ProfileScreen extends StatelessWidget {
             onPressed: () async {
               await authProvider.signOut();
               if (context.mounted) {
-                Navigator.of(context).pushReplacementNamed('/');
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (_) => const LoginScreen()),
+                  (route) => false,
+                );
               }
             },
           ),

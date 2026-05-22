@@ -1,6 +1,6 @@
 {
-  "version": "1.0.6",
-  "build": 7,
+  "version": "1.0.7",
+  "build": 8,
   "apk_url": "https://github.com/0baran/arkadasl-k/raw/main/release.apk",
-  "release_notes": "Açılış ekranındaki (Splash Screen) senkronizasyon hatası giderildi. Uygulama kapatılıp açıldığında hesabın kalıcı olarak açık kalması (çıkış yapmaması) sağlandı."
+  "release_notes": "Hata düzeltmeleri: Mesaj sıralama, mesafe hesaplama, çıkış yapma hatası, bildirim izni iyileştirmeleri."
 }

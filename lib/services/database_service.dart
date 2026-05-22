@@ -1,8 +1,9 @@
+import 'dart:math' as math;
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import '../models/user.dart';
 import '../models/match.dart';
 import '../models/message.dart';
-import '../core/constants.dart';
 
 class DatabaseService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -11,7 +12,8 @@ class DatabaseService {
     try {
       await _firestore.collection('users').doc(user.id).set(user.toJson());
     } catch (e) {
-      print('Error creating user: $e');
+      debugPrint('Error creating user: $e');
+      rethrow;
     }
   }
 
@@ -22,7 +24,7 @@ class DatabaseService {
         return User.fromJson(doc.data()!);
       }
     } catch (e) {
-      print('Error getting user: $e');
+      debugPrint('Error getting user: $e');
     }
     return null;
   }
@@ -31,7 +33,8 @@ class DatabaseService {
     try {
       await _firestore.collection('users').doc(userId).delete();
     } catch (e) {
-      print('Error deleting user: $e');
+      debugPrint('Error deleting user: $e');
+      rethrow;
     }
   }
 
@@ -39,7 +42,8 @@ class DatabaseService {
     try {
       await _firestore.collection('users').doc(user.id).update(user.toJson());
     } catch (e) {
-      print('Error updating user: $e');
+      debugPrint('Error updating user: $e');
+      rethrow;
     }
   }
 
@@ -56,7 +60,8 @@ class DatabaseService {
     try {
       await _firestore.collection('matches').doc(match.id).set(match.toJson());
     } catch (e) {
-      print('Error creating match: $e');
+      debugPrint('Error creating match: $e');
+      rethrow;
     }
   }
 
@@ -67,7 +72,7 @@ class DatabaseService {
           .get();
       return snapshot.docs.map((doc) => Match.fromJson(doc.data())).toList();
     } catch (e) {
-      print('Error getting matches: $e');
+      debugPrint('Error getting matches: $e');
       return [];
     }
   }
@@ -89,7 +94,8 @@ class DatabaseService {
       await _firestore.collection('chats').doc(chatId).collection('messages').doc(message.id).set(message.toJson());
       await _updateMatchLastMessage(message, chatId);
     } catch (e) {
-      print('Error sending message: $e');
+      debugPrint('Error sending message: $e');
+      rethrow;
     }
   }
 
@@ -100,14 +106,14 @@ class DatabaseService {
         'lastMessageAt': message.timestamp.toIso8601String(),
       });
     } catch (e) {
-      print('Error updating last message: $e');
+      debugPrint('Error updating last message: $e');
     }
   }
 
   Stream<List<Message>> getMessagesStream(String userId1, String userId2) {
     final chatId = _getChatId(userId1, userId2);
     return _firestore.collection('chats').doc(chatId).collection('messages')
-        .orderBy('createdAt', descending: true)
+        .orderBy('timestamp', descending: true)
         .snapshots()
         .map((snapshot) => snapshot.docs.map((doc) => Message.fromJson(doc.data())).toList());
   }
@@ -143,7 +149,7 @@ class DatabaseService {
         }
       }
     } catch (e) {
-      print('Error handling like: $e');
+      debugPrint('Error handling like: $e');
     }
     return false;
   }
@@ -181,7 +187,7 @@ class DatabaseService {
       }
       return nearbyUsers;
     } catch (e) {
-      print('Error getting nearby users: $e');
+      debugPrint('Error getting nearby users: $e');
       return [];
     }
   }
@@ -196,8 +202,12 @@ class DatabaseService {
     final dLat = _toRadians(lat2 - lat1);
     final dLon = _toRadians(lon2 - lon1);
 
-    // Simple distance calculation
-    final c = 2 * (dLat.abs() + dLon.abs());
+    final a = math.sin(dLat / 2) * math.sin(dLat / 2) +
+        math.cos(_toRadians(lat1)) *
+            math.cos(_toRadians(lat2)) *
+            math.sin(dLon / 2) *
+            math.sin(dLon / 2);
+    final c = 2 * math.asin(math.sqrt(a));
 
     return earthRadius * c;
   }
