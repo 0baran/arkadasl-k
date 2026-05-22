@@ -323,6 +323,75 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     );
   }
 
+  Widget _buildActionButtons() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 40.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          _buildActionButton(
+            icon: Icons.close,
+            color: const Color(0xFFFF5252),
+            size: 60,
+            iconSize: 30,
+            onPressed: () {
+              if (_nearbyUsers.isNotEmpty) _handleDislike(_nearbyUsers.first);
+            },
+          ),
+          _buildActionButton(
+            icon: Icons.star_rounded,
+            color: const Color(0xFFFFBE0B),
+            size: 50,
+            iconSize: 28,
+            onPressed: () {
+              if (_nearbyUsers.isNotEmpty) _handleSuperLike(_nearbyUsers.first);
+            },
+          ),
+          _buildActionButton(
+            icon: Icons.favorite,
+            color: const Color(0xFF00E676),
+            size: 60,
+            iconSize: 30,
+            onPressed: () {
+              if (_nearbyUsers.isNotEmpty) _handleLike(_nearbyUsers.first);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildActionButton({
+    required IconData icon,
+    required Color color,
+    required double size,
+    required double iconSize,
+    required VoidCallback onPressed,
+  }) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        shape: BoxShape.circle,
+        boxShadow: [
+          BoxShadow(
+            color: color.withValues(alpha: 0.3),
+            blurRadius: 15,
+            spreadRadius: 2,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: IconButton(
+        icon: Icon(icon, color: color),
+        iconSize: iconSize,
+        onPressed: onPressed,
+        splashColor: color.withValues(alpha: 0.2),
+        highlightColor: color.withValues(alpha: 0.1),
+      ),
+    );
+  }
 }
 
 class _UserProfileCard extends StatefulWidget {
@@ -585,76 +654,6 @@ class _UserProfileCardState extends State<_UserProfileCard> {
             ),
           );
         }
-      ),
-    );
-  }
-
-  Widget _buildActionButtons() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 40.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          _buildActionButton(
-            icon: Icons.close,
-            color: const Color(0xFFFF5252),
-            size: 60,
-            iconSize: 30,
-            onPressed: () {
-              if (_nearbyUsers.isNotEmpty) _handleDislike(_nearbyUsers.first);
-            },
-          ),
-          _buildActionButton(
-            icon: Icons.star_rounded,
-            color: const Color(0xFFFFBE0B),
-            size: 50,
-            iconSize: 28,
-            onPressed: () {
-              if (_nearbyUsers.isNotEmpty) _handleSuperLike(_nearbyUsers.first);
-            },
-          ),
-          _buildActionButton(
-            icon: Icons.favorite,
-            color: const Color(0xFF00E676),
-            size: 60,
-            iconSize: 30,
-            onPressed: () {
-              if (_nearbyUsers.isNotEmpty) _handleLike(_nearbyUsers.first);
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildActionButton({
-    required IconData icon,
-    required Color color,
-    required double size,
-    required double iconSize,
-    required VoidCallback onPressed,
-  }) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        color: Colors.white,
-        shape: BoxShape.circle,
-        boxShadow: [
-          BoxShadow(
-            color: color.withValues(alpha: 0.3),
-            blurRadius: 15,
-            spreadRadius: 2,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: IconButton(
-        icon: Icon(icon, color: color),
-        iconSize: iconSize,
-        onPressed: onPressed,
-        splashColor: color.withValues(alpha: 0.2),
-        highlightColor: color.withValues(alpha: 0.1),
       ),
     );
   }
