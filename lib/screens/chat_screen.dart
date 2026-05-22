@@ -1,4 +1,4 @@
-﻿import 'package:flutter/material.dart';
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_provider.dart';
 import '../services/database_service.dart';
@@ -173,6 +173,7 @@ class _ChatScreenState extends State<ChatScreen> {
   Widget _buildMessageBubble(Message message) {
     final authProvider = Provider.of<AuthProvider>(context);
     final isFromMe = message.senderId == authProvider.currentUser?.id;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Align(
       alignment: isFromMe ? Alignment.centerRight : Alignment.centerLeft,
@@ -183,7 +184,9 @@ class _ChatScreenState extends State<ChatScreen> {
           maxWidth: MediaQuery.of(context).size.width * 0.7,
         ),
         decoration: BoxDecoration(
-          color: isFromMe ? AppTheme.primaryColor : Colors.grey.shade300,
+          color: isFromMe 
+              ? AppTheme.primaryColor 
+              : (isDark ? const Color(0xFF2A2A35) : Colors.grey.shade300),
           borderRadius: BorderRadius.circular(20),
         ),
         child: Column(
@@ -192,14 +195,18 @@ class _ChatScreenState extends State<ChatScreen> {
             Text(
               message.content,
               style: TextStyle(
-                color: isFromMe ? Colors.white : Colors.black87,
+                color: isFromMe 
+                    ? Colors.white 
+                    : (isDark ? Colors.white : Colors.black87),
               ),
             ),
             const SizedBox(height: 4),
             Text(
               AppUtils.formatTime(message.timestamp),
               style: TextStyle(
-                color: isFromMe ? Colors.white70 : Colors.black54,
+                color: isFromMe 
+                    ? Colors.white70 
+                    : (isDark ? Colors.white54 : Colors.black54),
                 fontSize: 10,
               ),
             ),
@@ -210,10 +217,12 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget _buildMessageInput() {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF1E1E24) : Colors.white,
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.1),
@@ -226,8 +235,8 @@ class _ChatScreenState extends State<ChatScreen> {
         children: [
           IconButton(
             icon: const Icon(Icons.photo_camera),
+            color: isDark ? Colors.white70 : Colors.black54,
             onPressed: () {
-              // TODO: Implement image sending
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Resim gönderme yakında')),
               );
@@ -236,8 +245,10 @@ class _ChatScreenState extends State<ChatScreen> {
           Expanded(
             child: TextField(
               controller: _messageController,
-              decoration: const InputDecoration(
+              style: TextStyle(color: isDark ? Colors.white : Colors.black),
+              decoration: InputDecoration(
                 hintText: 'Mesaj yazın...',
+                hintStyle: TextStyle(color: isDark ? Colors.white54 : Colors.black54),
                 border: InputBorder.none,
               ),
               onSubmitted: (_) => _sendMessage(),

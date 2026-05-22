@@ -65,7 +65,7 @@ class AppUtils {
     String currentLine = '';
 
     for (var word in words) {
-      if ((currentLine + ' ' + word).length <= maxLength) {
+      if ('$currentLine $word'.length <= maxLength) {
         currentLine += (currentLine.isEmpty ? '' : ' ') + word;
       } else {
         if (currentLine.isNotEmpty) {
@@ -92,6 +92,6 @@ class AppUtils {
 
   static String truncateText(String text, int maxLength) {
     if (text.length <= maxLength) return text;
-    return text.substring(0, maxLength) + '...';
+    return '${text.substring(0, maxLength)}...';
   }
 }

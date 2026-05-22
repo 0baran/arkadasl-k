@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
+import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 import 'package:provider/provider.dart';
 import 'core/theme.dart';
 import 'core/constants.dart';
@@ -19,8 +23,24 @@ void main() async {
         storageBucket: 'anonchat-40b98.firebasestorage.app',
       ),
     );
+
+    // Initialize Crashlytics
+    FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterFatalError;
+    PlatformDispatcher.instance.onError = (error, stack) {
+      FirebaseCrashlytics.instance.recordError(error, stack, fatal: true);
+      return true;
+    };
+
+    // Initialize Analytics
+    FirebaseAnalytics.instance.setAnalyticsCollectionEnabled(true);
+
+    // Enable Firestore Offline Persistence
+    FirebaseFirestore.instance.settings = const Settings(
+      persistenceEnabled: true,
+      cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
+    );
   } catch (e) {
-    print('Firebase initialize hatası: $e');
+    debugPrint('Firebase initialize hatası: $e');
   }
 
   runApp(const MyApp());

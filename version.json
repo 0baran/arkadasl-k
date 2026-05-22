@@ -1,6 +1,6 @@
-{
-    "version":  "1.0.20",
-    "build":  21,
-    "apk_url":  "https://github.com/0baran/arkadasl-k/raw/main/arkadaslik_v1.0.19.apk",
-    "release_notes":  "Alt menü hizalamaları ve tasarım problemleri çözüldü. Ayarlar sayfasına Sürüm Notları butonu eklendi."
+ï»¿{
+    "version":  "1.0.21",
+    "build":  22,
+    "apk_url":  "https://github.com/0baran/arkadasl-k/raw/main/arkadaslik_v1.0.21.apk",
+    "release_notes":  "Uygulama tam olarak Ã¼retime hazÄ±r (Production Ready) hale getirildi.\n- Firebase Crashlytics & Analytics eklendi\n- GeliÅŸmiÅŸ Shimmer yÃ¼kleme efektleri eklendi\n- Resim Ã¶nbellekleme ile internet tasarrufu saÄŸlandÄ±\n- Algoritma performans iyileÅŸtirmeleri"
 }
