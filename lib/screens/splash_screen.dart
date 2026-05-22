@@ -54,11 +54,26 @@ class _SplashScreenState extends State<SplashScreen>
 
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     
-    if (authProvider.currentUser != null) {
+    // Firebase auth'a giriş yapmış ama profil henüz Firestore'dan çekilememişse bekle
+    if (authProvider.isLoggedIn && !authProvider.isUserProfileComplete) {
+      int retries = 0;
+      while (!authProvider.isUserProfileComplete && retries < 15) {
+        await Future.delayed(const Duration(milliseconds: 400));
+        retries++;
+      }
+    }
+
+    if (!mounted) return;
+
+    if (authProvider.isUserProfileComplete) {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => const HomeScreen()),
       );
     } else {
+      // Eğer bir sorun olduysa Firebase Auth oturumunu kapat ki hatada takılı kalmasın
+      if (authProvider.isLoggedIn) {
+        await authProvider.signOut();
+      }
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => const LoginScreen()),
       );

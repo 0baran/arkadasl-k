@@ -97,7 +97,7 @@ class DatabaseService {
     try {
       await _firestore.collection('matches').doc(chatId).update({
         'lastMessage': message.content,
-        'lastMessageAt': message.createdAt.toIso8601String(),
+        'lastMessageAt': message.timestamp.toIso8601String(),
       });
     } catch (e) {
       print('Error updating last message: $e');
