@@ -1,6 +1,6 @@
 {
-  "version": "1.0.2",
-  "build": 3,
+  "version": "1.0.3",
+  "build": 4,
   "apk_url": "https://github.com/0baran/arkadasl-k/raw/main/release.apk",
-  "release_notes": "Kayıt ekranındaki (Kayıt olunca uygulamaya girmeme) hata düzeltildi."
+  "release_notes": "Alt menü sekmeleri arasındaki geçişlerde yaşanan yükleme (sayfa yenilenme) sorunu çözüldü. Artık geçişler anlık ve pürüzsüz."
 }

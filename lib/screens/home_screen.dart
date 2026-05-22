@@ -40,7 +40,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBody: true,
-      body: _screens[_currentIndex],
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _screens,
+      ),
       bottomNavigationBar: SafeArea(
         child: Container(
           margin: const EdgeInsets.only(left: 24, right: 24, bottom: 16),
