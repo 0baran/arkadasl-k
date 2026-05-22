@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class User {
   final String id;
   final String email;
@@ -36,22 +38,14 @@ class User {
       id: json['id'] ?? json['uid'] ?? '',
       email: json['email'] ?? '',
       name: json['name'] ?? '',
-      birthDate: json['birthDate'] is DateTime
-          ? json['birthDate']
-          : DateTime.parse(json['birthDate']),
+      birthDate: _parseDate(json['birthDate']),
       gender: json['gender'] ?? 'other',
       bio: json['bio'] ?? '',
       photoUrls: List<String>.from(json['photoUrls'] ?? []),
       interests: List<String>.from(json['interests'] ?? []),
       location: GeoLocation.fromJson(json['location'] ?? {}),
-      createdAt: json['createdAt'] is DateTime
-          ? json['createdAt']
-          : DateTime.parse(json['createdAt']),
-      lastSeen: json['lastSeen'] != null
-          ? (json['lastSeen'] is DateTime
-              ? json['lastSeen']
-              : DateTime.parse(json['lastSeen']))
-          : null,
+      createdAt: _parseDate(json['createdAt']),
+      lastSeen: json['lastSeen'] != null ? _parseDate(json['lastSeen']) : null,
       isVerified: json['isVerified'] ?? false,
       isPremium: json['isPremium'] ?? false,
       settings: json['settings'] != null
@@ -111,6 +105,16 @@ class User {
       isPremium: isPremium ?? this.isPremium,
       settings: settings ?? this.settings,
     );
+  }
+
+  static DateTime _parseDate(dynamic dateVal) {
+    if (dateVal == null) return DateTime.now();
+    if (dateVal is DateTime) return dateVal;
+    if (dateVal is Timestamp) return dateVal.toDate();
+    if (dateVal is String) {
+      return DateTime.tryParse(dateVal) ?? DateTime.now();
+    }
+    return DateTime.now();
   }
 }
 
