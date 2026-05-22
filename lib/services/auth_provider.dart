@@ -17,6 +17,12 @@ class AuthProvider with ChangeNotifier {
   bool get isUserProfileComplete => _currentUser != null;
 
   AuthProvider() {
+    // Uygulama açılır açılmaz önbellekteki kullanıcıyı al
+    _firebaseUser = _authService.currentUser;
+    if (_firebaseUser != null) {
+      _loadUserProfile(_firebaseUser!.uid);
+    }
+
     _authService.authStateChanges.listen((user) async {
       _firebaseUser = user;
       if (user != null) {
