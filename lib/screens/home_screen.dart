@@ -20,27 +20,26 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    // GitHub üzerinden güncelleme kontrolü başlat
     WidgetsBinding.instance.addPostFrameCallback((_) {
       UpdateService.checkForUpdates(context);
     });
-
-    // Bildirim servislerini başlat (FCM izinlerini iste)
     NotificationService().initialize();
   }
 
-  final List<Widget> _screens = [
-    const DiscoverScreen(),
-    const MatchesScreen(),
-    const MessagesScreen(),
-    const ProfileScreen(),
+  final List<Widget> _screens = const [
+    DiscoverScreen(),
+    MatchesScreen(),
+    MessagesScreen(),
+    ProfileScreen(),
   ];
 
   @override
   Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final navBar = Theme.of(context).bottomNavigationBarTheme;
+    final primary = Theme.of(context).colorScheme.primary;
+
     return Scaffold(
-      extendBody: false,
+      extendBody: true,
       body: IndexedStack(
         index: _currentIndex,
         children: _screens,
@@ -49,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Container(
           margin: const EdgeInsets.only(left: 24, right: 24, bottom: 16),
           decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF2A2A35).withValues(alpha: 0.9) : Colors.white.withValues(alpha: 0.9),
+            color: navBar.backgroundColor,
             borderRadius: BorderRadius.circular(32),
             boxShadow: [
               BoxShadow(
@@ -68,10 +67,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _buildNavItem(0, Icons.explore_rounded, 'Keşfet'),
-                    _buildNavItem(1, Icons.favorite_rounded, 'Eşleşmeler'),
-                    _buildNavItem(2, Icons.chat_bubble_rounded, 'Mesajlar'),
-                    _buildNavItem(3, Icons.person_rounded, 'Profil'),
+                    _buildNavItem(0, Icons.explore_rounded, 'Keşfet', primary),
+                    _buildNavItem(1, Icons.favorite_rounded, 'Eşleşmeler', primary),
+                    _buildNavItem(2, Icons.chat_bubble_rounded, 'Mesajlar', primary),
+                    _buildNavItem(3, Icons.person_rounded, 'Profil', primary),
                   ],
                 ),
               ),
@@ -82,8 +81,11 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildNavItem(int index, IconData icon, String label) {
+  Widget _buildNavItem(int index, IconData icon, String label, Color primaryColor) {
     final isSelected = _currentIndex == index;
+    final inactiveColor = Theme.of(context).bottomNavigationBarTheme.unselectedItemColor ?? Colors.grey;
+    final selectedBg = primaryColor.withValues(alpha: 0.15);
+
     return GestureDetector(
       onTap: () => setState(() => _currentIndex = index),
       behavior: HitTestBehavior.opaque,
@@ -92,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
         curve: Curves.easeOutQuint,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFFE91E63).withValues(alpha: 0.15) : Colors.transparent,
+          color: isSelected ? selectedBg : Colors.transparent,
           borderRadius: BorderRadius.circular(24),
         ),
         child: Row(
@@ -100,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             Icon(
               icon,
-              color: isSelected ? const Color(0xFFE91E63) : Colors.grey.shade400,
+              color: isSelected ? primaryColor : inactiveColor,
               size: 26,
             ),
             AnimatedSize(
@@ -114,8 +116,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     label,
                     overflow: TextOverflow.clip,
                     maxLines: 1,
-                    style: const TextStyle(
-                      color: Color(0xFFE91E63),
+                    style: TextStyle(
+                      color: primaryColor,
                       fontWeight: FontWeight.w700,
                       fontSize: 13,
                     ),
