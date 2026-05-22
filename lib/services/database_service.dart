@@ -181,12 +181,14 @@ class DatabaseService {
           final user = User.fromJson(doc.data() as Map<String, dynamic>);
           
           final age = _calculateAge(user.birthDate);
-          if (age < minAge || age > maxAge) continue;
+          // Geliştirici Test Modu: Yaş filtresi devre dışı (Hızlı test için)
+          // if (age < minAge || age > maxAge) continue;
 
           final distance = _calculateDistance(latitude, longitude, user.location.latitude, user.location.longitude);
-          if (distance <= maxDistance) {
+          // Geliştirici Test Modu: Mesafe filtresi devre dışı (Hızlı test için)
+          // if (distance <= maxDistance) {
             nearbyUsers.add(user);
-          }
+          // }
         }
       }
       return nearbyUsers;

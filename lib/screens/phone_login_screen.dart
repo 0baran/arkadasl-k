@@ -1,4 +1,4 @@
-﻿// ignore_for_file: prefer_interpolation_to_compose_strings
+// ignore_for_file: prefer_interpolation_to_compose_strings
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -129,6 +129,8 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -154,7 +156,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                     child: Container(
                       padding: const EdgeInsets.all(24),
                       decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.95),
+                        color: isDark ? Colors.black.withValues(alpha: 0.6) : Colors.white.withValues(alpha: 0.95),
                         borderRadius: BorderRadius.circular(24),
                         border: Border.all(
                           color: Colors.white.withValues(alpha: 0.2),
@@ -173,7 +175,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                             style: GoogleFonts.outfit(
                               fontSize: 24,
                               fontWeight: FontWeight.bold,
-                              color: AppTheme.textPrimary,
+                              color: isDark ? Colors.white : AppTheme.textPrimary,
                             ),
                           ),
                           const SizedBox(height: 8),
@@ -182,7 +184,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                               ? 'Telefonunuza gelen 6 haneli kodu girin.' 
                               : 'Telefon numaranıza bir doğrulama kodu göndereceğiz.',
                             textAlign: TextAlign.center,
-                            style: TextStyle(color: Colors.grey.shade600),
+                            style: TextStyle(color: isDark ? Colors.grey.shade400 : Colors.grey.shade600),
                           ),
                           const SizedBox(height: 32),
                           if (!_codeSent)
@@ -193,7 +195,8 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                                 labelText: 'Telefon Numarası',
                                 hintText: '5XX XXX XX XX',
                                 prefixIcon: const Icon(Icons.phone),
-                                fillColor: Colors.grey.shade50,
+                                filled: true,
+                                fillColor: isDark ? const Color(0xFF2A2A35) : Colors.grey.shade50,
                               ),
                             )
                           else
@@ -205,7 +208,8 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                               style: const TextStyle(fontSize: 24, letterSpacing: 8),
                               decoration: InputDecoration(
                                 hintText: '------',
-                                fillColor: Colors.grey.shade50,
+                                filled: true,
+                                fillColor: isDark ? const Color(0xFF2A2A35) : Colors.grey.shade50,
                                 counterText: '',
                               ),
                             ),

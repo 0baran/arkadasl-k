@@ -1,4 +1,4 @@
-﻿// ignore_for_file: deprecated_member_use
+// ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_provider.dart';
@@ -105,6 +105,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Kayıt Ol'),
@@ -123,9 +125,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 TextFormField(
                   controller: _nameController,
                   textCapitalization: TextCapitalization.words,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: AppStrings.name,
-                    prefixIcon: Icon(Icons.person_outline),
+                    prefixIcon: const Icon(Icons.person_outline),
+                    filled: true,
+                    fillColor: isDark ? const Color(0xFF2A2A35) : Colors.grey.shade50,
                   ),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
@@ -144,9 +148,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 TextFormField(
                   controller: _emailController,
                   keyboardType: TextInputType.emailAddress,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: AppStrings.email,
-                    prefixIcon: Icon(Icons.email_outlined),
+                    prefixIcon: const Icon(Icons.email_outlined),
+                    filled: true,
+                    fillColor: isDark ? const Color(0xFF2A2A35) : Colors.grey.shade50,
                   ),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
@@ -168,6 +174,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   decoration: InputDecoration(
                     labelText: AppStrings.password,
                     prefixIcon: const Icon(Icons.lock_outline),
+                    filled: true,
+                    fillColor: isDark ? const Color(0xFF2A2A35) : Colors.grey.shade50,
                     suffixIcon: IconButton(
                       icon: Icon(
                         _obscurePassword
@@ -201,6 +209,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   decoration: InputDecoration(
                     labelText: AppStrings.confirmPassword,
                     prefixIcon: const Icon(Icons.lock_outline),
+                    filled: true,
+                    fillColor: isDark ? const Color(0xFF2A2A35) : Colors.grey.shade50,
                     suffixIcon: IconButton(
                       icon: Icon(
                         _obscureConfirmPassword
@@ -228,9 +238,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 InkWell(
                   onTap: _selectBirthDate,
                   child: InputDecorator(
-                    decoration: const InputDecoration(
-                      labelText: 'Doğum Tarihi',
-                      prefixIcon: Icon(Icons.calendar_today),
+                    decoration: InputDecoration(
+                      labelText: 'Doğum Tarihi (İsteğe Bağlı)',
+                      prefixIcon: const Icon(Icons.calendar_today),
+                      filled: true,
+                      fillColor: isDark ? const Color(0xFF2A2A35) : Colors.grey.shade50,
                     ),
                     child: Text(
                       _birthDate != null
@@ -294,8 +306,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: AppTheme.errorColor.withValues(alpha: 0.1),
-                      borderRadius: BorderRadius.circular(8),
+                      color: isDark ? Colors.black.withValues(alpha: 0.6) : Colors.white.withValues(alpha: 0.95),
+                      borderRadius: BorderRadius.circular(24),
                       border: Border.all(color: AppTheme.errorColor),
                     ),
                     child: Row(

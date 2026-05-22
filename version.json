@@ -1,5 +1,5 @@
 {
-    "version":  "1.0.13",
+    "version":  "1.0.16",
     "build":  14,
     "apk_url":  "https://github.com/0baran/arkadasl-k/raw/main/arkadaslik_v1.0.13.apk",
     "release_notes":  "Eşleşme Motoru Güncellemesi: Yaş aralığı filtreleri eklendi ve test amaçlı geliştirici ayarları sisteme entegre edildi."

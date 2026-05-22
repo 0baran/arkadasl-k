@@ -1,4 +1,4 @@
-﻿// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously
 import 'dart:ui';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter/material.dart';
@@ -134,6 +134,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       body: Stack(
         children: [
@@ -226,7 +228,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: Container(
                           padding: const EdgeInsets.all(24),
                           decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.95),
+                            color: isDark ? Colors.black.withValues(alpha: 0.6) : Colors.white.withValues(alpha: 0.95),
                             borderRadius: BorderRadius.circular(24),
                             border: Border.all(
                               color: Colors.white.withValues(alpha: 0.2),
@@ -244,7 +246,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   decoration: InputDecoration(
                                     labelText: AppStrings.email,
                                     prefixIcon: const Icon(Icons.email_outlined),
-                                    fillColor: Colors.grey.shade50,
+                                    fillColor: isDark ? const Color(0xFF2A2A35) : Colors.grey.shade50,
                                   ),
                                   validator: (value) {
                                     if (value == null || value.trim().isEmpty) return 'Lütfen e-posta adresinizi girin';
@@ -259,7 +261,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                   decoration: InputDecoration(
                                     labelText: AppStrings.password,
                                     prefixIcon: const Icon(Icons.lock_outline),
-                                    fillColor: Colors.grey.shade50,
+                                    fillColor: isDark ? const Color(0xFF2A2A35) : Colors.grey.shade50,
                                     suffixIcon: IconButton(
                                       icon: Icon(_obscurePassword ? Icons.visibility_outlined : Icons.visibility_off_outlined),
                                       onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
@@ -310,7 +312,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     Expanded(child: Divider(color: Colors.grey.shade300)),
                                     Padding(
                                       padding: const EdgeInsets.symmetric(horizontal: 16),
-                                      child: Text('veya', style: TextStyle(color: Colors.grey.shade600)),
+                                      child: Text('veya', style: TextStyle(color: isDark ? Colors.grey.shade400 : Colors.grey.shade600)),
                                     ),
                                     Expanded(child: Divider(color: Colors.grey.shade300)),
                                   ],
@@ -338,11 +340,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                     }
                                   },
                                   icon: const Icon(Icons.g_mobiledata, size: 32, color: AppTheme.primaryColor),
-                                  label: const Text('Google ile giriş yap', style: TextStyle(color: AppTheme.textPrimary)),
+                                  label: Text('Google ile giriş yap', style: TextStyle(color: isDark ? Colors.white : AppTheme.textPrimary)),
                                   style: OutlinedButton.styleFrom(
                                     padding: const EdgeInsets.symmetric(vertical: 16),
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                                    side: BorderSide(color: Colors.grey.shade300),
+                                    side: BorderSide(color: isDark ? Colors.grey.shade700 : Colors.grey.shade300),
                                   ),
                                 ),
                                 const SizedBox(height: 16),
@@ -351,11 +353,11 @@ class _LoginScreenState extends State<LoginScreen> {
                                     Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PhoneLoginScreen()));
                                   },
                                   icon: const Icon(Icons.phone_android, size: 28, color: AppTheme.primaryColor),
-                                  label: const Text('Telefon ile giriş yap', style: TextStyle(color: AppTheme.textPrimary)),
+                                  label: Text('Telefon ile giriş yap', style: TextStyle(color: isDark ? Colors.white : AppTheme.textPrimary)),
                                   style: OutlinedButton.styleFrom(
                                     padding: const EdgeInsets.symmetric(vertical: 16),
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-                                    side: BorderSide(color: Colors.grey.shade300),
+                                    side: BorderSide(color: isDark ? Colors.grey.shade700 : Colors.grey.shade300),
                                   ),
                                 ),
                               ],
