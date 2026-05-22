@@ -1,3 +1,4 @@
+﻿// ignore_for_file: prefer_final_fields
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_provider.dart';
@@ -80,12 +81,12 @@ class _MessagesScreenState extends State<MessagesScreen> {
             ),
             const SizedBox(height: 16),
             Text(
-              'Henüz mesaj yok',
+              'HenÃ¼z mesaj yok',
               style: TextStyle(color: AppTheme.textSecondary),
             ),
             const SizedBox(height: 8),
             Text(
-              'Eşleşmelerinizle mesajlaşmaya başlayın!',
+              'EÅŸleÅŸmelerinizle mesajlaÅŸmaya baÅŸlayÄ±n!',
               style: TextStyle(
                 color: AppTheme.textSecondary,
                 fontSize: 12,

@@ -1,3 +1,4 @@
+﻿// ignore_for_file: use_build_context_synchronously
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -18,13 +19,13 @@ class UpdateService {
     
     try {
       if (githubRepo == "Sahip/RepoAdi") {
-        debugPrint("UpdateService: GitHub repo adı girilmediği için güncelleme kontrolü atlandı.");
+        debugPrint("UpdateService: GitHub repo adÄ± girilmediÄŸi iÃ§in gÃ¼ncelleme kontrolÃ¼ atlandÄ±.");
         return; 
       }
 
       final httpClient = HttpClient();
       final request = await httpClient.getUrl(Uri.parse(_apiUrl));
-      // Cache'i bypass etmek için query parametresi eklenebilir veya headers eklenebilir
+      // Cache'i bypass etmek iÃ§in query parametresi eklenebilir veya headers eklenebilir
       request.headers.set('Cache-Control', 'no-cache');
       final response = await request.close();
 
@@ -78,14 +79,14 @@ class UpdateService {
           children: [
             const Icon(Icons.system_update, color: AppTheme.primaryColor),
             const SizedBox(width: 8),
-            const Text('Yeni Güncelleme!', style: TextStyle(fontSize: 18)),
+            const Text('Yeni GÃ¼ncelleme!', style: TextStyle(fontSize: 18)),
           ],
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Sürüm $version yayınlandı. Hemen indirmek ister misiniz?', 
+            Text('SÃ¼rÃ¼m $version yayÄ±nlandÄ±. Hemen indirmek ister misiniz?', 
               style: const TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
             Container(
@@ -95,7 +96,7 @@ class UpdateService {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
-                releaseNotes.isNotEmpty ? releaseNotes : "Hata düzeltmeleri ve performans iyileştirmeleri.", 
+                releaseNotes.isNotEmpty ? releaseNotes : "Hata dÃ¼zeltmeleri ve performans iyileÅŸtirmeleri.", 
                 maxLines: 4, 
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(fontSize: 12, color: Colors.grey.shade700)
@@ -119,11 +120,11 @@ class UpdateService {
                 await launchUrl(uri, mode: LaunchMode.externalApplication);
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('İndirme bağlantısı açılamadı!'))
+                  const SnackBar(content: Text('Ä°ndirme baÄŸlantÄ±sÄ± aÃ§Ä±lamadÄ±!'))
                 );
               }
             },
-            child: const Text('Şimdi Güncelle'),
+            child: const Text('Åimdi GÃ¼ncelle'),
           ),
         ],
       ),

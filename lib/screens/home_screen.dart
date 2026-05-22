@@ -1,4 +1,4 @@
-import 'dart:ui';
+﻿import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'discover_screen.dart';
 import 'matches_screen.dart';
@@ -20,12 +20,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    // GitHub üzerinden güncelleme kontrolü başlat
+    // GitHub Ã¼zerinden gÃ¼ncelleme kontrolÃ¼ baÅŸlat
     WidgetsBinding.instance.addPostFrameCallback((_) {
       UpdateService.checkForUpdates(context);
     });
 
-    // Bildirim servislerini başlat (FCM izinlerini iste)
+    // Bildirim servislerini baÅŸlat (FCM izinlerini iste)
     NotificationService().initialize();
   }
 
@@ -48,11 +48,11 @@ class _HomeScreenState extends State<HomeScreen> {
         child: Container(
           margin: const EdgeInsets.only(left: 24, right: 24, bottom: 16),
           decoration: BoxDecoration(
-            color: Colors.white.withOpacity(0.9),
+            color: Colors.white.withValues(alpha: 0.9),
             borderRadius: BorderRadius.circular(32),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.15),
+                color: Colors.black.withValues(alpha: 0.15),
                 blurRadius: 30,
                 offset: const Offset(0, 10),
               ),
@@ -67,8 +67,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _buildNavItem(0, Icons.explore_rounded, 'Keşfet'),
-                    _buildNavItem(1, Icons.favorite_rounded, 'Eşleşmeler'),
+                    _buildNavItem(0, Icons.explore_rounded, 'KeÅŸfet'),
+                    _buildNavItem(1, Icons.favorite_rounded, 'EÅŸleÅŸmeler'),
                     _buildNavItem(2, Icons.chat_bubble_rounded, 'Mesajlar'),
                     _buildNavItem(3, Icons.person_rounded, 'Profil'),
                   ],
@@ -91,7 +91,7 @@ class _HomeScreenState extends State<HomeScreen> {
         curve: Curves.easeOutQuint,
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFFE91E63).withOpacity(0.15) : Colors.transparent,
+          color: isSelected ? const Color(0xFFE91E63).withValues(alpha: 0.15) : Colors.transparent,
           borderRadius: BorderRadius.circular(24),
         ),
         child: Row(

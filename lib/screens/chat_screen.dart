@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_provider.dart';
 import '../services/database_service.dart';
@@ -74,7 +74,7 @@ class _ChatScreenState extends State<ChatScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Mesaj gönderilemedi: $e')),
+          SnackBar(content: Text('Mesaj gÃ¶nderilemedi: $e')),
         );
       }
     }
@@ -104,7 +104,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   style: const TextStyle(fontSize: 16),
                 ),
                 const Text(
-                  'Çevrimiçi',
+                  'Ã‡evrimiÃ§i',
                   style: TextStyle(fontSize: 12, color: Colors.green),
                 ),
               ],
@@ -126,7 +126,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 }
 
                 if (snapshot.hasError) {
-                  return const Center(child: Text('Mesajlar yüklenemedi'));
+                  return const Center(child: Text('Mesajlar yÃ¼klenemedi'));
                 }
 
                 final messages = snapshot.data ?? [];
@@ -143,12 +143,12 @@ class _ChatScreenState extends State<ChatScreen> {
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          'Henüz mesaj yok',
+                          'HenÃ¼z mesaj yok',
                           style: TextStyle(color: AppTheme.textSecondary),
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'İlk mesajı siz gönderin!',
+                          'Ä°lk mesajÄ± siz gÃ¶nderin!',
                           style: TextStyle(
                             color: AppTheme.textSecondary,
                             fontSize: 12,
@@ -224,7 +224,7 @@ class _ChatScreenState extends State<ChatScreen> {
         color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
+            color: Colors.black.withValues(alpha: 0.1),
             blurRadius: 10,
             offset: const Offset(0, -5),
           ),
@@ -237,7 +237,7 @@ class _ChatScreenState extends State<ChatScreen> {
             onPressed: () {
               // TODO: Implement image sending
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Resim gönderme yakında')),
+                const SnackBar(content: Text('Resim gÃ¶nderme yakÄ±nda')),
               );
             },
           ),
@@ -245,7 +245,7 @@ class _ChatScreenState extends State<ChatScreen> {
             child: TextField(
               controller: _messageController,
               decoration: const InputDecoration(
-                hintText: 'Mesaj yazın...',
+                hintText: 'Mesaj yazÄ±n...',
                 border: InputBorder.none,
               ),
               onSubmitted: (_) => _sendMessage(),

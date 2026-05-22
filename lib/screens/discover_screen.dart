@@ -1,4 +1,4 @@
-import 'dart:ui';
+﻿import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:card_swiper/card_swiper.dart';
@@ -89,8 +89,8 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('🎉 EŞLEŞTİNİZ! 🎉', textAlign: TextAlign.center),
-            content: Text('${user.name} ile eşleştin. Hemen mesaj atmak ister misin?', textAlign: TextAlign.center),
+            title: const Text('ğŸ‰ EÅLEÅTÄ°NÄ°Z! ğŸ‰', textAlign: TextAlign.center),
+            content: Text('${user.name} ile eÅŸleÅŸtin. Hemen mesaj atmak ister misin?', textAlign: TextAlign.center),
             actions: [
               TextButton(onPressed: () => Navigator.pop(context), child: const Text('Kapat')),
             ],
@@ -98,7 +98,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${user.name} beğenildi'), backgroundColor: AppTheme.successColor, duration: const Duration(seconds: 1)),
+          SnackBar(content: Text('${user.name} beÄŸenildi'), backgroundColor: AppTheme.successColor, duration: const Duration(seconds: 1)),
         );
       }
     }
@@ -113,7 +113,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${user.name} geçildi'), backgroundColor: AppTheme.errorColor, duration: const Duration(seconds: 1)),
+        SnackBar(content: Text('${user.name} geÃ§ildi'), backgroundColor: AppTheme.errorColor, duration: const Duration(seconds: 1)),
       );
     }
     setState(() {
@@ -130,8 +130,8 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('🎉 SÜPER EŞLEŞME! 🎉', textAlign: TextAlign.center),
-            content: Text('${user.name} ile süper eşleştin!', textAlign: TextAlign.center),
+            title: const Text('ğŸ‰ SÃœPER EÅLEÅME! ğŸ‰', textAlign: TextAlign.center),
+            content: Text('${user.name} ile sÃ¼per eÅŸleÅŸtin!', textAlign: TextAlign.center),
             actions: [
               TextButton(onPressed: () => Navigator.pop(context), child: const Text('Kapat')),
             ],
@@ -139,7 +139,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${user.name} SÜPER BEĞENİLDİ! 🌟'), backgroundColor: AppTheme.accentColor, duration: const Duration(seconds: 1)),
+          SnackBar(content: Text('${user.name} SÃœPER BEÄENÄ°LDÄ°! ğŸŒŸ'), backgroundColor: AppTheme.accentColor, duration: const Duration(seconds: 1)),
         );
       }
     }
@@ -192,12 +192,12 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                   size: 64, color: AppTheme.textSecondary),
               const SizedBox(height: 16),
               Text(
-                'Yakında kimse yok',
+                'YakÄ±nda kimse yok',
                 style: GoogleFonts.outfit(color: AppTheme.textSecondary, fontSize: 24, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               Text(
-                'Ayarlarınızı değiştirip tekrar deneyin',
+                'AyarlarÄ±nÄ±zÄ± deÄŸiÅŸtirip tekrar deneyin',
                 style: GoogleFonts.outfit(
                   color: AppTheme.textSecondary,
                   fontSize: 14,
@@ -224,7 +224,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Keşfet',
+                        'KeÅŸfet',
                         style: GoogleFonts.outfit(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,
@@ -237,7 +237,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                           color: Colors.white,
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.05),
+                              color: Colors.black.withValues(alpha: 0.05),
                               blurRadius: 10,
                               offset: const Offset(0, 5),
                             )
@@ -285,7 +285,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   Widget _buildUserProfileCard(User user) {
     return Card(
       elevation: 12,
-      shadowColor: AppTheme.primaryColor.withOpacity(0.3),
+      shadowColor: AppTheme.primaryColor.withValues(alpha: 0.3),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(30),
       ),
@@ -319,8 +319,8 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                 colors: [
                   Colors.transparent,
                   Colors.transparent,
-                  Colors.black.withOpacity(0.4),
-                  Colors.black.withOpacity(0.9),
+                  Colors.black.withValues(alpha: 0.4),
+                  Colors.black.withValues(alpha: 0.9),
                 ],
                 stops: const [0.0, 0.5, 0.8, 1.0],
               ),
@@ -342,8 +342,8 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [
-                        Colors.black.withOpacity(0.1),
-                        Colors.black.withOpacity(0.8),
+                        Colors.black.withValues(alpha: 0.1),
+                        Colors.black.withValues(alpha: 0.8),
                       ]
                     )
                   ),
@@ -369,7 +369,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                           Text(
                             AppUtils.formatAge(user.birthDate),
                             style: GoogleFonts.outfit(
-                              color: Colors.white.withOpacity(0.9),
+                              color: Colors.white.withValues(alpha: 0.9),
                               fontSize: 26,
                               fontWeight: FontWeight.w300,
                             ),
@@ -388,7 +388,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                         Text(
                           user.bio,
                           style: GoogleFonts.outfit(
-                            color: Colors.white.withOpacity(0.8),
+                            color: Colors.white.withValues(alpha: 0.8),
                             fontSize: 16,
                             height: 1.3,
                           ),
@@ -404,9 +404,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                             return Container(
                               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                               decoration: BoxDecoration(
-                                color: Colors.white.withOpacity(0.2),
+                                color: Colors.white.withValues(alpha: 0.2),
                                 borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: Colors.white.withOpacity(0.3)),
+                                border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
                               ),
                               child: Text(
                                 interest,
@@ -482,7 +482,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         shape: BoxShape.circle,
         boxShadow: [
           BoxShadow(
-            color: color.withOpacity(0.3),
+            color: color.withValues(alpha: 0.3),
             blurRadius: 15,
             spreadRadius: 2,
             offset: const Offset(0, 8),
@@ -493,8 +493,8 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         icon: Icon(icon, color: color),
         iconSize: iconSize,
         onPressed: onPressed,
-        splashColor: color.withOpacity(0.2),
-        highlightColor: color.withOpacity(0.1),
+        splashColor: color.withValues(alpha: 0.2),
+        highlightColor: color.withValues(alpha: 0.1),
       ),
     );
   }

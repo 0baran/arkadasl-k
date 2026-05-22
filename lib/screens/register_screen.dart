@@ -1,3 +1,4 @@
+﻿// ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_provider.dart';
@@ -58,14 +59,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     if (_birthDate == null) {
       setState(() {
-        _errorMessage = 'Lütfen doğum tarihinizi seçin';
+        _errorMessage = 'LÃ¼tfen doÄŸum tarihinizi seÃ§in';
       });
       return;
     }
 
     if (_passwordController.text != _confirmPasswordController.text) {
       setState(() {
-        _errorMessage = 'Şifreler eşleşmiyor';
+        _errorMessage = 'Åifreler eÅŸleÅŸmiyor';
       });
       return;
     }
@@ -87,7 +88,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Kayıt başarılı!')),
+          const SnackBar(content: Text('KayÄ±t baÅŸarÄ±lÄ±!')),
         );
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => const HomeScreen()),
@@ -106,7 +107,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Kayıt Ol'),
+        title: const Text('KayÄ±t Ol'),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -128,10 +129,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'Lütfen isminizi girin';
+                      return 'LÃ¼tfen isminizi girin';
                     }
                     if (!AppUtils.isValidName(value.trim())) {
-                      return 'İsim en az 2 karakter olmalı';
+                      return 'Ä°sim en az 2 karakter olmalÄ±';
                     }
                     return null;
                   },
@@ -149,7 +150,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'Lütfen e-posta adresinizi girin';
+                      return 'LÃ¼tfen e-posta adresinizi girin';
                     }
                     if (!AppUtils.isValidEmail(value.trim())) {
                       return AppStrings.invalidEmail;
@@ -182,7 +183,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Lütfen şifrenizi girin';
+                      return 'LÃ¼tfen ÅŸifrenizi girin';
                     }
                     if (!AppUtils.isValidPassword(value)) {
                       return AppStrings.weakPassword;
@@ -215,7 +216,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Lütfen şifrenizi tekrar girin';
+                      return 'LÃ¼tfen ÅŸifrenizi tekrar girin';
                     }
                     return null;
                   },
@@ -228,13 +229,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   onTap: _selectBirthDate,
                   child: InputDecorator(
                     decoration: const InputDecoration(
-                      labelText: 'Doğum Tarihi',
+                      labelText: 'DoÄŸum Tarihi',
                       prefixIcon: Icon(Icons.calendar_today),
                     ),
                     child: Text(
                       _birthDate != null
                           ? AppUtils.formatDate(_birthDate!)
-                          : 'Tarih seçin',
+                          : 'Tarih seÃ§in',
                       style: TextStyle(
                         color: _birthDate != null
                             ? AppTheme.textPrimary
@@ -270,7 +271,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                         Expanded(
                           child: RadioListTile<String>(
-                            title: const Text('Kadın'),
+                            title: const Text('KadÄ±n'),
                             value: 'female',
                             groupValue: _selectedGender,
                             onChanged: (value) {
@@ -293,7 +294,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   Container(
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: AppTheme.errorColor.withOpacity(0.1),
+                      color: AppTheme.errorColor.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(color: AppTheme.errorColor),
                     ),

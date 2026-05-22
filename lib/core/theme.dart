@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+﻿import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class AppTheme {
@@ -46,7 +46,7 @@ class AppTheme {
     ),
     cardTheme: CardThemeData(
       elevation: 8,
-      shadowColor: Colors.black.withOpacity(0.1),
+      shadowColor: Colors.black.withValues(alpha: 0.1),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
       ),
@@ -56,7 +56,7 @@ class AppTheme {
         backgroundColor: primaryColor,
         foregroundColor: Colors.white,
         elevation: 4,
-        shadowColor: primaryColor.withOpacity(0.5),
+        shadowColor: primaryColor.withValues(alpha: 0.5),
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),
@@ -129,7 +129,7 @@ class AppTheme {
     cardTheme: CardThemeData(
       color: const Color(0xFF1E1E24),
       elevation: 8,
-      shadowColor: Colors.black.withOpacity(0.3),
+      shadowColor: Colors.black.withValues(alpha: 0.3),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(24),
       ),
@@ -139,7 +139,7 @@ class AppTheme {
         backgroundColor: primaryColor,
         foregroundColor: Colors.white,
         elevation: 4,
-        shadowColor: primaryColor.withOpacity(0.5),
+        shadowColor: primaryColor.withValues(alpha: 0.5),
         padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(16),

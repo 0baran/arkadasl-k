@@ -1,3 +1,4 @@
+﻿// ignore_for_file: use_build_context_synchronously
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_provider.dart';
@@ -54,7 +55,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     
-    // Firebase auth'a giriş yapmış ama profil henüz Firestore'dan çekilememişse bekle
+    // Firebase auth'a giriÅŸ yapmÄ±ÅŸ ama profil henÃ¼z Firestore'dan Ã§ekilememiÅŸse bekle
     if (authProvider.isLoggedIn && !authProvider.isUserProfileComplete) {
       int retries = 0;
       while (!authProvider.isUserProfileComplete && retries < 15) {
@@ -70,7 +71,7 @@ class _SplashScreenState extends State<SplashScreen>
         MaterialPageRoute(builder: (_) => const HomeScreen()),
       );
     } else {
-      // Eğer bir sorun olduysa Firebase Auth oturumunu kapat ki hatada takılı kalmasın
+      // EÄŸer bir sorun olduysa Firebase Auth oturumunu kapat ki hatada takÄ±lÄ± kalmasÄ±n
       if (authProvider.isLoggedIn) {
         await authProvider.signOut();
       }
@@ -109,15 +110,15 @@ class _SplashScreenState extends State<SplashScreen>
                         width: 130,
                         height: 130,
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.2),
+                          color: Colors.white.withValues(alpha: 0.2),
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: Colors.white.withOpacity(0.5),
+                            color: Colors.white.withValues(alpha: 0.5),
                             width: 2,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
+                              color: Colors.black.withValues(alpha: 0.1),
                               blurRadius: 30,
                               offset: const Offset(0, 15),
                             ),
@@ -135,7 +136,7 @@ class _SplashScreenState extends State<SplashScreen>
 
                       // App Name
                       Text(
-                        'Arkadaşlık',
+                        'ArkadaÅŸlÄ±k',
                         style: GoogleFonts.outfit(
                           fontSize: 38,
                           fontWeight: FontWeight.bold,
@@ -144,11 +145,11 @@ class _SplashScreenState extends State<SplashScreen>
                         ),
                       ),
                       Text(
-                        'Uygulaması',
+                        'UygulamasÄ±',
                         style: GoogleFonts.outfit(
                           fontSize: 22,
                           fontWeight: FontWeight.w300,
-                          color: Colors.white.withOpacity(0.9),
+                          color: Colors.white.withValues(alpha: 0.9),
                           letterSpacing: 2,
                         ),
                       ),

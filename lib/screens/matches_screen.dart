@@ -1,3 +1,4 @@
+﻿// ignore_for_file: no_leading_underscores_for_local_identifiers
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_provider.dart';
@@ -24,7 +25,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
     final userId = authProvider.currentUser?.id;
 
     if (userId == null) {
-      return const Center(child: Text('Kullanıcı bulunamadı'));
+      return const Center(child: Text('KullanÄ±cÄ± bulunamadÄ±'));
     }
 
     return StreamBuilder<List<Match>>(
@@ -35,7 +36,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
         }
 
         if (snapshot.hasError) {
-          return const Center(child: Text('Eşleşmeler yüklenirken hata oluştu'));
+          return const Center(child: Text('EÅŸleÅŸmeler yÃ¼klenirken hata oluÅŸtu'));
         }
 
         final _matches = snapshot.data ?? [];
@@ -52,12 +53,12 @@ class _MatchesScreenState extends State<MatchesScreen> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Henüz eşleşme yok',
+                  'HenÃ¼z eÅŸleÅŸme yok',
                   style: TextStyle(color: AppTheme.textSecondary),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Keşfet ekranında yeni kişilerle tanışın!',
+                  'KeÅŸfet ekranÄ±nda yeni kiÅŸilerle tanÄ±ÅŸÄ±n!',
                   style: TextStyle(
                     color: AppTheme.textSecondary,
                     fontSize: 12,

@@ -1,3 +1,4 @@
+﻿import 'package:flutter/foundation.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import '../core/constants.dart';
@@ -22,7 +23,7 @@ class StorageService {
       final ref = _storage.refFromURL(imageUrl);
       await ref.delete();
     } catch (e) {
-      print('Error deleting profile image: $e');
+      debugPrint('Error deleting profile image: $e');
     }
   }
 
@@ -34,7 +35,7 @@ class StorageService {
         await item.delete();
       }
     } catch (e) {
-      print('Error deleting user profile images: $e');
+      debugPrint('Error deleting user profile images: $e');
     }
   }
 }

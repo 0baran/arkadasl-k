@@ -1,3 +1,4 @@
+﻿// ignore_for_file: deprecated_member_use
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/auth_provider.dart';
@@ -87,7 +88,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Discovery Settings
-            _buildSectionTitle('Keşfet Ayarları'),
+            _buildSectionTitle('KeÅŸfet AyarlarÄ±'),
 
             // Max Distance
             _buildSettingCard(
@@ -111,7 +112,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             // Age Range
             _buildSettingCard(
               icon: Icons.calendar_today,
-              title: 'Yaş Aralığı',
+              title: 'YaÅŸ AralÄ±ÄŸÄ±',
               subtitle: '$_minAge - $_maxAge',
               child: Column(
                 children: [
@@ -191,7 +192,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     contentPadding: EdgeInsets.zero,
                   ),
                   RadioListTile<String>(
-                    title: const Text('Kadın'),
+                    title: const Text('KadÄ±n'),
                     value: 'female',
                     groupValue: _preferredGender,
                     onChanged: (value) {
@@ -208,7 +209,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
             const SizedBox(height: 24),
 
             // Notification Settings
-            _buildSectionTitle('Bildirim Ayarları'),
+            _buildSectionTitle('Bildirim AyarlarÄ±'),
 
             _buildSettingCard(
               icon: Icons.notifications,
@@ -231,8 +232,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
             _buildSettingCard(
               icon: Icons.visibility,
-              title: 'Mesafeyi Göster',
-              subtitle: 'Diğer kullanıcılara mesafemi göster',
+              title: 'Mesafeyi GÃ¶ster',
+              subtitle: 'DiÄŸer kullanÄ±cÄ±lara mesafemi gÃ¶ster',
               child: Switch(
                 value: _showDistance,
                 onChanged: (value) {
@@ -250,22 +251,22 @@ class _SettingsScreenState extends State<SettingsScreen> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: _saveSettings,
-                child: const Text('Ayarları Kaydet'),
+                child: const Text('AyarlarÄ± Kaydet'),
               ),
             ),
             
             const SizedBox(height: 32),
 
             // Account Actions
-            _buildSectionTitle('Hesap Yönetimi'),
+            _buildSectionTitle('Hesap YÃ¶netimi'),
             SizedBox(
               width: double.infinity,
               child: OutlinedButton.icon(
                 onPressed: _showDeleteAccountDialog,
                 icon: const Icon(Icons.delete_forever, color: AppTheme.errorColor),
-                label: const Text('Hesabımı Sil', style: TextStyle(color: AppTheme.errorColor)),
+                label: const Text('HesabÄ±mÄ± Sil', style: TextStyle(color: AppTheme.errorColor)),
                 style: OutlinedButton.styleFrom(
-                  side: BorderSide(color: AppTheme.errorColor.withOpacity(0.5)),
+                  side: BorderSide(color: AppTheme.errorColor.withValues(alpha: 0.5)),
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
               ),
@@ -281,12 +282,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Hesabı Sil', style: TextStyle(color: AppTheme.errorColor)),
-        content: const Text('Hesabınızı kalıcı olarak silmek istediğinize emin misiniz? Bu işlem geri alınamaz ve tüm eşleşme, mesaj ve profil verileriniz silinir.'),
+        title: const Text('HesabÄ± Sil', style: TextStyle(color: AppTheme.errorColor)),
+        content: const Text('HesabÄ±nÄ±zÄ± kalÄ±cÄ± olarak silmek istediÄŸinize emin misiniz? Bu iÅŸlem geri alÄ±namaz ve tÃ¼m eÅŸleÅŸme, mesaj ve profil verileriniz silinir.'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(ctx).pop(),
-            child: const Text('İptal'),
+            child: const Text('Ä°ptal'),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -319,14 +320,14 @@ class _SettingsScreenState extends State<SettingsScreen> {
           (route) => false,
         );
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Hesabınız başarıyla silindi.')),
+          const SnackBar(content: Text('HesabÄ±nÄ±z baÅŸarÄ±yla silindi.')),
         );
       }
     } catch (e) {
       if (mounted) {
         Navigator.of(context).pop(); // Close progress dialog
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Hesap silinirken hata oluştu: $e'), backgroundColor: AppTheme.errorColor),
+          SnackBar(content: Text('Hesap silinirken hata oluÅŸtu: $e'), backgroundColor: AppTheme.errorColor),
         );
       }
     }
@@ -399,7 +400,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       case 'male':
         return 'Erkek';
       case 'female':
-        return 'Kadın';
+        return 'KadÄ±n';
       default:
         return 'Hepsi';
     }
