@@ -45,6 +45,16 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         // Get current user location
         final position = await _locationService.getCurrentPosition();
 
+        // Update current user's stored location so others can find them
+        final updatedUser = currentUser.copyWith(
+          location: GeoLocation(
+            latitude: position.latitude,
+            longitude: position.longitude,
+          ),
+        );
+        await _databaseService.updateUser(updatedUser);
+        authProvider.updateProfile(updatedUser);
+
         // Get nearby users
         final users = await _databaseService.getNearbyUsers(
           currentUser.id,

@@ -1,6 +1,6 @@
 {
-  "version": "1.0.7",
-  "build": 8,
+  "version": "1.0.8",
+  "build": 9,
   "apk_url": "https://github.com/0baran/arkadasl-k/raw/main/release.apk",
-  "release_notes": "Hata düzeltmeleri: Mesaj sıralama, mesafe hesaplama, çıkış yapma hatası, bildirim izni iyileştirmeleri."
+  "release_notes": "Discover düzeltmesi: Kullanıcıların gerçek konumu artık Firestore'a kaydediliyor, böylece diğer kullanıcılar birbirini bulabiliyor."
 }
