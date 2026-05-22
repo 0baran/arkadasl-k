@@ -93,10 +93,36 @@ class DatabaseService {
       final chatId = _getChatId(message.senderId, message.receiverId);
       await _firestore.collection('chats').doc(chatId).collection('messages').doc(message.id).set(message.toJson());
       await _updateMatchLastMessage(message, chatId);
+
+      // Bildirim altyapısı
+      final senderDoc = await _firestore.collection('users').doc(message.senderId).get();
+      final senderName = senderDoc.data()?['name'] ?? 'Biri';
+
+      await _firestore.collection('users').doc(message.receiverId).collection('notifications').add({
+        'type': 'message',
+        'title': 'Yeni Mesaj: $senderName',
+        'body': message.content,
+        'senderId': message.senderId,
+        'timestamp': FieldValue.serverTimestamp(),
+        'isRead': false,
+      });
+
     } catch (e) {
       debugPrint('Error sending message: $e');
       rethrow;
     }
+  }
+
+  Stream<QuerySnapshot> getUnreadNotificationsStream(String userId) {
+    return _firestore.collection('users').doc(userId).collection('notifications')
+        .where('isRead', isEqualTo: false)
+        .snapshots();
+  }
+
+  Future<void> markNotificationAsRead(String userId, String notificationId) async {
+    try {
+      await _firestore.collection('users').doc(userId).collection('notifications').doc(notificationId).update({'isRead': true});
+    } catch (_) {}
   }
 
   Future<void> _updateMatchLastMessage(Message message, String chatId) async {

@@ -6,6 +6,11 @@ import 'messages_screen.dart';
 import 'profile_screen.dart';
 import '../services/update_service.dart';
 import '../services/notification_service.dart';
+import 'dart:async';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart';
+import '../services/auth_provider.dart';
+import '../services/database_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -16,6 +21,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
+  StreamSubscription? _notificationSubscription;
 
   @override
   void initState() {
@@ -24,6 +30,34 @@ class _HomeScreenState extends State<HomeScreen> {
       UpdateService.checkForUpdates(context);
     });
     NotificationService().initialize();
+    _setupNotificationListener();
+  }
+
+  void _setupNotificationListener() {
+    final currentUser = Provider.of<AuthProvider>(context, listen: false).currentUser;
+    if (currentUser == null) return;
+
+    _notificationSubscription = DatabaseService()
+        .getUnreadNotificationsStream(currentUser.id)
+        .listen((QuerySnapshot snapshot) {
+      for (var doc in snapshot.docs) {
+        final data = doc.data() as Map<String, dynamic>;
+        final title = data['title'] ?? 'Bildirim';
+        final body = data['body'] ?? '';
+        
+        // Bildirimi göster
+        NotificationService().showMessageNotification(title: title, body: body);
+        
+        // Bildirimi okundu olarak işaretle ki bir daha çıkmasın
+        DatabaseService().markNotificationAsRead(currentUser.id, doc.id);
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _notificationSubscription?.cancel();
+    super.dispose();
   }
 
   final List<Widget> _screens = const [
