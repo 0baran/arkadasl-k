@@ -4,6 +4,7 @@ import '../services/auth_provider.dart';
 import '../core/constants.dart';
 import '../core/theme.dart';
 import '../core/utils.dart';
+import 'home_screen.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -88,7 +89,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Kayıt başarılı!')),
         );
-        // Navigation will be handled by auth state changes
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (_) => const HomeScreen()),
+          (Route<dynamic> route) => false,
+        );
       }
     } catch (e) {
       setState(() {
