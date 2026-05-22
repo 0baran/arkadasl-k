@@ -1,6 +1,6 @@
-{
-    "version":  "1.0.18",
-    "build":  14,
-    "apk_url":  "https://github.com/0baran/arkadasl-k/raw/main/arkadaslik_v1.0.13.apk",
-    "release_notes":  "Eşleşme Motoru Güncellemesi: Yaş aralığı filtreleri eklendi ve test amaçlı geliştirici ayarları sisteme entegre edildi."
+﻿{
+    "version":  "1.0.19",
+    "build":  20,
+    "apk_url":  "https://github.com/0baran/arkadasl-k/raw/main/arkadaslik_v1.0.19.apk",
+    "release_notes":  "Alt menü hizalamaları ve tasarım problemleri çözüldü. Ayarlar sayfasına Sürüm Notları butonu eklendi."
 }
