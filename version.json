@@ -1,0 +1,6 @@
+{
+  "version": "1.0.1",
+  "build": 2,
+  "apk_url": "https://github.com/0baran/arkadasl-k/raw/main/release.apk",
+  "release_notes": "Canlı Eşleşme ve Canlı Mesajlaşma altyapısı eklendi. Giriş ekranındaki hata giderildi."
+}

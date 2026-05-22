@@ -8,7 +8,7 @@ import '../core/theme.dart';
 class UpdateService {
   static const String githubRepo = "0baran/arkadasl-k"; 
   
-  static String get _apiUrl => "https://api.github.com/repos/$githubRepo/releases/latest";
+  static String get _apiUrl => "https://raw.githubusercontent.com/$githubRepo/main/version.json";
   
   static bool _isChecked = false;
 
@@ -24,22 +24,24 @@ class UpdateService {
 
       final httpClient = HttpClient();
       final request = await httpClient.getUrl(Uri.parse(_apiUrl));
-      request.headers.set('User-Agent', 'ArkadaslikApp-Updater');
+      // Cache'i bypass etmek için query parametresi eklenebilir veya headers eklenebilir
+      request.headers.set('Cache-Control', 'no-cache');
       final response = await request.close();
 
       if (response.statusCode == 200) {
         final responseBody = await response.transform(utf8.decoder).join();
         final data = jsonDecode(responseBody);
         
-        final latestVersionTag = data['tag_name']?.toString().replaceAll('v', '') ?? '';
-        final apkUrl = _extractApkUrl(data['assets']);
+        final latestVersion = data['version']?.toString() ?? '';
+        final apkUrl = data['apk_url']?.toString();
+        final releaseNotes = data['release_notes']?.toString() ?? '';
 
         final packageInfo = await PackageInfo.fromPlatform();
         final currentVersion = packageInfo.version;
 
-        if (_isUpdateAvailable(currentVersion, latestVersionTag) && apkUrl != null) {
+        if (_isUpdateAvailable(currentVersion, latestVersion) && apkUrl != null) {
           if (context.mounted) {
-            _showUpdateDialog(context, latestVersionTag, apkUrl, data['body'] ?? '');
+            _showUpdateDialog(context, latestVersion, apkUrl, releaseNotes);
           }
         }
       }
@@ -63,16 +65,8 @@ class UpdateService {
     return false;
   }
 
-  static String? _extractApkUrl(List<dynamic>? assets) {
-    if (assets == null) return null;
-    for (var asset in assets) {
-      if (asset['name'].toString().endsWith('.apk')) {
-        return asset['browser_download_url'];
-      }
-    }
-    // Eğer doğrudan APK yoksa ama zip/kod varsa kullanıcıyı release sayfasına yönlendir:
-    return "https://github.com/$githubRepo/releases/latest";
-  }
+  // _extractApkUrl is no longer needed
+
 
   static void _showUpdateDialog(BuildContext context, String version, String apkUrl, String releaseNotes) {
     showDialog(
