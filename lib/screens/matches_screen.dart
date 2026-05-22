@@ -25,7 +25,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
     final userId = authProvider.currentUser?.id;
 
     if (userId == null) {
-      return const Center(child: Text('KullanÄ±cÄ± bulunamadÄ±'));
+      return const Center(child: Text('Kullanıcı bulunamadı'));
     }
 
     return StreamBuilder<List<Match>>(
@@ -36,7 +36,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
         }
 
         if (snapshot.hasError) {
-          return const Center(child: Text('EÅŸleÅŸmeler yÃ¼klenirken hata oluÅŸtu'));
+          return const Center(child: Text('Eşleşmeler yüklenirken hata oluştu'));
         }
 
         final _matches = snapshot.data ?? [];
@@ -53,12 +53,12 @@ class _MatchesScreenState extends State<MatchesScreen> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'HenÃ¼z eÅŸleÅŸme yok',
+                  'Henüz eşleşme yok',
                   style: TextStyle(color: AppTheme.textSecondary),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'KeÅŸfet ekranÄ±nda yeni kiÅŸilerle tanÄ±ÅŸÄ±n!',
+                  'Keşfet ekranında yeni kişilerle tanışın!',
                   style: TextStyle(
                     color: AppTheme.textSecondary,
                     fontSize: 12,

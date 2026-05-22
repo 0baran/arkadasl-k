@@ -33,7 +33,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
   Future<void> _sendCode() async {
     final phone = _phoneController.text.trim();
     if (phone.isEmpty) {
-      setState(() => _errorMessage = 'LÃ¼tfen geÃ§erli bir numara girin');
+      setState(() => _errorMessage = 'Lütfen geçerli bir numara girin');
       return;
     }
 
@@ -60,7 +60,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
         verificationFailed: (FirebaseAuthException e) {
           setState(() {
             _isLoading = false;
-            _errorMessage = e.message ?? 'DoÄŸrulama baÅŸarÄ±sÄ±z oldu';
+            _errorMessage = e.message ?? 'Doğrulama başarısız oldu';
           });
         },
         codeSent: (String verificationId, int? resendToken) {
@@ -85,7 +85,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
   Future<void> _verifyCode() async {
     final code = _codeController.text.trim();
     if (code.length < 6 || _verificationId == null) {
-      setState(() => _errorMessage = 'GeÃ§erli bir kod girin');
+      setState(() => _errorMessage = 'Geçerli bir kod girin');
       return;
     }
 
@@ -103,7 +103,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
     } catch (e) {
       setState(() {
         _isLoading = false;
-        _errorMessage = 'Kod hatalÄ± veya sÃ¼resi dolmuÅŸ';
+        _errorMessage = 'Kod hatalı veya süresi dolmuş';
       });
     }
   }
@@ -122,7 +122,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
     } catch (e) {
       setState(() {
         _isLoading = false;
-        _errorMessage = 'GiriÅŸ yapÄ±lamadÄ±: $e';
+        _errorMessage = 'Giriş yapılamadı: $e';
       });
     }
   }
@@ -168,7 +168,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                           Icon(Icons.message_outlined, size: 60, color: AppTheme.primaryColor),
                           const SizedBox(height: 16),
                           Text(
-                            _codeSent ? 'Kodu DoÄŸrula' : 'Telefonla GiriÅŸ',
+                            _codeSent ? 'Kodu Doğrula' : 'Telefonla Giriş',
                             textAlign: TextAlign.center,
                             style: GoogleFonts.outfit(
                               fontSize: 24,
@@ -180,7 +180,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                           Text(
                             _codeSent 
                               ? 'Telefonunuza gelen 6 haneli kodu girin.' 
-                              : 'Telefon numaranÄ±za bir doÄŸrulama kodu gÃ¶ndereceÄŸiz.',
+                              : 'Telefon numaranıza bir doğrulama kodu göndereceğiz.',
                             textAlign: TextAlign.center,
                             style: TextStyle(color: Colors.grey.shade600),
                           ),
@@ -190,7 +190,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                               controller: _phoneController,
                               keyboardType: TextInputType.phone,
                               decoration: InputDecoration(
-                                labelText: 'Telefon NumarasÄ±',
+                                labelText: 'Telefon Numarası',
                                 hintText: '5XX XXX XX XX',
                                 prefixIcon: const Icon(Icons.phone),
                                 fillColor: Colors.grey.shade50,
@@ -224,7 +224,7 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
                                 : (_codeSent ? _verifyCode : _sendCode),
                             child: _isLoading
                                 ? const SizedBox(height: 20, width: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                                : Text(_codeSent ? 'DoÄŸrula' : 'Kod GÃ¶nder'),
+                                : Text(_codeSent ? 'Doğrula' : 'Kod Gönder'),
                           ),
                         ],
                       ),

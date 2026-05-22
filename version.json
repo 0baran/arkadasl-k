@@ -1,6 +1,6 @@
 {
-    "version":  "1.0.11",
-    "build":  12,
-    "apk_url":  "https://github.com/0baran/arkadasl-k/raw/main/release.apk",
-    "release_notes":  "Kod İyileştirmesi (Sıfır Hata): Eski kod yapılarından kaynaklı 73 adet gizli uyarı tamamen temizlendi ve kod yapısı modernleştirildi."
+    "version":  "1.0.12",
+    "build":  13,
+    "apk_url":  "https://github.com/0baran/arkadasl-k/raw/main/arkadaslik_v1.0.12.apk",
+    "release_notes":  "Acil Düzeltme: Uygulama içindeki Türkçe karakter (ş, ı, ğ, ç) bozulması sorunu giderildi."
 }

@@ -20,12 +20,12 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    // GitHub Ã¼zerinden gÃ¼ncelleme kontrolÃ¼ baÅŸlat
+    // GitHub üzerinden güncelleme kontrolü başlat
     WidgetsBinding.instance.addPostFrameCallback((_) {
       UpdateService.checkForUpdates(context);
     });
 
-    // Bildirim servislerini baÅŸlat (FCM izinlerini iste)
+    // Bildirim servislerini başlat (FCM izinlerini iste)
     NotificationService().initialize();
   }
 
@@ -67,8 +67,8 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    _buildNavItem(0, Icons.explore_rounded, 'KeÅŸfet'),
-                    _buildNavItem(1, Icons.favorite_rounded, 'EÅŸleÅŸmeler'),
+                    _buildNavItem(0, Icons.explore_rounded, 'Keşfet'),
+                    _buildNavItem(1, Icons.favorite_rounded, 'Eşleşmeler'),
                     _buildNavItem(2, Icons.chat_bubble_rounded, 'Mesajlar'),
                     _buildNavItem(3, Icons.person_rounded, 'Profil'),
                   ],

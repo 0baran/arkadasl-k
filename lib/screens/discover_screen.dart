@@ -89,8 +89,8 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('ğŸ‰ EÅLEÅTÄ°NÄ°Z! ğŸ‰', textAlign: TextAlign.center),
-            content: Text('${user.name} ile eÅŸleÅŸtin. Hemen mesaj atmak ister misin?', textAlign: TextAlign.center),
+            title: const Text('🎉 EŞLEŞTİNİZ! 🎉', textAlign: TextAlign.center),
+            content: Text('${user.name} ile eşleştin. Hemen mesaj atmak ister misin?', textAlign: TextAlign.center),
             actions: [
               TextButton(onPressed: () => Navigator.pop(context), child: const Text('Kapat')),
             ],
@@ -98,7 +98,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${user.name} beÄŸenildi'), backgroundColor: AppTheme.successColor, duration: const Duration(seconds: 1)),
+          SnackBar(content: Text('${user.name} beğenildi'), backgroundColor: AppTheme.successColor, duration: const Duration(seconds: 1)),
         );
       }
     }
@@ -113,7 +113,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${user.name} geÃ§ildi'), backgroundColor: AppTheme.errorColor, duration: const Duration(seconds: 1)),
+        SnackBar(content: Text('${user.name} geçildi'), backgroundColor: AppTheme.errorColor, duration: const Duration(seconds: 1)),
       );
     }
     setState(() {
@@ -130,8 +130,8 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         showDialog(
           context: context,
           builder: (context) => AlertDialog(
-            title: const Text('ğŸ‰ SÃœPER EÅLEÅME! ğŸ‰', textAlign: TextAlign.center),
-            content: Text('${user.name} ile sÃ¼per eÅŸleÅŸtin!', textAlign: TextAlign.center),
+            title: const Text('🎉 SÜPER EŞLEŞME! 🎉', textAlign: TextAlign.center),
+            content: Text('${user.name} ile süper eşleştin!', textAlign: TextAlign.center),
             actions: [
               TextButton(onPressed: () => Navigator.pop(context), child: const Text('Kapat')),
             ],
@@ -139,7 +139,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('${user.name} SÃœPER BEÄENÄ°LDÄ°! ğŸŒŸ'), backgroundColor: AppTheme.accentColor, duration: const Duration(seconds: 1)),
+          SnackBar(content: Text('${user.name} SÜPER BEĞENİLDİ! 🌟'), backgroundColor: AppTheme.accentColor, duration: const Duration(seconds: 1)),
         );
       }
     }
@@ -192,12 +192,12 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                   size: 64, color: AppTheme.textSecondary),
               const SizedBox(height: 16),
               Text(
-                'YakÄ±nda kimse yok',
+                'Yakında kimse yok',
                 style: GoogleFonts.outfit(color: AppTheme.textSecondary, fontSize: 24, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
               Text(
-                'AyarlarÄ±nÄ±zÄ± deÄŸiÅŸtirip tekrar deneyin',
+                'Ayarlarınızı değiştirip tekrar deneyin',
                 style: GoogleFonts.outfit(
                   color: AppTheme.textSecondary,
                   fontSize: 14,
@@ -224,7 +224,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'KeÅŸfet',
+                        'Keşfet',
                         style: GoogleFonts.outfit(
                           fontSize: 32,
                           fontWeight: FontWeight.bold,

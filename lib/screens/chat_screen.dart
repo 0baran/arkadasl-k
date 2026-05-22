@@ -74,7 +74,7 @@ class _ChatScreenState extends State<ChatScreen> {
     } catch (e) {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Mesaj gÃ¶nderilemedi: $e')),
+          SnackBar(content: Text('Mesaj gönderilemedi: $e')),
         );
       }
     }
@@ -104,7 +104,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   style: const TextStyle(fontSize: 16),
                 ),
                 const Text(
-                  'Ã‡evrimiÃ§i',
+                  'Çevrimiçi',
                   style: TextStyle(fontSize: 12, color: Colors.green),
                 ),
               ],
@@ -126,7 +126,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 }
 
                 if (snapshot.hasError) {
-                  return const Center(child: Text('Mesajlar yÃ¼klenemedi'));
+                  return const Center(child: Text('Mesajlar yüklenemedi'));
                 }
 
                 final messages = snapshot.data ?? [];
@@ -143,12 +143,12 @@ class _ChatScreenState extends State<ChatScreen> {
                         ),
                         const SizedBox(height: 16),
                         Text(
-                          'HenÃ¼z mesaj yok',
+                          'Henüz mesaj yok',
                           style: TextStyle(color: AppTheme.textSecondary),
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Ä°lk mesajÄ± siz gÃ¶nderin!',
+                          'İlk mesajı siz gönderin!',
                           style: TextStyle(
                             color: AppTheme.textSecondary,
                             fontSize: 12,
@@ -237,7 +237,7 @@ class _ChatScreenState extends State<ChatScreen> {
             onPressed: () {
               // TODO: Implement image sending
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Resim gÃ¶nderme yakÄ±nda')),
+                const SnackBar(content: Text('Resim gönderme yakında')),
               );
             },
           ),
@@ -245,7 +245,7 @@ class _ChatScreenState extends State<ChatScreen> {
             child: TextField(
               controller: _messageController,
               decoration: const InputDecoration(
-                hintText: 'Mesaj yazÄ±n...',
+                hintText: 'Mesaj yazın...',
                 border: InputBorder.none,
               ),
               onSubmitted: (_) => _sendMessage(),

@@ -48,11 +48,11 @@ class _LoginScreenState extends State<LoginScreen> {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text('Åifre SÄ±fÄ±rla'),
+        title: const Text('Şifre Sıfırla'),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Text('E-posta adresinize ÅŸifre sÄ±fÄ±rlama baÄŸlantÄ±sÄ± gÃ¶nderilecek.'),
+            const Text('E-posta adresinize şifre sıfırlama bağlantısı gönderilecek.'),
             const SizedBox(height: 16),
             TextField(
               controller: emailController,
@@ -65,13 +65,13 @@ class _LoginScreenState extends State<LoginScreen> {
           ],
         ),
         actions: [
-          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Ä°ptal')),
+          TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('İptal')),
           ElevatedButton(
             onPressed: () async {
               final email = emailController.text.trim();
               if (email.isEmpty || !AppUtils.isValidEmail(email)) {
                 ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('GeÃ§erli bir e-posta girin')),
+                  const SnackBar(content: Text('Geçerli bir e-posta girin')),
                 );
                 return;
               }
@@ -81,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 if (ctx.mounted) Navigator.pop(ctx);
                 if (mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Åifre sÄ±fÄ±rlama baÄŸlantÄ±sÄ± gÃ¶nderildi!'), backgroundColor: AppTheme.successColor),
+                    const SnackBar(content: Text('Şifre sıfırlama bağlantısı gönderildi!'), backgroundColor: AppTheme.successColor),
                   );
                 }
               } catch (e) {
@@ -92,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 }
               }
             },
-            child: const Text('GÃ¶nder'),
+            child: const Text('Gönder'),
           ),
         ],
       ),
@@ -118,7 +118,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('GiriÅŸ baÅŸarÄ±lÄ±!', style: TextStyle(color: Colors.white)), backgroundColor: AppTheme.successColor),
+          const SnackBar(content: Text('Giriş başarılı!', style: TextStyle(color: Colors.white)), backgroundColor: AppTheme.successColor),
         );
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(builder: (_) => const HomeScreen()),
@@ -201,7 +201,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 24),
                     
                     Text(
-                      'Tekrar HoÅŸ Geldiniz',
+                      'Tekrar Hoş Geldiniz',
                       style: GoogleFonts.outfit(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
@@ -210,7 +210,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 8),
                     Text(
-                      'GiriÅŸ yaparak eÅŸleÅŸmeye devam edin',
+                      'Giriş yaparak eşleşmeye devam edin',
                       style: GoogleFonts.outfit(
                         fontSize: 16,
                         color: Colors.white.withValues(alpha: 0.8),
@@ -247,7 +247,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     fillColor: Colors.grey.shade50,
                                   ),
                                   validator: (value) {
-                                    if (value == null || value.trim().isEmpty) return 'LÃ¼tfen e-posta adresinizi girin';
+                                    if (value == null || value.trim().isEmpty) return 'Lütfen e-posta adresinizi girin';
                                     if (!AppUtils.isValidEmail(value.trim())) return AppStrings.invalidEmail;
                                     return null;
                                   },
@@ -266,7 +266,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     ),
                                   ),
                                   validator: (value) {
-                                    if (value == null || value.isEmpty) return 'LÃ¼tfen ÅŸifrenizi girin';
+                                    if (value == null || value.isEmpty) return 'Lütfen şifrenizi girin';
                                     return null;
                                   },
                                 ),
@@ -323,7 +323,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       await authProvider.signInWithGoogle();
                                       if (mounted) {
                                         ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(content: Text('Google ile giriÅŸ baÅŸarÄ±lÄ±!', style: TextStyle(color: Colors.white)), backgroundColor: AppTheme.successColor),
+                                          const SnackBar(content: Text('Google ile giriş başarılı!', style: TextStyle(color: Colors.white)), backgroundColor: AppTheme.successColor),
                                         );
                                         Navigator.of(context).pushReplacement(
                                           MaterialPageRoute(builder: (_) => const HomeScreen()),
@@ -338,7 +338,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     }
                                   },
                                   icon: const Icon(Icons.g_mobiledata, size: 32, color: AppTheme.primaryColor),
-                                  label: const Text('Google ile giriÅŸ yap', style: TextStyle(color: AppTheme.textPrimary)),
+                                  label: const Text('Google ile giriş yap', style: TextStyle(color: AppTheme.textPrimary)),
                                   style: OutlinedButton.styleFrom(
                                     padding: const EdgeInsets.symmetric(vertical: 16),
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -351,7 +351,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                     Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PhoneLoginScreen()));
                                   },
                                   icon: const Icon(Icons.phone_android, size: 28, color: AppTheme.primaryColor),
-                                  label: const Text('Telefon ile giriÅŸ yap', style: TextStyle(color: AppTheme.textPrimary)),
+                                  label: const Text('Telefon ile giriş yap', style: TextStyle(color: AppTheme.textPrimary)),
                                   style: OutlinedButton.styleFrom(
                                     padding: const EdgeInsets.symmetric(vertical: 16),
                                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
@@ -383,7 +383,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           return Text(
-                            'SÃ¼rÃ¼m ${snapshot.data!.version}',
+                            'Sürüm ${snapshot.data!.version}',
                             style: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontSize: 12),
                           );
                         }

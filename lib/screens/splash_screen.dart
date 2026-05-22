@@ -55,7 +55,7 @@ class _SplashScreenState extends State<SplashScreen>
 
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     
-    // Firebase auth'a giriÅŸ yapmÄ±ÅŸ ama profil henÃ¼z Firestore'dan Ã§ekilememiÅŸse bekle
+    // Firebase auth'a giriş yapmış ama profil henüz Firestore'dan çekilememişse bekle
     if (authProvider.isLoggedIn && !authProvider.isUserProfileComplete) {
       int retries = 0;
       while (!authProvider.isUserProfileComplete && retries < 15) {
@@ -71,7 +71,7 @@ class _SplashScreenState extends State<SplashScreen>
         MaterialPageRoute(builder: (_) => const HomeScreen()),
       );
     } else {
-      // EÄŸer bir sorun olduysa Firebase Auth oturumunu kapat ki hatada takÄ±lÄ± kalmasÄ±n
+      // Eğer bir sorun olduysa Firebase Auth oturumunu kapat ki hatada takılı kalmasın
       if (authProvider.isLoggedIn) {
         await authProvider.signOut();
       }
@@ -136,7 +136,7 @@ class _SplashScreenState extends State<SplashScreen>
 
                       // App Name
                       Text(
-                        'ArkadaÅŸlÄ±k',
+                        'Arkadaşlık',
                         style: GoogleFonts.outfit(
                           fontSize: 38,
                           fontWeight: FontWeight.bold,
@@ -145,7 +145,7 @@ class _SplashScreenState extends State<SplashScreen>
                         ),
                       ),
                       Text(
-                        'UygulamasÄ±',
+                        'Uygulaması',
                         style: GoogleFonts.outfit(
                           fontSize: 22,
                           fontWeight: FontWeight.w300,

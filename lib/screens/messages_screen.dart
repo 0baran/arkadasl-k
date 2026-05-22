@@ -81,12 +81,12 @@ class _MessagesScreenState extends State<MessagesScreen> {
             ),
             const SizedBox(height: 16),
             Text(
-              'HenÃ¼z mesaj yok',
+              'Henüz mesaj yok',
               style: TextStyle(color: AppTheme.textSecondary),
             ),
             const SizedBox(height: 8),
             Text(
-              'EÅŸleÅŸmelerinizle mesajlaÅŸmaya baÅŸlayÄ±n!',
+              'Eşleşmelerinizle mesajlaşmaya başlayın!',
               style: TextStyle(
                 color: AppTheme.textSecondary,
                 fontSize: 12,

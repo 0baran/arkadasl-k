@@ -59,14 +59,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
     if (_birthDate == null) {
       setState(() {
-        _errorMessage = 'LÃ¼tfen doÄŸum tarihinizi seÃ§in';
+        _errorMessage = 'Lütfen doğum tarihinizi seçin';
       });
       return;
     }
 
     if (_passwordController.text != _confirmPasswordController.text) {
       setState(() {
-        _errorMessage = 'Åifreler eÅŸleÅŸmiyor';
+        _errorMessage = 'Şifreler eşleşmiyor';
       });
       return;
     }
@@ -88,7 +88,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('KayÄ±t baÅŸarÄ±lÄ±!')),
+          const SnackBar(content: Text('Kayıt başarılı!')),
         );
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => const HomeScreen()),
@@ -107,7 +107,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('KayÄ±t Ol'),
+        title: const Text('Kayıt Ol'),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -129,10 +129,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'LÃ¼tfen isminizi girin';
+                      return 'Lütfen isminizi girin';
                     }
                     if (!AppUtils.isValidName(value.trim())) {
-                      return 'Ä°sim en az 2 karakter olmalÄ±';
+                      return 'İsim en az 2 karakter olmalı';
                     }
                     return null;
                   },
@@ -150,7 +150,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
-                      return 'LÃ¼tfen e-posta adresinizi girin';
+                      return 'Lütfen e-posta adresinizi girin';
                     }
                     if (!AppUtils.isValidEmail(value.trim())) {
                       return AppStrings.invalidEmail;
@@ -183,7 +183,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'LÃ¼tfen ÅŸifrenizi girin';
+                      return 'Lütfen şifrenizi girin';
                     }
                     if (!AppUtils.isValidPassword(value)) {
                       return AppStrings.weakPassword;
@@ -216,7 +216,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'LÃ¼tfen ÅŸifrenizi tekrar girin';
+                      return 'Lütfen şifrenizi tekrar girin';
                     }
                     return null;
                   },
@@ -229,13 +229,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   onTap: _selectBirthDate,
                   child: InputDecorator(
                     decoration: const InputDecoration(
-                      labelText: 'DoÄŸum Tarihi',
+                      labelText: 'Doğum Tarihi',
                       prefixIcon: Icon(Icons.calendar_today),
                     ),
                     child: Text(
                       _birthDate != null
                           ? AppUtils.formatDate(_birthDate!)
-                          : 'Tarih seÃ§in',
+                          : 'Tarih seçin',
                       style: TextStyle(
                         color: _birthDate != null
                             ? AppTheme.textPrimary
@@ -271,7 +271,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         ),
                         Expanded(
                           child: RadioListTile<String>(
-                            title: const Text('KadÄ±n'),
+                            title: const Text('Kadın'),
                             value: 'female',
                             groupValue: _selectedGender,
                             onChanged: (value) {
