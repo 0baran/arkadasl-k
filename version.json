@@ -1,6 +1,6 @@
-ï»¿{
+{
     "version":  "1.0.25",
     "build":  26,
     "apk_url":  "https://github.com/0baran/arkadasl-k/raw/main/arkadaslik_v1.0.25.apk",
-    "release_notes":  "Yeni Ã–zellikler ve DÃ¼zeltmeler:\n- Kurumsal AltyapÄ± (Repository Pattern & Feature-First) tam entegrasyonu saÄŸlandÄ±\n- AÃ§Ä±lÄ±ÅŸ ekranÄ±nda (Splash Screen) uygulamanÄ±n takÄ±lÄ± kalma (Crash) sorunu tamamen Ã§Ã¶zÃ¼ldÃ¼\n- ModÃ¼ler altyapÄ± geÃ§iÅŸi tamamlandÄ±\n- Firebase Security Rules (firestore.rules) ile veritabanÄ± gÃ¼venliÄŸi Ã¼st dÃ¼zeye Ã§Ä±karÄ±ldÄ±"
+    "release_notes":  "Yeni Özellikler ve Düzeltmeler:\n- Kurumsal Altyapı (Repository Pattern & Feature-First) tam entegrasyonu sağlandı\n- Açılış ekranında (Splash Screen) uygulamanın takılı kalma (Crash) sorunu tamamen çözüldü\n- Modüler altyapı geçişi tamamlandı\n- Firebase Security Rules (firestore.rules) ile veritabanı güvenliği üst düzeye çıkarıldı"
 }
