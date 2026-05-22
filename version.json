@@ -1,6 +1,6 @@
 {
-  "version": "1.0.8",
-  "build": 9,
-  "apk_url": "https://github.com/0baran/arkadasl-k/raw/main/release.apk",
-  "release_notes": "Discover düzeltmesi: Kullanıcıların gerçek konumu artık Firestore'a kaydediliyor, böylece diğer kullanıcılar birbirini bulabiliyor."
+    "version":  "1.0.9",
+    "build":  10,
+    "apk_url":  "https://github.com/0baran/arkadasl-k/raw/main/release.apk",
+    "release_notes":  "Discover düzeltmesi: Kullanıcıların gerçek konumu artık Firestore\u0027a kaydediliyor, böylece diğer kullanıcılar birbirini bulabiliyor."
 }
