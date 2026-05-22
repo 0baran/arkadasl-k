@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Message {
   final String id;
   final String senderId;
@@ -26,9 +28,7 @@ class Message {
       receiverId: json['receiverId'] ?? '',
       content: json['content'] ?? '',
       type: _parseMessageType(json['type']),
-      timestamp: json['timestamp'] is DateTime
-          ? json['timestamp']
-          : DateTime.parse(json['timestamp']),
+      timestamp: _parseDate(json['timestamp']),
       isRead: json['isRead'] ?? false,
       imageUrl: json['imageUrl'],
     );
@@ -42,6 +42,16 @@ class Message {
       );
     }
     return MessageType.text;
+  }
+
+  static DateTime _parseDate(dynamic dateVal) {
+    if (dateVal == null) return DateTime.now();
+    if (dateVal is DateTime) return dateVal;
+    if (dateVal is Timestamp) return dateVal.toDate();
+    if (dateVal is String) {
+      return DateTime.tryParse(dateVal) ?? DateTime.now();
+    }
+    return DateTime.now();
   }
 
   Map<String, dynamic> toJson() {

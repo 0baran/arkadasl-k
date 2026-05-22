@@ -180,15 +180,10 @@ class DatabaseService {
         if (!swipedIds.contains(doc.id)) {
           final user = User.fromJson(doc.data() as Map<String, dynamic>);
           
-          final age = _calculateAge(user.birthDate);
-          // Geliştirici Test Modu: Yaş filtresi devre dışı (Hızlı test için)
-          // if (age < minAge || age > maxAge) continue;
-
           final distance = _calculateDistance(latitude, longitude, user.location.latitude, user.location.longitude);
-          // Geliştirici Test Modu: Mesafe filtresi devre dışı (Hızlı test için)
-          // if (distance <= maxDistance) {
+          if (distance <= maxDistance) {
             nearbyUsers.add(user);
-          // }
+          }
         }
       }
       return nearbyUsers;
@@ -220,15 +215,6 @@ class DatabaseService {
 
   double _toRadians(double degree) {
     return degree * (3.14159265359 / 180);
-  }
-
-  int _calculateAge(DateTime birthDate) {
-    final now = DateTime.now();
-    int age = now.year - birthDate.year;
-    if (now.month < birthDate.month || (now.month == birthDate.month && now.day < birthDate.day)) {
-      age--;
-    }
-    return age;
   }
 
   Future<void> resetSwipes(String currentUserId) async {

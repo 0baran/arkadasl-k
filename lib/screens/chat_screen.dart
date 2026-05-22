@@ -21,14 +21,6 @@ class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _messageController = TextEditingController();
   final ScrollController _scrollController = ScrollController();
 
-  List<Message> _messages = [];
-  bool _isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
   @override
   void dispose() {
     _messageController.dispose();

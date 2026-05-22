@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Match {
   final String id;
   final String userId1;
@@ -24,21 +26,34 @@ class Match {
       id: json['id'] ?? json['matchId'] ?? '',
       userId1: json['userId1'] ?? '',
       userId2: json['userId2'] ?? '',
-      matchedAt: json['matchedAt'] is DateTime
-          ? json['matchedAt']
-          : DateTime.parse(json['matchedAt']),
-      type: MatchType.values.firstWhere(
-        (e) => e.toString() == 'MatchType.${json['type']}',
-        orElse: () => MatchType.regular,
-      ),
+      matchedAt: _parseDate(json['matchedAt']),
+      type: _parseMatchType(json['type']),
       isActive: json['isActive'] ?? true,
       lastMessageAt: json['lastMessageAt'] != null
-          ? (json['lastMessageAt'] is DateTime
-              ? json['lastMessageAt']
-              : DateTime.parse(json['lastMessageAt']))
+          ? _parseDate(json['lastMessageAt'])
           : null,
       lastMessage: json['lastMessage'],
     );
+  }
+
+  static MatchType _parseMatchType(dynamic type) {
+    if (type is String) {
+      return MatchType.values.firstWhere(
+        (e) => e.name == type,
+        orElse: () => MatchType.regular,
+      );
+    }
+    return MatchType.regular;
+  }
+
+  static DateTime _parseDate(dynamic dateVal) {
+    if (dateVal == null) return DateTime.now();
+    if (dateVal is DateTime) return dateVal;
+    if (dateVal is Timestamp) return dateVal.toDate();
+    if (dateVal is String) {
+      return DateTime.tryParse(dateVal) ?? DateTime.now();
+    }
+    return DateTime.now();
   }
 
   Map<String, dynamic> toJson() {
@@ -77,7 +92,6 @@ class Match {
   }
 
   String getChatId() {
-    // Sort user IDs to create consistent chat ID
     final sortedIds = [userId1, userId2]..sort();
     return '${sortedIds[0]}_${sortedIds[1]}';
   }
