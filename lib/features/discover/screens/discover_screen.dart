@@ -11,7 +11,7 @@ import '../../../services/location_service.dart';
 import '../../../models/user.dart';
 import '../../../core/theme.dart';
 import '../../../core/utils.dart';
-import 'settings_screen.dart';
+import '../../profile/screens/settings_screen.dart';
 
 class DiscoverScreen extends StatefulWidget {
   const DiscoverScreen({super.key});

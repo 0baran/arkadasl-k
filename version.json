@@ -1,6 +1,6 @@
 ﻿{
-    "version":  "1.0.24",
-    "build":  25,
-    "apk_url":  "https://github.com/0baran/arkadasl-k/raw/main/arkadaslik_v1.0.24.apk",
-    "release_notes":  "Yeni Özellikler ve Düzeltmeler:\n- Yeni mesaj geldiğinde bildirim alma özelliği eklendi\n- Alt Navigasyon çubuğu hizalama sorunu çözüldü (SafeArea)\n- Çevrimiçi Durumu ve Son Görülme eklendi\n- Kullanıcı Engelleme ve Şikayet etme sistemi eklendi"
+    "version":  "1.0.25",
+    "build":  26,
+    "apk_url":  "https://github.com/0baran/arkadasl-k/raw/main/arkadaslik_v1.0.25.apk",
+    "release_notes":  "Yeni Özellikler ve Düzeltmeler:\n- Kurumsal Altyapı (Repository Pattern & Feature-First) tam entegrasyonu sağlandı\n- Açılış ekranında (Splash Screen) uygulamanın takılı kalma (Crash) sorunu tamamen çözüldü\n- Modüler altyapı geçişi tamamlandı\n- Firebase Security Rules (firestore.rules) ile veritabanı güvenliği üst düzeye çıkarıldı"
 }

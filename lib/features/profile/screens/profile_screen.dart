@@ -6,7 +6,7 @@ import '../../../core/theme.dart';
 import '../../../core/utils.dart';
 import 'edit_profile_screen.dart';
 import 'settings_screen.dart';
-import 'login_screen.dart';
+import '../../auth/screens/login_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});

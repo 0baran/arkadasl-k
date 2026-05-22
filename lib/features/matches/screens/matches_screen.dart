@@ -1,4 +1,4 @@
-// ignore_for_file: no_leading_underscores_for_local_identifiers
+ï»¿// ignore_for_file: no_leading_underscores_for_local_identifiers
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../services/auth_provider.dart';
@@ -7,7 +7,7 @@ import '../../../models/match.dart';
 import '../../../models/user.dart';
 import '../../../core/theme.dart';
 import '../../../core/utils.dart';
-import 'chat_screen.dart';
+import '../../chat/screens/chat_screen.dart';
 
 class MatchesScreen extends StatefulWidget {
   const MatchesScreen({super.key});
@@ -25,7 +25,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
     final userId = authProvider.currentUser?.id;
 
     if (userId == null) {
-      return const Center(child: Text('Kullanýcý bulunamadý'));
+      return const Center(child: Text('Kullanï¿½cï¿½ bulunamadï¿½'));
     }
 
     return StreamBuilder<List<Match>>(
@@ -36,7 +36,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
         }
 
         if (snapshot.hasError) {
-          return const Center(child: Text('Eþleþmeler yüklenirken hata oluþtu'));
+          return const Center(child: Text('Eï¿½leï¿½meler yï¿½klenirken hata oluï¿½tu'));
         }
 
         final _matches = snapshot.data ?? [];
@@ -53,12 +53,12 @@ class _MatchesScreenState extends State<MatchesScreen> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Henüz eþleþme yok',
+                  'Henï¿½z eï¿½leï¿½me yok',
                   style: TextStyle(color: AppTheme.textSecondary),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Keþfet ekranýnda yeni kiþilerle tanýþýn!',
+                  'Keï¿½fet ekranï¿½nda yeni kiï¿½ilerle tanï¿½ï¿½ï¿½n!',
                   style: TextStyle(
                     color: AppTheme.textSecondary,
                     fontSize: 12,

@@ -1,4 +1,4 @@
-// ignore_for_file: use_build_context_synchronously
+﻿// ignore_for_file: use_build_context_synchronously
 import 'dart:ui';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +11,7 @@ import '../../../core/utils.dart';
 import '../../../services/update_service.dart';
 import 'register_screen.dart';
 import 'phone_login_screen.dart';
-import 'home_screen.dart';
+import '../../discover/screens/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
