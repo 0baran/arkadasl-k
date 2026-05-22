@@ -53,31 +53,99 @@ class DatabaseService {
   }
 
   Future<void> createMatch(Match match) async {
-    // Mock implementation
+    try {
+      await _firestore.collection('matches').doc(match.id).set(match.toJson());
+    } catch (e) {
+      print('Error creating match: $e');
+    }
   }
 
   Future<List<Match>> getUserMatches(String userId) async {
-    return [];
+    try {
+      final snapshot = await _firestore.collection('matches')
+          .where(Filter.or(Filter('userId1', isEqualTo: userId), Filter('userId2', isEqualTo: userId)))
+          .get();
+      return snapshot.docs.map((doc) => Match.fromJson(doc.data())).toList();
+    } catch (e) {
+      print('Error getting matches: $e');
+      return [];
+    }
   }
 
   Stream<List<Match>> getUserMatchesStream(String userId) {
-    return Stream.value([]);
+    return _firestore.collection('matches')
+        .where(Filter.or(Filter('userId1', isEqualTo: userId), Filter('userId2', isEqualTo: userId)))
+        .snapshots()
+        .map((snapshot) {
+      final matches = snapshot.docs.map((doc) => Match.fromJson(doc.data())).toList();
+      matches.sort((a, b) => (b.lastMessageAt ?? b.matchedAt).compareTo(a.lastMessageAt ?? a.matchedAt));
+      return matches;
+    });
   }
 
   Future<void> sendMessage(Message message) async {
-    // Mock implementation
+    try {
+      final chatId = _getChatId(message.senderId, message.receiverId);
+      await _firestore.collection('chats').doc(chatId).collection('messages').doc(message.id).set(message.toJson());
+      await _updateMatchLastMessage(message, chatId);
+    } catch (e) {
+      print('Error sending message: $e');
+    }
   }
 
   Future<void> _updateMatchLastMessage(Message message, String chatId) async {
-    // Mock implementation
+    try {
+      await _firestore.collection('matches').doc(chatId).update({
+        'lastMessage': message.content,
+        'lastMessageAt': message.createdAt.toIso8601String(),
+      });
+    } catch (e) {
+      print('Error updating last message: $e');
+    }
   }
 
   Stream<List<Message>> getMessagesStream(String userId1, String userId2) {
-    return Stream.value([]);
+    final chatId = _getChatId(userId1, userId2);
+    return _firestore.collection('chats').doc(chatId).collection('messages')
+        .orderBy('createdAt', descending: true)
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((doc) => Message.fromJson(doc.data())).toList());
   }
 
   Future<void> markMessagesAsRead(String userId1, String userId2) async {
-    // Mock implementation
+    // Future enhancement
+  }
+
+  String _getChatId(String id1, String id2) {
+    final ids = [id1, id2]..sort();
+    return '${ids[0]}_${ids[1]}';
+  }
+
+  Future<bool> handleLike(String currentUserId, String targetUserId, bool isLike) async {
+    try {
+      await _firestore.collection('likes').doc(currentUserId).collection('liked').doc(targetUserId).set({
+        'isLike': isLike,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
+      if (isLike) {
+        final targetDoc = await _firestore.collection('likes').doc(targetUserId).collection('liked').doc(currentUserId).get();
+        if (targetDoc.exists && targetDoc.data()?['isLike'] == true) {
+          final matchId = _getChatId(currentUserId, targetUserId);
+          final match = Match(
+            id: matchId,
+            userId1: currentUserId,
+            userId2: targetUserId,
+            matchedAt: DateTime.now(),
+          );
+          await createMatch(match);
+          return true; // Indicates a match occurred
+        }
+      }
+    } catch (e) {
+      print('Error handling like: $e');
+    }
+    return false;
   }
 
   Future<List<User>> getNearbyUsers(
@@ -89,33 +157,33 @@ class DatabaseService {
     int maxAge,
     String preferredGender,
   ) async {
-    // Mock nearby users
-    return [
-      User(
-        id: 'user1',
-        email: 'user1@test.com',
-        name: 'Ayşe',
-        birthDate: DateTime.now().subtract(const Duration(days: 9000)),
-        gender: 'female',
-        bio: 'Merhaba! Tanışmak istiyorum.',
-        photoUrls: [],
-        interests: ['Müzik', 'Spor'],
-        location: GeoLocation(latitude: latitude + 0.01, longitude: longitude + 0.01),
-        createdAt: DateTime.now(),
-      ),
-      User(
-        id: 'user2',
-        email: 'user2@test.com',
-        name: 'Mehmet',
-        birthDate: DateTime.now().subtract(const Duration(days: 8500)),
-        gender: 'male',
-        bio: 'Yeni insanlarla tanışmak istiyorum.',
-        photoUrls: [],
-        interests: ['Sinema', 'Yemek'],
-        location: GeoLocation(latitude: latitude - 0.01, longitude: longitude - 0.01),
-        createdAt: DateTime.now(),
-      ),
-    ];
+    try {
+      final swipedSnapshot = await _firestore.collection('likes').doc(currentUserId).collection('liked').get();
+      final swipedIds = swipedSnapshot.docs.map((d) => d.id).toSet();
+      swipedIds.add(currentUserId);
+
+      Query query = _firestore.collection('users');
+      if (preferredGender != 'all' && preferredGender != 'everyone') {
+        query = query.where('gender', isEqualTo: preferredGender);
+      }
+
+      final usersSnapshot = await query.get();
+      List<User> nearbyUsers = [];
+
+      for (var doc in usersSnapshot.docs) {
+        if (!swipedIds.contains(doc.id)) {
+          final user = User.fromJson(doc.data() as Map<String, dynamic>);
+          final distance = _calculateDistance(latitude, longitude, user.location.latitude, user.location.longitude);
+          if (distance <= maxDistance) {
+            nearbyUsers.add(user);
+          }
+        }
+      }
+      return nearbyUsers;
+    } catch (e) {
+      print('Error getting nearby users: $e');
+      return [];
+    }
   }
 
   double _calculateDistance(

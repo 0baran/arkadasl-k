@@ -18,99 +18,72 @@ class MatchesScreen extends StatefulWidget {
 class _MatchesScreenState extends State<MatchesScreen> {
   final DatabaseService _databaseService = DatabaseService();
 
-  List<Match> _matches = [];
-  Map<String, User> _users = {};
-  bool _isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _loadMatches();
-  }
-
-  Future<void> _loadMatches() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final authProvider = Provider.of<AuthProvider>(context, listen: false);
-      final userId = authProvider.currentUser?.id;
-
-      if (userId != null) {
-        final matches = await _databaseService.getUserMatches(userId);
-
-        // Load matched users
-        for (var match in matches) {
-          final otherUserId =
-              match.userId1 == userId ? match.userId2 : match.userId1;
-          final user = await _databaseService.getUser(otherUserId);
-          if (user != null) {
-            _users[otherUserId] = user;
-          }
-        }
-
-        setState(() {
-          _matches = matches;
-          _isLoading = false;
-        });
-      }
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      return const Center(child: CircularProgressIndicator());
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final userId = authProvider.currentUser?.id;
+
+    if (userId == null) {
+      return const Center(child: Text('Kullanıcı bulunamadı'));
     }
 
-    if (_matches.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              Icons.favorite_border,
-              size: 64,
-              color: AppTheme.textSecondary,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Henüz eşleşme yok',
-              style: TextStyle(color: AppTheme.textSecondary),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              'Keşfet ekranında yeni kişilerle tanışın!',
-              style: TextStyle(
-                color: AppTheme.textSecondary,
-                fontSize: 12,
-              ),
-            ),
-          ],
-        ),
-      );
-    }
+    return StreamBuilder<List<Match>>(
+      stream: _databaseService.getUserMatchesStream(userId),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
 
-    return ListView.builder(
-      padding: const EdgeInsets.all(16),
-      itemCount: _matches.length,
-      itemBuilder: (context, index) {
-        final match = _matches[index];
-        final authProvider = Provider.of<AuthProvider>(context, listen: false);
-        final otherUserId =
-            match.userId1 == authProvider.currentUser?.id
-                ? match.userId2
-                : match.userId1;
-        final user = _users[otherUserId];
+        if (snapshot.hasError) {
+          return const Center(child: Text('Eşleşmeler yüklenirken hata oluştu'));
+        }
 
-        if (user == null) return const SizedBox();
+        final _matches = snapshot.data ?? [];
 
-        return _buildMatchCard(match, user);
+        if (_matches.isEmpty) {
+          return Center(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  Icons.favorite_border,
+                  size: 64,
+                  color: AppTheme.textSecondary,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  'Henüz eşleşme yok',
+                  style: TextStyle(color: AppTheme.textSecondary),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Keşfet ekranında yeni kişilerle tanışın!',
+                  style: TextStyle(
+                    color: AppTheme.textSecondary,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          );
+        }
+
+        return ListView.builder(
+          padding: const EdgeInsets.all(16),
+          itemCount: _matches.length,
+          itemBuilder: (context, index) {
+            final match = _matches[index];
+            final otherUserId = match.userId1 == userId ? match.userId2 : match.userId1;
+
+            return FutureBuilder<User?>(
+              future: _databaseService.getUser(otherUserId),
+              builder: (context, userSnapshot) {
+                if (!userSnapshot.hasData) return const SizedBox();
+                return _buildMatchCard(match, userSnapshot.data!);
+              },
+            );
+          },
+        );
       },
     );
   }

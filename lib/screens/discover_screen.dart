@@ -70,21 +70,71 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   }
 
   Future<void> _handleLike(User user) async {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('${user.name} beğenildi'), backgroundColor: AppTheme.successColor),
-    );
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final isMatch = await _databaseService.handleLike(authProvider.currentUser!.id, user.id, true);
+    
+    if (mounted) {
+      if (isMatch) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('🎉 EŞLEŞTİNİZ! 🎉', textAlign: TextAlign.center),
+            content: Text('${user.name} ile eşleştin. Hemen mesaj atmak ister misin?', textAlign: TextAlign.center),
+            actions: [
+              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Kapat')),
+            ],
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${user.name} beğenildi'), backgroundColor: AppTheme.successColor, duration: const Duration(seconds: 1)),
+        );
+      }
+    }
+    setState(() {
+      _nearbyUsers.remove(user);
+    });
   }
 
   Future<void> _handleDislike(User user) async {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('${user.name} geçildi'), backgroundColor: AppTheme.errorColor),
-    );
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    await _databaseService.handleLike(authProvider.currentUser!.id, user.id, false);
+    
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('${user.name} geçildi'), backgroundColor: AppTheme.errorColor, duration: const Duration(seconds: 1)),
+      );
+    }
+    setState(() {
+      _nearbyUsers.remove(user);
+    });
   }
 
   Future<void> _handleSuperLike(User user) async {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('${user.name} SÜPER BEĞENİLDİ! 🌟'), backgroundColor: AppTheme.accentColor),
-    );
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final isMatch = await _databaseService.handleLike(authProvider.currentUser!.id, user.id, true);
+    
+    if (mounted) {
+      if (isMatch) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('🎉 SÜPER EŞLEŞME! 🎉', textAlign: TextAlign.center),
+            content: Text('${user.name} ile süper eşleştin!', textAlign: TextAlign.center),
+            actions: [
+              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Kapat')),
+            ],
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('${user.name} SÜPER BEĞENİLDİ! 🌟'), backgroundColor: AppTheme.accentColor, duration: const Duration(seconds: 1)),
+        );
+      }
+    }
+    setState(() {
+      _nearbyUsers.remove(user);
+    });
   }
 
   @override
