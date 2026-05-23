@@ -1,6 +1,6 @@
 {
-    "version":  "1.0.25",
-    "build":  26,
-    "apk_url":  "https://github.com/0baran/arkadasl-k/raw/main/arkadaslik_v1.0.25.apk",
-    "release_notes":  "Yeni Özellikler ve Düzeltmeler:\n- Kurumsal Altyapý (Repository Pattern & Feature-First) tam entegrasyonu saðlandý\n- Açýlýþ ekranýnda (Splash Screen) uygulamanýn takýlý kalma (Crash) sorunu tamamen çözüldü\n- Modüler altyapý geçiþi tamamlandý\n- Firebase Security Rules (firestore.rules) ile veritabaný güvenliði üst düzeye çýkarýldý"
+    "version": "1.0.26",
+    "build": 27,
+    "apk_url": "https://github.com/0baran/arkadasl-k/raw/main/arkadaslik_v1.0.26.apk",
+    "release_notes": "Genel Duzeltmeler:\n- flutter analyze 0 error 0 warning seviyesine indirildi\n- messages_screen.dart import sorunu cozuldu\n- auth_service.dart null comparison ve dead code temizlendi\n- RadioListTile ve DropdownButtonFormField deprecation uyarilari giderildi\n- Gereksiz import ve field uyarilari temizlendi\n- Tema ve navigasyon bilesenleri iyilestirildi"
 }

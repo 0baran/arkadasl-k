@@ -1,13 +1,12 @@
-// ignore_for_file: prefer_final_fields
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../../../services/auth_provider.dart';
-import '../../../services/database_service.dart';
-import '../../../models/match.dart';
-import '../../../models/user.dart';
-import '../../../core/theme.dart';
-import '../../../core/utils.dart';
-import 'chat_screen.dart';
+import 'package:arkadaslik_uygulamasi/services/auth_provider.dart';
+import 'package:arkadaslik_uygulamasi/services/database_service.dart';
+import 'package:arkadaslik_uygulamasi/models/match.dart';
+import 'package:arkadaslik_uygulamasi/models/user.dart';
+import 'package:arkadaslik_uygulamasi/core/theme.dart';
+import 'package:arkadaslik_uygulamasi/core/utils.dart';
+import 'package:arkadaslik_uygulamasi/features/chat/screens/chat_screen.dart';
 
 class MessagesScreen extends StatefulWidget {
   const MessagesScreen({super.key});
@@ -18,9 +17,8 @@ class MessagesScreen extends StatefulWidget {
 
 class _MessagesScreenState extends State<MessagesScreen> {
   final DatabaseService _databaseService = DatabaseService();
-
   List<Match> _matches = [];
-  Map<String, User> _users = {};
+  final Map<String, User> _users = {};
   bool _isLoading = true;
 
   @override
@@ -30,36 +28,24 @@ class _MessagesScreenState extends State<MessagesScreen> {
   }
 
   Future<void> _loadMatches() async {
-    setState(() {
-      _isLoading = true;
-    });
-
+    setState(() => _isLoading = true);
     try {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
       final userId = authProvider.currentUser?.id;
-
       if (userId != null) {
         final matches = await _databaseService.getUserMatches(userId);
-
-        // Load matched users
         for (var match in matches) {
-          final otherUserId =
-              match.userId1 == userId ? match.userId2 : match.userId1;
+          final otherUserId = match.userId1 == userId ? match.userId2 : match.userId1;
           final user = await _databaseService.getUser(otherUserId);
-          if (user != null) {
-            _users[otherUserId] = user;
-          }
+          if (user != null) _users[otherUserId] = user;
         }
-
         setState(() {
           _matches = matches;
           _isLoading = false;
         });
       }
     } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
+      setState(() => _isLoading = false);
     }
   }
 
@@ -68,50 +54,29 @@ class _MessagesScreenState extends State<MessagesScreen> {
     if (_isLoading) {
       return const Center(child: CircularProgressIndicator());
     }
-
     if (_matches.isEmpty) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(
-              Icons.chat_bubble_outline,
-              size: 64,
-              color: AppTheme.textSecondary,
-            ),
+            Icon(Icons.chat_bubble_outline, size: 64, color: AppTheme.textSecondary),
             const SizedBox(height: 16),
-            Text(
-              'Henüz mesaj yok',
-              style: TextStyle(color: AppTheme.textSecondary),
-            ),
+            Text('Henuz mesaj yok', style: TextStyle(color: AppTheme.textSecondary)),
             const SizedBox(height: 8),
-            Text(
-              'Eþleþmelerinizle mesajlaþmaya baþlayýn!',
-              style: TextStyle(
-                color: AppTheme.textSecondary,
-                fontSize: 12,
-              ),
-            ),
+            Text('Eslesmelerinizle mesajlasmaya baslayin!', style: TextStyle(color: AppTheme.textSecondary, fontSize: 12)),
           ],
         ),
       );
     }
-
     return ListView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: _matches.length,
       itemBuilder: (context, index) {
         final match = _matches[index];
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
-        final otherUserId =
-            match.userId1 == authProvider.currentUser?.id
-                ? match.userId2
-                : match.userId1;
+        final otherUserId = match.userId1 == authProvider.currentUser?.id ? match.userId2 : match.userId1;
         final user = _users[otherUserId];
-
-        if (user == null) return const SizedBox();
-
-        return _buildMessageCard(match, user);
+        return user == null ? const SizedBox() : _buildMessageCard(match, user);
       },
     );
   }
@@ -121,46 +86,22 @@ class _MessagesScreenState extends State<MessagesScreen> {
       margin: const EdgeInsets.only(bottom: 16),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundImage: user.photoUrls.isNotEmpty
-              ? NetworkImage(user.photoUrls.first)
-              : null,
-          child: user.photoUrls.isEmpty
-              ? Text(user.name.substring(0, 1).toUpperCase())
-              : null,
+          backgroundImage: user.photoUrls.isNotEmpty ? NetworkImage(user.photoUrls.first) : null,
+          child: user.photoUrls.isEmpty ? Text(user.name.substring(0, 1).toUpperCase()) : null,
         ),
         title: Text(user.name),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              AppUtils.formatAge(user.birthDate),
-              style: const TextStyle(fontSize: 12),
-            ),
+            Text(AppUtils.formatAge(user.birthDate), style: const TextStyle(fontSize: 12)),
             if (match.lastMessage != null)
-              Text(
-                match.lastMessage!,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontStyle: FontStyle.italic,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
+              Text(match.lastMessage!, style: const TextStyle(fontSize: 12, fontStyle: FontStyle.italic), maxLines: 1, overflow: TextOverflow.ellipsis),
           ],
         ),
         trailing: match.lastMessageAt != null
-            ? Text(
-                AppUtils.formatTime(match.lastMessageAt!),
-                style: const TextStyle(fontSize: 10),
-              )
+            ? Text(AppUtils.formatTime(match.lastMessageAt!), style: const TextStyle(fontSize: 10))
             : null,
-        onTap: () {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => ChatScreen(otherUser: user),
-            ),
-          );
-        },
+        onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => ChatScreen(otherUser: user))),
       ),
     );
   }

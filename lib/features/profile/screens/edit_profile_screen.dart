@@ -298,7 +298,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
               // Relationship Goal
               DropdownButtonFormField<String>(
-                value: _relationshipGoal.isEmpty ? null : _relationshipGoal,
+                initialValue: _relationshipGoal.isEmpty ? null : _relationshipGoal,
                 decoration: const InputDecoration(
                   labelText: 'İlişki Hedefi',
                   prefixIcon: Icon(Icons.favorite_border),
@@ -341,51 +341,40 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
               const SizedBox(height: 16),
 
-              // Gender Selection
               const Text('Cinsiyet'),
               const SizedBox(height: 8),
-              Row(
-                children: [
-                  Expanded(
-                    child: RadioListTile<String>(
-                      title: const Text('Erkek'),
-                      value: 'male',
-                      groupValue: _selectedGender,
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedGender = value!;
-                        });
-                      },
-                      contentPadding: EdgeInsets.zero,
+              RadioGroup<String>(
+                groupValue: _selectedGender,
+                onChanged: (value) {
+                  setState(() {
+                    _selectedGender = value!;
+                  });
+                },
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: RadioListTile<String>(
+                        title: const Text('Erkek'),
+                        value: 'male',
+                        contentPadding: EdgeInsets.zero,
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    child: RadioListTile<String>(
-                      title: const Text('Kadın'),
-                      value: 'female',
-                      groupValue: _selectedGender,
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedGender = value!;
-                        });
-                      },
-                      contentPadding: EdgeInsets.zero,
+                    Expanded(
+                      child: RadioListTile<String>(
+                        title: const Text('Kadın'),
+                        value: 'female',
+                        contentPadding: EdgeInsets.zero,
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    child: RadioListTile<String>(
-                      title: const Text('Diğer'),
-                      value: 'other',
-                      groupValue: _selectedGender,
-                      onChanged: (value) {
-                        setState(() {
-                          _selectedGender = value!;
-                        });
-                      },
-                      contentPadding: EdgeInsets.zero,
+                    Expanded(
+                      child: RadioListTile<String>(
+                        title: const Text('Diğer'),
+                        value: 'other',
+                        contentPadding: EdgeInsets.zero,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
 
               const SizedBox(height: 24),

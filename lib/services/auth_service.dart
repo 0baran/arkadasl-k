@@ -55,9 +55,6 @@ class AuthService {
         serverClientId: "745109876782-oqap2ve2q2558u738ku25nm1hqb4casc.apps.googleusercontent.com",
       );
       final googleUser = await GoogleSignIn.instance.authenticate();
-      
-      if (googleUser == null) return null;
-      
       final GoogleSignInAuthentication googleAuth = googleUser.authentication;
       final AuthCredential credential = GoogleAuthProvider.credential(
         idToken: googleAuth.idToken,

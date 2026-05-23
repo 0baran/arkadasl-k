@@ -60,11 +60,11 @@ class _HomeScreenState extends State<HomeScreen> {
     super.dispose();
   }
 
-  final List<Widget> _screens = const [
-    DiscoverScreen(),
-    MatchesScreen(),
-    MessagesScreen(),
-    ProfileScreen(),
+  final List<Widget> _screens = [
+    const DiscoverScreen(),
+    const MatchesScreen(),
+    const MessagesScreen(),
+    const ProfileScreen(),
   ];
 
   @override
