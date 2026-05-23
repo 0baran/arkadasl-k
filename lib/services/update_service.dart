@@ -116,12 +116,14 @@ class UpdateService {
             ),
             onPressed: () async {
               final uri = Uri.parse(apkUrl);
-              if (await canLaunchUrl(uri)) {
+              try {
                 await launchUrl(uri, mode: LaunchMode.externalApplication);
-              } else {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('İndirme bağlantısı açılamadı!'))
-                );
+              } catch (e) {
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text('Baglanti acilamadi: Indirme linkini tarayicinizda acin\n$apkUrl'))
+                  );
+                }
               }
             },
             child: const Text('Şimdi Güncelle'),
