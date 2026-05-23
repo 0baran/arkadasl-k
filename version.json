@@ -1,6 +1,6 @@
 {
-    "version": "1.0.31",
-    "build": 32,
-    "apk_url": "https://github.com/0baran/arkadasl-k/releases/download/v1.0.31/arkadaslik_v1.0.31.apk",
-    "release_notes": "Guvenlik Yamasi:\n- Sifre politikasi guclendirildi (8+ karakter, buyuk/kucuk harf, rakam)\n- E-posta alani Firestore'da public profilden kaldirildi\n- OAuth kullanicilarina sahte yas atanmasi duzeltildi\n- Gelistirici butonu sadece debug modda gorunur\n- Firestore kurallari kritik guvenlik duzeltmeleri (chat regex, match create, notification sender dogrulamasi)"
+    "version": "1.0.32",
+    "build": 33,
+    "apk_url": "https://github.com/0baran/arkadasl-k/releases/download/v1.0.32/arkadaslik_v1.0.32.apk",
+    "release_notes": "Kesfet Duzeltmesi:\n- Gender filtresi Firestore index hatasi vermesin diye client-side'a tasindi\n- Detayli debug log eklendi (kac kisi fetch edildi, hangi filtre kac kisi eledi)\n- Hatalar artik sessizce gomulmuyor, rethrow ile ekrana yansiyor\n- user doc id dogru sekilde Firestore'dan aliniyor"
 }

@@ -83,39 +83,56 @@ class MatchRepository {
       swipedIds.add(currentUserId);
       swipedIds.addAll(blockedUsers);
 
-      Query query = _firestore.collection('users');
-      if (preferredGender != 'all' && preferredGender != 'everyone') {
-        query = query.where('gender', isEqualTo: preferredGender);
-      }
+      final usersSnapshot = await _firestore.collection('users').limit(500).get();
+      debugPrint('getNearbyUsers: fetched ${usersSnapshot.docs.length} docs from Firestore');
+      debugPrint('getNearbyUsers: swipedIds count = ${swipedIds.length}');
 
-      final usersSnapshot = await query.limit(500).get();
       List<User> nearbyUsers = [];
       final now = DateTime.now();
+      int ageFiltered = 0;
+      int distanceFiltered = 0;
+      int genderFiltered = 0;
+      int swipedFiltered = 0;
 
       for (var doc in usersSnapshot.docs) {
-        if (!swipedIds.contains(doc.id)) {
-          final user = User.fromJson(doc.data() as Map<String, dynamic>);
-          
-          int age = now.year - user.birthDate.year;
-          if (now.month < user.birthDate.month ||
-              (now.month == user.birthDate.month && now.day < user.birthDate.day)) {
-            age--;
-          }
-
-          if (age < minAge || age > maxAge) {
-            continue;
-          }
-
-          final distance = _calculateDistance(latitude, longitude, user.location.latitude, user.location.longitude);
-          if (distance <= maxDistance) {
-            nearbyUsers.add(user);
-          }
+        if (swipedIds.contains(doc.id)) {
+          swipedFiltered++;
+          continue;
         }
+
+        final data = doc.data();
+        data['id'] = doc.id;
+        final user = User.fromJson(data);
+
+        if (preferredGender != 'all' && preferredGender != 'everyone' && user.gender != preferredGender) {
+          genderFiltered++;
+          continue;
+        }
+        
+        int age = now.year - user.birthDate.year;
+        if (now.month < user.birthDate.month ||
+            (now.month == user.birthDate.month && now.day < user.birthDate.day)) {
+          age--;
+        }
+
+        if (age < minAge || age > maxAge) {
+          ageFiltered++;
+          continue;
+        }
+
+        final distance = _calculateDistance(latitude, longitude, user.location.latitude, user.location.longitude);
+        if (distance > maxDistance) {
+          distanceFiltered++;
+          continue;
+        }
+        nearbyUsers.add(user);
       }
+      
+      debugPrint('getNearbyUsers: swiped:$swipedFiltered gender:$genderFiltered age:$ageFiltered dist:$distanceFiltered found:${nearbyUsers.length}');
       return nearbyUsers;
     } catch (e) {
-      debugPrint('Error getting nearby users: $e');
-      return [];
+      debugPrint('getNearbyUsers ERROR: $e');
+      rethrow;
     }
   }
 
