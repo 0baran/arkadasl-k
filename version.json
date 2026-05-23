@@ -1,6 +1,6 @@
 {
-    "version":  "1.0.27",
-    "build":  28,
-    "apk_url":  "https://github.com/0baran/arkadasl-k/releases/download/v1.0.27/arkadaslik_v1.0.27.apk",
-    "release_notes":  "Guncelleme URL Hatasi Cozuldu:\n- canLaunchUrl kaldirildi, dogrudan launchUrl ile try/catch kullanildi\n- AndroidManifest.xml'e VIEW/HTTPS intent sorgusu eklendi\n- Surum 1.0.26 genel duzeltmeleri"
+    "version":  "1.0.28",
+    "build":  29,
+    "apk_url":  "https://github.com/0baran/arkadasl-k/releases/download/v1.0.28/arkadaslik_v1.0.28.apk",
+    "release_notes":  "Android 16 URL Acma Hatasi Cozuldu:\n- 3 farkli LaunchMode (externalApplication / platformDefault / inAppWebView) deneniyor\n- Hicbiri calismazsa kullaniciya link gosterilip manuel acmasi isteniyor\n- Android 10-16 tum surumlerde calisir"
 }

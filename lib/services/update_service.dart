@@ -116,14 +116,43 @@ class UpdateService {
             ),
             onPressed: () async {
               final uri = Uri.parse(apkUrl);
-              try {
-                await launchUrl(uri, mode: LaunchMode.externalApplication);
-              } catch (e) {
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text('Baglanti acilamadi: Indirme linkini tarayicinizda acin\n$apkUrl'))
-                  );
+              bool launched = false;
+              for (final mode in [LaunchMode.externalApplication, LaunchMode.platformDefault, LaunchMode.inAppWebView]) {
+                if (await canLaunchUrl(uri)) {
+                  await launchUrl(uri, mode: mode);
+                  launched = true;
+                  break;
                 }
+              }
+              if (!launched && context.mounted) {
+                await showDialog(
+                  context: context,
+                  builder: (ctx) => AlertDialog(
+                    title: const Text('Baglanti Acilamadi'),
+                    content: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text('Asagidaki linki kopyalayip tarayicinizda acin:'),
+                        const SizedBox(height: 8),
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade100,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: SelectableText(apkUrl, style: const TextStyle(fontSize: 11)),
+                        ),
+                      ],
+                    ),
+                    actions: [
+                      TextButton(
+                        onPressed: () => Navigator.pop(ctx),
+                        child: const Text('Tamam'),
+                      ),
+                    ],
+                  ),
+                );
               }
             },
             child: const Text('Şimdi Güncelle'),
