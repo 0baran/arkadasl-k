@@ -1,9 +1,10 @@
-﻿// ignore_for_file: use_build_context_synchronously
-import 'dart:convert';
+﻿import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:path_provider/path_provider.dart';
+import 'package:open_filex/open_filex.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:url_launcher/url_launcher.dart';
 import '../core/theme.dart';
 
 class UpdateService {
@@ -12,6 +13,7 @@ class UpdateService {
   static String get _apiUrl => "https://raw.githubusercontent.com/$githubRepo/main/version.json";
   
   static bool _isChecked = false;
+  static bool _isDownloading = false;
 
   static Future<void> checkForUpdates(BuildContext context) async {
     if (_isChecked) return;
@@ -19,13 +21,12 @@ class UpdateService {
     
     try {
       if (githubRepo == "Sahip/RepoAdi") {
-        debugPrint("UpdateService: GitHub repo adı girilmediği için güncelleme kontrolü atlandı.");
+        debugPrint("UpdateService: GitHub repo adi girilmedigi icin guncelleme kontrolu atlandi.");
         return; 
       }
 
       final httpClient = HttpClient();
       final request = await httpClient.getUrl(Uri.parse(_apiUrl));
-      // Cache'i bypass etmek için query parametresi eklenebilir veya headers eklenebilir
       request.headers.set('Cache-Control', 'no-cache');
       final response = await request.close();
 
@@ -66,8 +67,61 @@ class UpdateService {
     return false;
   }
 
-  // _extractApkUrl is no longer needed
+  static Future<void> _downloadAndInstall(String apkUrl, BuildContext context) async {
+    if (_isDownloading) return;
+    _isDownloading = true;
 
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Row(
+          children: [
+            SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)),
+            SizedBox(width: 12),
+            Text('APK indiriliyor...'),
+          ],
+        ),
+        duration: Duration(seconds: 30),
+      ),
+    );
+
+    try {
+      final response = await http.get(Uri.parse(apkUrl));
+      if (response.statusCode != 200) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Indirme hatasi: HTTP ${response.statusCode}')),
+          );
+        }
+        return;
+      }
+
+      final dir = await getTemporaryDirectory();
+      final file = File('${dir.path}/arkadaslik_update.apk');
+      await file.writeAsBytes(response.bodyBytes);
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('APK indirildi, kurulum baslatiliyor...')),
+        );
+      }
+
+      final result = await OpenFilex.open(file.path);
+      if (result.type != ResultType.done && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Kurulum baslatilamadi: ${result.message}')),
+        );
+      }
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Indirme hatasi: $e')),
+        );
+      }
+    } finally {
+      _isDownloading = false;
+    }
+  }
 
   static void _showUpdateDialog(BuildContext context, String version, String apkUrl, String releaseNotes) {
     showDialog(
@@ -79,14 +133,14 @@ class UpdateService {
           children: [
             const Icon(Icons.system_update, color: AppTheme.primaryColor),
             const SizedBox(width: 8),
-            const Text('Yeni Güncelleme!', style: TextStyle(fontSize: 18)),
+            const Text('Yeni Guncelleme!', style: TextStyle(fontSize: 18)),
           ],
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Sürüm $version yayınlandı. Hemen indirmek ister misiniz?', 
+            Text('Surum $version yayinlandi. Hemen indirmek ister misiniz?', 
               style: const TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
             Container(
@@ -96,7 +150,7 @@ class UpdateService {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
-                releaseNotes.isNotEmpty ? releaseNotes : "Hata düzeltmeleri ve performans iyileştirmeleri.", 
+                releaseNotes.isNotEmpty ? releaseNotes : "Hata duzeltmeleri ve performans iyilestirmeleri.", 
                 maxLines: 4, 
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(fontSize: 12, color: Colors.grey.shade700)
@@ -114,48 +168,11 @@ class UpdateService {
               backgroundColor: AppTheme.primaryColor,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
-            onPressed: () async {
-              final uri = Uri.parse(apkUrl);
-              bool launched = false;
-              for (final mode in [LaunchMode.externalApplication, LaunchMode.platformDefault, LaunchMode.inAppWebView]) {
-                try {
-                  await launchUrl(uri, mode: mode);
-                  launched = true;
-                  break;
-                } catch (_) {}
-              }
-              if (!launched && context.mounted) {
-                await showDialog(
-                  context: context,
-                  builder: (ctx) => AlertDialog(
-                    title: const Text('Baglanti Acilamadi'),
-                    content: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text('Asagidaki linki kopyalayip tarayicinizda acin:'),
-                        const SizedBox(height: 8),
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.grey.shade100,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: SelectableText(apkUrl, style: const TextStyle(fontSize: 11)),
-                        ),
-                      ],
-                    ),
-                    actions: [
-                      TextButton(
-                        onPressed: () => Navigator.pop(ctx),
-                        child: const Text('Tamam'),
-                      ),
-                    ],
-                  ),
-                );
-              }
+            onPressed: () {
+              Navigator.pop(context);
+              _downloadAndInstall(apkUrl, context);
             },
-            child: const Text('Şimdi Güncelle'),
+            child: const Text('Simdi Guncelle'),
           ),
         ],
       ),

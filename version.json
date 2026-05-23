@@ -1,6 +1,6 @@
 {
-    "version":  "1.0.29",
-    "build":  30,
-    "apk_url":  "https://github.com/0baran/arkadasl-k/releases/download/v1.0.29/arkadaslik_v1.0.29.apk",
-    "release_notes":  "S24 Android URL Acma Hatasi Cozuldu:\n- canLaunchUrl tamamen kaldirildi, dogrudan launchUrl + try/catch kullaniliyor\n- AndroidManifest.xml'e BROWSABLE category ve http/https sorgulari eklendi\n- Tum Android surumlerinde link acilir"
+    "version": "1.0.30",
+    "build": 31,
+    "apk_url": "https://github.com/0baran/arkadasl-k/releases/download/v1.0.30/arkadaslik_v1.0.30.apk",
+    "release_notes": "APK Direkt Indirme ve Kurulum:\n- url_launcher kaldirildi, APK uygulama icinde indirilip kuruluyor\n- Samsung S24 ve tum Android surumlerinde calisir"
 }
