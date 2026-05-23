@@ -114,7 +114,7 @@ class AuthProvider with ChangeNotifier {
           id: userCredential.user!.uid,
           email: userCredential.user!.email ?? '',
           name: userCredential.user!.displayName ?? 'Google Kullanıcısı',
-          birthDate: DateTime.now().subtract(const Duration(days: 6570)),
+          birthDate: DateTime(2000),
           gender: 'other',
           bio: 'Google ile katıldı',
           photoUrls: userCredential.user!.photoURL != null ? [userCredential.user!.photoURL!] : [],
@@ -138,9 +138,9 @@ class AuthProvider with ChangeNotifier {
       if (existingUser == null) {
         final user = app_user.User(
           id: userCredential.user!.uid,
-          email: '', // Telefonla girenlerin e-postası olmayabilir
-          name: 'Yeni Kullanıcı (Tel)',
-          birthDate: DateTime.now().subtract(const Duration(days: 6570)),
+          email: '',
+          name: 'Yeni Kullanici (Tel)',
+          birthDate: DateTime(2000),
           gender: 'other',
           bio: 'Telefonla katıldı',
           photoUrls: [],

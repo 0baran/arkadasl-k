@@ -1,4 +1,5 @@
 // ignore_for_file: deprecated_member_use
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../services/auth_provider.dart';
@@ -261,30 +262,32 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
             // Account Actions
             _buildSectionTitle('Hesap Yönetimi'),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                onPressed: () async {
-                  final authProvider = Provider.of<AuthProvider>(context, listen: false);
-                  if (authProvider.currentUser != null) {
-                    await DatabaseService().resetSwipes(authProvider.currentUser!.id);
-                    if (context.mounted) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Tüm kaydırma geçmişi sıfırlandı! (Test Modu)')),
-                      );
+            if (kDebugMode) ...[
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton.icon(
+                  onPressed: () async {
+                    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+                    if (authProvider.currentUser != null) {
+                      await DatabaseService().resetSwipes(authProvider.currentUser!.id);
+                      if (context.mounted) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Tüm kaydırma geçmişi sıfırlandı! (Test Modu)')),
+                        );
+                      }
                     }
-                  }
-                },
-                icon: const Icon(Icons.refresh),
-                label: const Text('Eşleşmeleri ve Kaydırmaları Sıfırla (Geliştirici)'),
-                style: ElevatedButton.styleFrom(
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  backgroundColor: AppTheme.accentColor,
-                  foregroundColor: Colors.white,
+                  },
+                  icon: const Icon(Icons.refresh),
+                  label: const Text('Eşleşmeleri ve Kaydırmaları Sıfırla (Geliştirici)'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    backgroundColor: AppTheme.accentColor,
+                    foregroundColor: Colors.white,
+                  ),
                 ),
               ),
-            ),
-            const SizedBox(height: 16),
+              const SizedBox(height: 16),
+            ],
             Card(
               child: ListTile(
                 leading: const Icon(Icons.info_outline, color: Colors.blue),

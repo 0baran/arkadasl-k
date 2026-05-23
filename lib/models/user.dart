@@ -72,7 +72,6 @@ class User {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'email': email,
       'name': name,
       'birthDate': birthDate.toIso8601String(),
       'gender': gender,

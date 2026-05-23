@@ -2,7 +2,6 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // Helper Functions
     function isAuthenticated() {
       return request.auth != null;
     }
@@ -11,35 +10,38 @@ service cloud.firestore {
       return request.auth.uid == userId;
     }
 
+    function isChatParticipant(chatId) {
+      let parts = chatId.split('_');
+      return request.auth.uid in parts;
+    }
+
     // Users Collection
     match /users/{userId} {
-      allow read: if isAuthenticated(); // Everyone can read profiles
+      allow read: if isAuthenticated();
       allow create: if isAuthenticated() && isOwner(userId);
       allow update: if isAuthenticated() && isOwner(userId);
       allow delete: if isAuthenticated() && isOwner(userId);
       
-      // Notifications (Subcollection)
       match /notifications/{notificationId} {
-        allow read, update: if isAuthenticated() && isOwner(userId); // Receiver can read and mark as read
-        allow create: if isAuthenticated(); // Anyone can send
+        allow read, update: if isAuthenticated() && isOwner(userId);
+        allow create: if isAuthenticated() && request.resource.data.senderId == request.auth.uid;
       }
     }
 
     // Matches Collection
     match /matches/{matchId} {
       allow read: if isAuthenticated() && (resource.data.userId1 == request.auth.uid || resource.data.userId2 == request.auth.uid);
-      allow create: if isAuthenticated();
+      allow create: if isAuthenticated() && request.resource.data.userId1 == request.auth.uid;
       allow update, delete: if isAuthenticated() && (resource.data.userId1 == request.auth.uid || resource.data.userId2 == request.auth.uid);
     }
 
     // Chats Collection
     match /chats/{chatId} {
-      // Must be part of chat (chatId contains uid)
-      allow read: if isAuthenticated() && chatId.matches('.*' + request.auth.uid + '.*');
+      allow read: if isAuthenticated() && isChatParticipant(chatId);
       
       match /messages/{messageId} {
-        allow read: if isAuthenticated() && chatId.matches('.*' + request.auth.uid + '.*');
-        allow create: if isAuthenticated() && request.resource.data.senderId == request.auth.uid;
+        allow read: if isAuthenticated() && isChatParticipant(chatId);
+        allow create: if isAuthenticated() && request.resource.data.senderId == request.auth.uid && isChatParticipant(chatId);
       }
     }
 
@@ -51,7 +53,7 @@ service cloud.firestore {
     // Reports Collection
     match /reports/{reportId} {
       allow create: if isAuthenticated() && request.resource.data.reporterId == request.auth.uid;
-      allow read, update, delete: if false; // Only admin (server-side) can read reports
+      allow read, update, delete: if false;
     }
   }
 }
