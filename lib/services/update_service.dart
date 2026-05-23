@@ -118,11 +118,11 @@ class UpdateService {
               final uri = Uri.parse(apkUrl);
               bool launched = false;
               for (final mode in [LaunchMode.externalApplication, LaunchMode.platformDefault, LaunchMode.inAppWebView]) {
-                if (await canLaunchUrl(uri)) {
+                try {
                   await launchUrl(uri, mode: mode);
                   launched = true;
                   break;
-                }
+                } catch (_) {}
               }
               if (!launched && context.mounted) {
                 await showDialog(
