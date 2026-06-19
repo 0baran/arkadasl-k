@@ -85,7 +85,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
 
   Future<void> _handleLike(User user) async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final isMatch = await _databaseService.handleLike(authProvider.currentUser!.id, user.id, true);
+    final currentUserId = authProvider.currentUser?.id;
+    if (currentUserId == null) return;
+    final isMatch = await _databaseService.handleLike(currentUserId, user.id, true);
     
     if (mounted) {
       if (isMatch) {
@@ -112,7 +114,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
 
   Future<void> _handleDislike(User user) async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    await _databaseService.handleLike(authProvider.currentUser!.id, user.id, false);
+    final currentUserId = authProvider.currentUser?.id;
+    if (currentUserId == null) return;
+    await _databaseService.handleLike(currentUserId, user.id, false);
     
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -126,7 +130,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
 
   Future<void> _handleSuperLike(User user) async {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    final isMatch = await _databaseService.handleLike(authProvider.currentUser!.id, user.id, true);
+    final currentUserId = authProvider.currentUser?.id;
+    if (currentUserId == null) return;
+    final isMatch = await _databaseService.handleLike(currentUserId, user.id, true);
     
     if (mounted) {
       if (isMatch) {

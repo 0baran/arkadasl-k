@@ -90,9 +90,6 @@ class Message {
   }
 
   bool isFromUser(String userId) => senderId == userId;
-
-  @Deprecated('Use isFromUser(String userId) instead')
-  bool get isFromCurrentUser => false;
 }
 
 enum MessageType {

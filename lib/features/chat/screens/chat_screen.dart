@@ -118,7 +118,9 @@ class _ChatScreenState extends State<ChatScreen> {
         actions: [
           PopupMenuButton<String>(
             onSelected: (value) async {
-              final currentUserId = Provider.of<AuthProvider>(context, listen: false).currentUser!.id;
+              final currentUser = Provider.of<AuthProvider>(context, listen: false).currentUser;
+              if (currentUser == null) return;
+              final currentUserId = currentUser.id;
               if (value == 'block') {
                 await _databaseService.blockUser(currentUserId, widget.otherUser.id);
                 if (mounted) Navigator.pop(context); // Go back to matches screen
@@ -143,11 +145,13 @@ class _ChatScreenState extends State<ChatScreen> {
       body: Column(
         children: [
           Expanded(
-            child: StreamBuilder<List<Message>>(
-              stream: _databaseService.getMessagesStream(
-                Provider.of<AuthProvider>(context, listen: false).currentUser!.id,
-                widget.otherUser.id,
-              ),
+            child: Builder(builder: (context) {
+              final currentUserId = Provider.of<AuthProvider>(context, listen: false).currentUser?.id;
+              if (currentUserId == null) {
+                return const Center(child: CircularProgressIndicator());
+              }
+              return StreamBuilder<List<Message>>(
+                stream: _databaseService.getMessagesStream(currentUserId, widget.otherUser.id),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Center(child: CircularProgressIndicator());
@@ -198,8 +202,10 @@ class _ChatScreenState extends State<ChatScreen> {
                   },
                 );
               },
-            ),
-          ),
+            );
+          },
+        ),
+      ),
           _buildMessageInput(),
         ],
       ),

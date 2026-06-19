@@ -1,6 +1,6 @@
 {
-    "version": "1.0.32",
-    "build": 33,
-    "apk_url": "https://github.com/0baran/arkadasl-k/releases/download/v1.0.32/arkadaslik_v1.0.32.apk",
-    "release_notes": "Kesfet Duzeltmesi:\n- Gender filtresi Firestore index hatasi vermesin diye client-side'a tasindi\n- Detayli debug log eklendi (kac kisi fetch edildi, hangi filtre kac kisi eledi)\n- Hatalar artik sessizce gomulmuyor, rethrow ile ekrana yansiyor\n- user doc id dogru sekilde Firestore'dan aliniyor"
+    "version": "1.0.33",
+    "build": 34,
+    "apk_url": "https://github.com/0baran/arkadasl-k/releases/download/v1.0.33/arkadaslik_v1.0.33.apk",
+    "release_notes": "Kod Incelemesi Dueltmeleri:\n- discover/chat screen null assertion crash riskleri giderildi\n- main.dart sessiz .catchError duzeltildi\n- chat_repository markMessagesAsRead implemente edildi\n- timestamp string yerine serverTimestamp kullaniliyor\n- message.dart deprecated isFromCurrentUser temizlendi\n- splash_screen auth user Login'e degil Home'a yonleniyor"
 }

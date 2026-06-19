@@ -38,7 +38,7 @@ class ChatRepository {
     try {
       await _firestore.collection('matches').doc(chatId).update({
         'lastMessage': message.content,
-        'lastMessageAt': message.timestamp.toIso8601String(),
+        'lastMessageAt': FieldValue.serverTimestamp(),
       });
     } catch (e) {
       debugPrint('Error updating last message: $e');
@@ -54,7 +54,18 @@ class ChatRepository {
   }
 
   Future<void> markMessagesAsRead(String userId1, String userId2) async {
-    // Future enhancement
+    try {
+      final chatId = getChatId(userId1, userId2);
+      final unreadSnapshot = await _firestore.collection('chats').doc(chatId).collection('messages')
+          .where('receiverId', isEqualTo: userId1)
+          .where('isRead', isEqualTo: false)
+          .get();
+      for (final doc in unreadSnapshot.docs) {
+        await doc.reference.update({'isRead': true});
+      }
+    } catch (e) {
+      debugPrint('Error marking messages as read: $e');
+    }
   }
 
   Stream<QuerySnapshot> getUnreadNotificationsStream(String userId) {
@@ -66,6 +77,8 @@ class ChatRepository {
   Future<void> markNotificationAsRead(String userId, String notificationId) async {
     try {
       await _firestore.collection('users').doc(userId).collection('notifications').doc(notificationId).update({'isRead': true});
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('Error marking notification as read: $e');
+    }
   }
 }

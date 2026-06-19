@@ -74,7 +74,9 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
       FirebaseFirestore.instance.collection('users').doc(user.uid).update({
         'isOnline': isOnline,
         'lastSeen': FieldValue.serverTimestamp(),
-      }).catchError((_) {});
+      }).catchError((e) {
+        debugPrint('App lifecycle update failed: $e');
+      });
     }
   }
 

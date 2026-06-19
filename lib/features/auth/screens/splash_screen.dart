@@ -71,14 +71,8 @@ class _SplashScreenState extends State<SplashScreen>
         MaterialPageRoute(builder: (_) => const HomeScreen()),
       );
     } else if (authProvider.isLoggedIn) {
-      // Profil hala yüklenemediyse ama giriş yapıldıysa, çıkış yapma.
-      // Belki internet yavaştır. Kullanıcıyı bir süre daha bekletebilir veya 
-      // veri bağlantısı kontrol edilebilir. Şimdilik Home'a atalım veya
-      // çıkış yapmadan Login ekranına atalım ama çıkış YAPMAYALIM.
-      // En doğrusu splash'te kalıp kullanıcıya "Bağlantı bekleniyor" göstermektir.
-      // Şimdilik hataya düşmemek için Login'e atalım ama authProvider.signOut() YAPMAYALIM.
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const LoginScreen()),
+        MaterialPageRoute(builder: (_) => const HomeScreen()),
       );
     } else {
       Navigator.of(context).pushReplacement(
