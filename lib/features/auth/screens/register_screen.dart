@@ -239,7 +239,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   onTap: _selectBirthDate,
                   child: InputDecorator(
                     decoration: InputDecoration(
-                      labelText: 'Doğum Tarihi (İsteğe Bağlı)',
+                      labelText: 'Doğum Tarihi',
                       prefixIcon: const Icon(Icons.calendar_today),
                       filled: true,
                       fillColor: isDark ? const Color(0xFF2A2A35) : Colors.grey.shade50,
@@ -261,42 +261,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 16),
 
                 // Gender Selection
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text('Cinsiyet'),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: RadioListTile<String>(
-                            title: const Text('Erkek'),
-                            value: 'male',
-                            groupValue: _selectedGender,
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedGender = value!;
-                              });
-                            },
-                            contentPadding: EdgeInsets.zero,
-                          ),
+                RadioGroup<String>(
+                  groupValue: _selectedGender,
+                  onChanged: (value) {
+                    setState(() {
+                      _selectedGender = value!;
+                    });
+                  },
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: RadioListTile<String>(
+                          title: const Text('Erkek'),
+                          value: 'male',
+                          contentPadding: EdgeInsets.zero,
                         ),
-                        Expanded(
-                          child: RadioListTile<String>(
-                            title: const Text('Kadın'),
-                            value: 'female',
-                            groupValue: _selectedGender,
-                            onChanged: (value) {
-                              setState(() {
-                                _selectedGender = value!;
-                              });
-                            },
-                            contentPadding: EdgeInsets.zero,
-                          ),
+                      ),
+                      Expanded(
+                        child: RadioListTile<String>(
+                          title: const Text('Kadın'),
+                          value: 'female',
+                          contentPadding: EdgeInsets.zero,
                         ),
-                      ],
-                    ),
-                  ],
+                      ),
+                    ],
+                  ),
                 ),
 
                 const SizedBox(height: 24),

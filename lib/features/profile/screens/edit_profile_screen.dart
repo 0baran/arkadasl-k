@@ -90,8 +90,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         });
 
         final authProvider = Provider.of<AuthProvider>(context, listen: false);
+        final currentUserId = authProvider.currentUser?.id;
+        if (currentUserId == null) {
+          setState(() => _isLoading = false);
+          return;
+        }
         final imageUrl = await _storageService.uploadProfileImage(
-          authProvider.currentUser!.id,
+          currentUserId,
           File(image.path),
         );
 

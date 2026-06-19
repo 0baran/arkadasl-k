@@ -96,7 +96,7 @@ class AppStrings {
   // Errors
   static const String errorOccurred = 'Bir hata oluştu';
   static const String invalidEmail = 'Geçersiz e-posta';
-  static const String weakPassword = 'Şifre çok zayıf';
+  static const String weakPassword = 'En az 8 karakter, büyük harf, küçük harf ve rakam içermeli';
   static const String emailAlreadyInUse = 'Bu e-posta zaten kullanımda';
   static const String userNotFound = 'Kullanıcı bulunamadı';
   static const String wrongPassword = 'Yanlış şifre';
