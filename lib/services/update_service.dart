@@ -5,15 +5,26 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../core/theme.dart';
 
 class UpdateService {
   static const String githubRepo = "0baran/arkadasl-k"; 
+  static const String _skippedKey = "update_skipped_version";
   
   static String get _apiUrl => "https://raw.githubusercontent.com/$githubRepo/main/version.json";
   
-  static String? _skippedVersion;
   static bool _isDownloading = false;
+
+  static Future<String?> _getSkippedVersion() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString(_skippedKey);
+  }
+
+  static Future<void> _setSkippedVersion(String version) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(_skippedKey, version);
+  }
 
   static Future<void> checkForUpdates(BuildContext context) async {
     try {
@@ -36,7 +47,8 @@ class UpdateService {
         final releaseNotes = data['release_notes']?.toString() ?? '';
 
         // Ayni surum icin daha once "Daha Sonra" dendiyse tekrar gosterme
-        if (_skippedVersion == latestVersion) return;
+        final skipped = await _getSkippedVersion();
+        if (skipped == latestVersion) return;
 
         final packageInfo = await PackageInfo.fromPlatform();
         final currentVersion = packageInfo.version;
@@ -161,7 +173,7 @@ class UpdateService {
         actions: [
           TextButton(
             onPressed: () {
-              _skippedVersion = version;
+              _setSkippedVersion(version);
               Navigator.pop(context);
             },
             child: const Text('Daha Sonra', style: TextStyle(color: Colors.grey)),
