@@ -350,7 +350,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Kesfet',
+                      'Keşfet (Test)',
                       style: GoogleFonts.outfit(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
