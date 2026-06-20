@@ -1,6 +1,5 @@
 ﻿// ignore_for_file: use_build_context_synchronously
 import 'dart:ui';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -380,17 +379,9 @@ class _LoginScreenState extends State<LoginScreen> {
                       ],
                     ),
                     const SizedBox(height: 16),
-                    FutureBuilder<PackageInfo>(
-                      future: PackageInfo.fromPlatform(),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return Text(
-                            'Sürüm ${snapshot.data!.version}',
-                            style: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontSize: 12),
-                          );
-                        }
-                        return const SizedBox();
-                      },
+                    Text(
+                      'Surum ${AppConstants.appVersion}',
+                      style: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontSize: 12),
                     ),
                   ],
                 ),

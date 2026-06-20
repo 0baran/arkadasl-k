@@ -2,6 +2,7 @@ param([string]$type = "patch")
 
 $pubspec = Resolve-Path "$PSScriptRoot\..\pubspec.yaml"
 $versionFile = Resolve-Path "$PSScriptRoot\..\version.json"
+$constantsFile = Resolve-Path "$PSScriptRoot\..\lib\core\constants.dart"
 
 $yaml = Get-Content $pubspec -Raw
 $m = [regex]::Match($yaml, 'version:\s*(\d+)\.(\d+)\.(\d+)\+(\d+)')
@@ -22,5 +23,9 @@ $json = Get-Content $versionFile -Raw | ConvertFrom-Json
 $json.version = $newVer
 $json.build = $build
 $json | ConvertTo-Json | Set-Content $versionFile
+
+$constants = Get-Content $constantsFile -Raw
+$constants = $constants -replace "static const String appVersion = '[^']*'", "static const String appVersion = '$newVer'"
+Set-Content $constantsFile -Value $constants -NoNewline
 
 Write-Host "v$newVer (build $build)"
