@@ -1,9 +1,6 @@
 ﻿import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
-import 'package:open_filex/open_filex.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../core/theme.dart';
@@ -13,8 +10,6 @@ class UpdateService {
   static const String _skippedKey = "update_skipped_version";
   
   static String get _apiUrl => "https://raw.githubusercontent.com/$githubRepo/main/version.json";
-  
-  static bool _isDownloading = false;
 
   static Future<String?> _getSkippedVersion() async {
     final prefs = await SharedPreferences.getInstance();
@@ -79,67 +74,11 @@ class UpdateService {
     return false;
   }
 
-  static Future<void> _downloadAndInstall(String apkUrl, BuildContext context) async {
-    if (_isDownloading) return;
-    _isDownloading = true;
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Row(
-          children: [
-            SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2)),
-            SizedBox(width: 12),
-            Text('APK indiriliyor...'),
-          ],
-        ),
-        duration: Duration(seconds: 30),
-      ),
-    );
-
-    try {
-      final response = await http.get(Uri.parse(apkUrl));
-      if (response.statusCode != 200) {
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Indirme hatasi: HTTP ${response.statusCode}')),
-          );
-        }
-        return;
-      }
-
-      final dir = await getTemporaryDirectory();
-      final file = File('${dir.path}/arkadaslik_update.apk');
-      await file.writeAsBytes(response.bodyBytes);
-
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).hideCurrentSnackBar();
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('APK indirildi, kurulum baslatiliyor...')),
-        );
-      }
-
-      final result = await OpenFilex.open(file.path);
-      if (result.type != ResultType.done && context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Kurulum baslatilamadi: ${result.message}')),
-        );
-      }
-    } catch (e) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Indirme hatasi: $e')),
-        );
-      }
-    } finally {
-      _isDownloading = false;
-    }
-  }
-
   static void _showUpdateDialog(BuildContext context, String version, String apkUrl, String releaseNotes) {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (context) => AlertDialog(
+      builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Row(
           children: [
@@ -152,8 +91,7 @@ class UpdateService {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Surum $version yayinlandi. Hemen indirmek ister misiniz?', 
-              style: const TextStyle(fontWeight: FontWeight.bold)),
+            Text('Surum $version yayinlandi.', style: const TextStyle(fontWeight: FontWeight.bold)),
             const SizedBox(height: 12),
             Container(
               padding: const EdgeInsets.all(8),
@@ -162,10 +100,10 @@ class UpdateService {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
-                releaseNotes.isNotEmpty ? releaseNotes : "Hata duzeltmeleri ve performans iyilestirmeleri.", 
-                maxLines: 4, 
+                releaseNotes.isNotEmpty ? releaseNotes : "Hata duzeltmeleri ve performans iyilestirmeleri.",
+                maxLines: 4,
                 overflow: TextOverflow.ellipsis,
-                style: TextStyle(fontSize: 12, color: Colors.grey.shade700)
+                style: TextStyle(fontSize: 12, color: Colors.grey.shade700),
               ),
             ),
           ],
@@ -174,7 +112,7 @@ class UpdateService {
           TextButton(
             onPressed: () {
               _setSkippedVersion(version);
-              Navigator.pop(context);
+              Navigator.pop(ctx);
             },
             child: const Text('Daha Sonra', style: TextStyle(color: Colors.grey)),
           ),
@@ -184,10 +122,55 @@ class UpdateService {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
             onPressed: () {
-              Navigator.pop(context);
-              _downloadAndInstall(apkUrl, context);
+              Navigator.pop(ctx);
+              _showDownloadInstructions(context, version, apkUrl);
             },
-            child: const Text('Simdi Guncelle'),
+            child: const Text('Nasil Indirilir?'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  static void _showDownloadInstructions(BuildContext context, String version, String apkUrl) {
+    final releaseUrl = "https://github.com/0baran/arkadasl-k/releases/tag/v$version";
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Text('Guncelleme Adimlari'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('1. Asagidaki linki kopyalayin'),
+            const SizedBox(height: 8),
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade100,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: SelectableText(
+                releaseUrl,
+                style: const TextStyle(fontSize: 11, color: Colors.blue),
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Text('2. Telefonunuzun tarayicisinda acin'),
+            const SizedBox(height: 8),
+            const Text('3. APK dosyasina tiklayip indirin'),
+            const SizedBox(height: 8),
+            const Text('4. Indirilen APKyi acip kurun'),
+            const SizedBox(height: 8),
+            const Text('Mevcut hesabiniz korunur, tekrar giris yapmaniz gerekmez.', style: TextStyle(fontSize: 11, color: Colors.grey)),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Tamam'),
           ),
         ],
       ),
