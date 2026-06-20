@@ -93,12 +93,41 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
       if (isMatch) {
         showDialog(
           context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('🎉 EŞLEŞTİNİZ! 🎉', textAlign: TextAlign.center),
-            content: Text('${user.name} ile eşleştin. Hemen mesaj atmak ister misin?', textAlign: TextAlign.center),
-            actions: [
-              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Kapat')),
-            ],
+          builder: (context) => Dialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('🎉 EŞLEŞTİNİZ!', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 16),
+                  CircleAvatar(
+                    radius: 50,
+                    backgroundImage: user.photoUrls.isNotEmpty ? CachedNetworkImageProvider(user.photoUrls.first) : null,
+                    child: user.photoUrls.isEmpty ? Text(user.name[0].toUpperCase(), style: const TextStyle(fontSize: 40)) : null,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(user.name, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 8),
+                  const Text('Artik mesajlasabilirsiniz!', style: TextStyle(color: Colors.grey)),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      TextButton(onPressed: () => Navigator.pop(context), child: const Text('Kapat')),
+                      ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primaryColor, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
+                        child: const Text('Mesaj Gonder', style: TextStyle(color: Colors.white)),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ),
         );
       } else {
@@ -138,12 +167,39 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
       if (isMatch) {
         showDialog(
           context: context,
-          builder: (context) => AlertDialog(
-            title: const Text('🎉 SÜPER EŞLEŞME! 🎉', textAlign: TextAlign.center),
-            content: Text('${user.name} ile süper eşleştin!', textAlign: TextAlign.center),
-            actions: [
-              TextButton(onPressed: () => Navigator.pop(context), child: const Text('Kapat')),
-            ],
+          builder: (context) => Dialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text('🌟 SUPER ESLESME!', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 16),
+                  CircleAvatar(
+                    radius: 50,
+                    backgroundImage: user.photoUrls.isNotEmpty ? CachedNetworkImageProvider(user.photoUrls.first) : null,
+                    child: user.photoUrls.isEmpty ? Text(user.name[0].toUpperCase(), style: const TextStyle(fontSize: 40)) : null,
+                  ),
+                  const SizedBox(height: 12),
+                  Text(user.name, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
+                  const SizedBox(height: 8),
+                  const Text('Super bir eslesme!', style: TextStyle(color: Colors.grey)),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      TextButton(onPressed: () => Navigator.pop(context), child: const Text('Kapat')),
+                      ElevatedButton(
+                        onPressed: () => Navigator.pop(context),
+                        style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primaryColor, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
+                        child: const Text('Mesaj Gonder', style: TextStyle(color: Colors.white)),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
           ),
         );
       } else {
@@ -558,15 +614,33 @@ class _UserProfileCardState extends State<_UserProfileCard> {
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: [
                                 Expanded(
-                                  child: Text(
-                                    user.name,
-                                    style: GoogleFonts.outfit(
-                                      color: Colors.white,
-                                      fontSize: 32,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width: 10,
+                                        height: 10,
+                                        margin: const EdgeInsets.only(right: 8, bottom: 10),
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: user.isOnline ? const Color(0xFF4CAF50) : Colors.grey,
+                                          boxShadow: user.isOnline ? [
+                                            BoxShadow(color: const Color(0xFF4CAF50).withValues(alpha: 0.5), blurRadius: 6)
+                                          ] : null,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          user.name,
+                                          style: GoogleFonts.outfit(
+                                            color: Colors.white,
+                                            fontSize: 32,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                                 const SizedBox(width: 8),
@@ -584,9 +658,11 @@ class _UserProfileCardState extends State<_UserProfileCard> {
                                     padding: EdgeInsets.only(bottom: 6.0),
                                     child: Icon(Icons.verified, color: Colors.blue, size: 24),
                                   ),
-                                ]
+                                ],
                               ],
                             ),
+                            if (user.isOnline)
+                              const Text('Online', style: TextStyle(color: Color(0xFF4CAF50), fontSize: 12, fontWeight: FontWeight.w600)),
                             if (user.jobTitle.isNotEmpty || user.school.isNotEmpty)
                               Padding(
                                 padding: const EdgeInsets.only(top: 8.0, bottom: 4.0),

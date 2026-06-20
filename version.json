@@ -1,6 +1,6 @@
 {
-    "version": "1.0.34",
-    "build": 35,
-    "apk_url": "https://github.com/0baran/arkadasl-k/releases/download/v1.0.34/arkadaslik_v1.0.34.apk",
-    "release_notes": "Resim ve Dogum Tarihi Duzeltmeleri:\n- Profil resim yukleme null assertion crash fix\n- Dogum tarihi etiketi: Istege Bagli -> Zorunlu\n- RadioListTile deprecation Register ekraninda giderildi\n- Firebase Storage guvenlik kurallari (storage.rules) eklendi\n- Sifre politikasi mesaji guncellendi"
+    "version": "1.0.35",
+    "build": 36,
+    "apk_url": "https://github.com/0baran/arkadasl-k/releases/download/v1.0.35/arkadaslik_v1.0.35.apk",
+    "release_notes": "Kesfet Kartina Online Status ve Eslesme Yeniligi:\n- Kesfet kartina online/offline yesil/gri nokta eklendi\n- Online kullanicilarda 'Online' yazisi gosteriliyor\n- Eslesme diyalogu yenilendi: kullanici fotografi + isim + Mesaj Gonder butonu\n- Super eslesme diyalogu da ayni sekilde guncellendi\n- v1.0.34 duzeltmeleri dahil"
 }
