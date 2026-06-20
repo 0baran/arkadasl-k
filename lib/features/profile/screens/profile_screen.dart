@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import '../../../services/auth_provider.dart';
 import '../../../core/theme.dart';
@@ -189,20 +188,12 @@ class ProfileScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 32),
-            FutureBuilder<PackageInfo>(
-              future: PackageInfo.fromPlatform(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  return Text(
-                    'Sürüm ${snapshot.data!.version}',
-                    style: TextStyle(
-                      color: AppTheme.textSecondary,
-                      fontSize: 13,
-                    ),
-                  );
-                }
-                return const SizedBox();
-              },
+            Text(
+              'Surum ${AppConstants.appVersion}',
+              style: TextStyle(
+                color: AppTheme.textSecondary,
+                fontSize: 13,
+              ),
             ),
             const SizedBox(height: 120),
           ],

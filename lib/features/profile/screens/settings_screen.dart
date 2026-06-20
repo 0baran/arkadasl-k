@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../services/auth_provider.dart';
 import '../../../services/database_service.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 import '../../../core/constants.dart';
 import '../../../core/theme.dart';
 import '../../auth/screens/login_screen.dart';
@@ -332,20 +331,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             const SizedBox(height: 24),
             Center(
-              child: FutureBuilder<PackageInfo>(
-                future: PackageInfo.fromPlatform(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Text(
-                      'Sürüm ${snapshot.data!.version}',
-                      style: TextStyle(
-                        color: AppTheme.textSecondary.withValues(alpha: 0.7),
-                        fontSize: 12,
-                      ),
-                    );
-                  }
-                  return const SizedBox();
-                },
+              child: Text(
+                'Surum ${AppConstants.appVersion}',
+                style: TextStyle(
+                  color: AppTheme.textSecondary.withValues(alpha: 0.7),
+                  fontSize: 12,
+                ),
               ),
             ),
             const SizedBox(height: 40),
