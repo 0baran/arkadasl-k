@@ -19,6 +19,7 @@ class User {
   final String relationshipGoal;
   final String jobTitle;
   final String school;
+  final String? fcmToken;
   final UserSettings settings;
 
   User({
@@ -40,6 +41,7 @@ class User {
     this.relationshipGoal = '',
     this.jobTitle = '',
     this.school = '',
+    this.fcmToken,
     UserSettings? settings,
   }) : settings = settings ?? UserSettings();
 
@@ -63,6 +65,7 @@ class User {
       relationshipGoal: json['relationshipGoal'] ?? '',
       jobTitle: json['jobTitle'] ?? '',
       school: json['school'] ?? '',
+      fcmToken: json['fcmToken'],
       settings: json['settings'] != null
           ? UserSettings.fromJson(json['settings'])
           : UserSettings(),
@@ -88,6 +91,7 @@ class User {
       'relationshipGoal': relationshipGoal,
       'jobTitle': jobTitle,
       'school': school,
+      if (fcmToken != null) 'fcmToken': fcmToken,
       'settings': settings.toJson(),
     };
   }
@@ -111,6 +115,7 @@ class User {
     String? relationshipGoal,
     String? jobTitle,
     String? school,
+    String? fcmToken,
     UserSettings? settings,
   }) {
     return User(
@@ -132,6 +137,7 @@ class User {
       relationshipGoal: relationshipGoal ?? this.relationshipGoal,
       jobTitle: jobTitle ?? this.jobTitle,
       school: school ?? this.school,
+      fcmToken: fcmToken ?? this.fcmToken,
       settings: settings ?? this.settings,
     );
   }
@@ -150,16 +156,19 @@ class User {
 class GeoLocation {
   final double latitude;
   final double longitude;
+  final String? address;
 
   GeoLocation({
     required this.latitude,
     required this.longitude,
+    this.address,
   });
 
   factory GeoLocation.fromJson(Map<String, dynamic> json) {
     return GeoLocation(
       latitude: (json['latitude'] ?? 0.0).toDouble(),
       longitude: (json['longitude'] ?? 0.0).toDouble(),
+      address: json['address'],
     );
   }
 
@@ -167,16 +176,19 @@ class GeoLocation {
     return {
       'latitude': latitude,
       'longitude': longitude,
+      if (address != null) 'address': address,
     };
   }
 
   GeoLocation copyWith({
     double? latitude,
     double? longitude,
+    String? address,
   }) {
     return GeoLocation(
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
+      address: address ?? this.address,
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:geocoding/geocoding.dart';
 
 class LocationService {
   Future<bool> checkPermission() async {
@@ -61,5 +62,30 @@ class LocationService {
 
   Future<void> openAppSettings() async {
     await Geolocator.openAppSettings();
+  }
+
+  Future<String> getAddressFromCoordinates(double lat, double lon) async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(lat, lon);
+      if (placemarks.isNotEmpty) {
+        Placemark place = placemarks.first;
+        String district = place.subAdministrativeArea ?? place.locality ?? '';
+        String city = place.administrativeArea ?? '';
+        
+        if (district.isNotEmpty && city.isNotEmpty) {
+          if (district == city) return city;
+          return '$district, $city';
+        } else if (city.isNotEmpty) {
+          return city;
+        } else if (district.isNotEmpty) {
+          return district;
+        } else {
+          return place.country ?? 'Konum Bulunamadı';
+        }
+      }
+      return 'Konum Bulunamadı';
+    } catch (e) {
+      return 'Konum Hatası';
+    }
   }
 }

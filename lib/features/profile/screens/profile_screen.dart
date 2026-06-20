@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../../services/auth_provider.dart';
 import '../../../core/theme.dart';
 import '../../../core/utils.dart';
+import '../../../core/constants.dart';
 import 'edit_profile_screen.dart';
 import 'settings_screen.dart';
 import '../../auth/screens/login_screen.dart';

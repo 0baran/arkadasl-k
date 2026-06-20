@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'auth_service.dart';
 import 'database_service.dart';
 import '../models/user.dart' as app_user;
@@ -37,6 +38,14 @@ class AuthProvider with ChangeNotifier {
   Future<void> _loadUserProfile(String userId) async {
     try {
       _currentUser = await _databaseService.getUser(userId);
+      if (_currentUser != null) {
+        String? token = await FirebaseMessaging.instance.getToken();
+        if (token != null && _currentUser!.fcmToken != token) {
+          final updatedUser = _currentUser!.copyWith(fcmToken: token);
+          await _databaseService.updateUser(updatedUser);
+          _currentUser = updatedUser;
+        }
+      }
       notifyListeners();
     } catch (e) {
       debugPrint('Kullanıcı profili yüklenemedi: $e');

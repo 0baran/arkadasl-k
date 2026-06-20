@@ -47,12 +47,14 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
       if (currentUser != null) {
         // Get current user location
         final position = await _locationService.getCurrentPosition();
+        final address = await _locationService.getAddressFromCoordinates(position.latitude, position.longitude);
 
         // Update current user's stored location so others can find them
         final updatedUser = currentUser.copyWith(
           location: GeoLocation(
             latitude: position.latitude,
             longitude: position.longitude,
+            address: address,
           ),
         );
         await _databaseService.updateUser(updatedUser);
@@ -705,6 +707,17 @@ class _UserProfileCardState extends State<_UserProfileCard> {
                                           ],
                                         ),
                                       ),
+                                  ],
+                                ),
+                              ),
+                            if (user.location.address != null)
+                              Padding(
+                                padding: const EdgeInsets.only(top: 4.0, bottom: 4.0),
+                                child: Row(
+                                  children: [
+                                    const Icon(Icons.location_on_outlined, color: Colors.white70, size: 16),
+                                    const SizedBox(width: 4),
+                                    Expanded(child: Text(user.location.address!, style: GoogleFonts.outfit(color: Colors.white70, fontSize: 14), maxLines: 1, overflow: TextOverflow.ellipsis)),
                                   ],
                                 ),
                               ),
