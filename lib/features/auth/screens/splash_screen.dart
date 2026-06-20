@@ -1,4 +1,6 @@
 // ignore_for_file: use_build_context_synchronously
+import 'dart:async';
+import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../services/auth_provider.dart';
@@ -49,28 +51,33 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   Future<void> _checkAuthAndNavigate() async {
-    await Future.delayed(const Duration(milliseconds: 2500));
+    // Animasyonun bitmesini bekle
+    await Future.delayed(const Duration(milliseconds: 2000));
 
     if (!mounted) return;
 
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    
-    // Firebase auth'a giriş yapmış ama profil henüz Firestore'dan çekilememişse bekle
-    if (authProvider.isLoggedIn && !authProvider.isUserProfileComplete) {
-      int retries = 0;
-      while (!authProvider.isUserProfileComplete && retries < 25) {
-        await Future.delayed(const Duration(milliseconds: 500));
-        retries++;
+    // Firebase Auth'un ilk durumunu bekle (cached token yuklenene kadar)
+    final auth = firebase_auth.FirebaseAuth.instance;
+    final user = await auth.authStateChanges().first.timeout(
+      const Duration(seconds: 5),
+      onTimeout: () => auth.currentUser,
+    );
+
+    if (!mounted) return;
+
+    if (user != null) {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+
+      // Profilin yuklenmesi icin ek sure ver
+      if (!authProvider.isUserProfileComplete) {
+        for (int i = 0; i < 30; i++) {
+          await Future.delayed(const Duration(milliseconds: 300));
+          if (!mounted) return;
+          if (authProvider.isUserProfileComplete) break;
+        }
       }
-    }
 
-    if (!mounted) return;
-
-    if (authProvider.isUserProfileComplete) {
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (_) => const HomeScreen()),
-      );
-    } else if (authProvider.isLoggedIn) {
+      if (!mounted) return;
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => const HomeScreen()),
       );
