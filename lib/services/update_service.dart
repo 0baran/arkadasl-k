@@ -12,13 +12,10 @@ class UpdateService {
   
   static String get _apiUrl => "https://raw.githubusercontent.com/$githubRepo/main/version.json";
   
-  static bool _isChecked = false;
+  static String? _skippedVersion;
   static bool _isDownloading = false;
 
   static Future<void> checkForUpdates(BuildContext context) async {
-    if (_isChecked) return;
-    _isChecked = true;
-    
     try {
       if (githubRepo == "Sahip/RepoAdi") {
         debugPrint("UpdateService: GitHub repo adi girilmedigi icin guncelleme kontrolu atlandi.");
@@ -37,6 +34,9 @@ class UpdateService {
         final latestVersion = data['version']?.toString() ?? '';
         final apkUrl = data['apk_url']?.toString();
         final releaseNotes = data['release_notes']?.toString() ?? '';
+
+        // Ayni surum icin daha once "Daha Sonra" dendiyse tekrar gosterme
+        if (_skippedVersion == latestVersion) return;
 
         final packageInfo = await PackageInfo.fromPlatform();
         final currentVersion = packageInfo.version;
@@ -160,7 +160,10 @@ class UpdateService {
         ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () {
+              _skippedVersion = version;
+              Navigator.pop(context);
+            },
             child: const Text('Daha Sonra', style: TextStyle(color: Colors.grey)),
           ),
           ElevatedButton(
