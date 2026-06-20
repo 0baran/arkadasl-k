@@ -1,8 +1,11 @@
-﻿import 'dart:convert';
+import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:open_filex/open_filex.dart';
+import 'package:http/http.dart' as http;
 import '../core/theme.dart';
 
 class UpdateService {
@@ -78,21 +81,91 @@ class UpdateService {
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Row(
-          children: [
-            const Icon(Icons.system_update, color: AppTheme.primaryColor),
-            const SizedBox(width: 8),
-            const Text('Yeni Guncelleme!', style: TextStyle(fontSize: 18)),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Surum $version yayinlandi.', style: const TextStyle(fontWeight: FontWeight.bold)),
-            const SizedBox(height: 12),
+      builder: (ctx) => _UpdateDialog(version: version, apkUrl: apkUrl, releaseNotes: releaseNotes, onSkip: () => _setSkippedVersion(version)),
+    );
+  }
+}
+
+class _UpdateDialog extends StatefulWidget {
+  final String version;
+  final String apkUrl;
+  final String releaseNotes;
+  final VoidCallback onSkip;
+
+  const _UpdateDialog({super.key, required this.version, required this.apkUrl, required this.releaseNotes, required this.onSkip});
+
+  @override
+  State<_UpdateDialog> createState() => _UpdateDialogState();
+}
+
+class _UpdateDialogState extends State<_UpdateDialog> {
+  bool _isDownloading = false;
+  double _progress = 0.0;
+  String _status = '';
+
+  Future<void> _startDownload() async {
+    setState(() {
+      _isDownloading = true;
+      _status = 'İndiriliyor...';
+    });
+
+    try {
+      final dir = await getTemporaryDirectory();
+      final savePath = '${dir.path}/Arkadaslik_v${widget.version}.apk';
+      
+      final request = http.Request('GET', Uri.parse(widget.apkUrl));
+      final response = await http.Client().send(request);
+      
+      final contentLength = response.contentLength ?? 1;
+      int downloaded = 0;
+      
+      final file = File(savePath);
+      final sink = file.openWrite();
+      
+      await response.stream.listen((List<int> chunk) {
+        downloaded += chunk.length;
+        setState(() {
+          _progress = downloaded / contentLength;
+        });
+        sink.add(chunk);
+      }).asFuture();
+      
+      await sink.close();
+      
+      setState(() {
+        _status = 'Kurulum başlatılıyor...';
+      });
+      
+      await OpenFilex.open(savePath);
+      if (mounted) {
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      setState(() {
+        _isDownloading = false;
+        _status = 'İndirme başarısız oldu: $e';
+      });
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      title: Row(
+        children: [
+          const Icon(Icons.system_update, color: AppTheme.primaryColor),
+          const SizedBox(width: 8),
+          const Text('Yeni Güncelleme!', style: TextStyle(fontSize: 18)),
+        ],
+      ),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Sürüm ${widget.version} yayınlandı.', style: const TextStyle(fontWeight: FontWeight.bold)),
+          const SizedBox(height: 12),
+          if (!_isDownloading)
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
@@ -100,80 +173,43 @@ class UpdateService {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
-                releaseNotes.isNotEmpty ? releaseNotes : "Hata duzeltmeleri ve performans iyilestirmeleri.",
+                widget.releaseNotes.isNotEmpty ? widget.releaseNotes : "Hata düzeltmeleri ve performans iyileştirmeleri.",
                 maxLines: 4,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(fontSize: 12, color: Colors.grey.shade700),
               ),
             ),
-          ],
-        ),
-        actions: [
+          if (_isDownloading)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                LinearProgressIndicator(value: _progress, backgroundColor: Colors.grey.shade200, valueColor: const AlwaysStoppedAnimation<Color>(AppTheme.primaryColor)),
+                const SizedBox(height: 8),
+                Text(_status, style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                Text('%${(_progress * 100).toStringAsFixed(1)}', style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold)),
+              ],
+            ),
+        ],
+      ),
+      actions: [
+        if (!_isDownloading)
           TextButton(
             onPressed: () {
-              _setSkippedVersion(version);
-              Navigator.pop(ctx);
+              widget.onSkip();
+              Navigator.pop(context);
             },
             child: const Text('Daha Sonra', style: TextStyle(color: Colors.grey)),
           ),
+        if (!_isDownloading)
           ElevatedButton(
             style: ElevatedButton.styleFrom(
               backgroundColor: AppTheme.primaryColor,
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
             ),
-            onPressed: () {
-              Navigator.pop(ctx);
-              _showDownloadInstructions(context, version, apkUrl);
-            },
-            child: const Text('Nasil Indirilir?'),
+            onPressed: _startDownload,
+            child: const Text('Şimdi İndir ve Kur', style: TextStyle(color: Colors.white)),
           ),
-        ],
-      ),
-    );
-  }
-
-  static void _showDownloadInstructions(BuildContext context, String version, String apkUrl) {
-    final releaseUrl = "https://github.com/0baran/arkadasl-k/releases/tag/v$version";
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Text('Guncelleme Adimlari'),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('1. Asagidaki linki kopyalayin'),
-            const SizedBox(height: 8),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade100,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: SelectableText(
-                releaseUrl,
-                style: const TextStyle(fontSize: 11, color: Colors.blue),
-              ),
-            ),
-            const SizedBox(height: 16),
-            const Text('2. Telefonunuzun tarayicisinda acin'),
-            const SizedBox(height: 8),
-            const Text('3. APK dosyasina tiklayip indirin'),
-            const SizedBox(height: 8),
-            const Text('4. Indirilen APKyi acip kurun'),
-            const SizedBox(height: 8),
-            const Text('Mevcut hesabiniz korunur, tekrar giris yapmaniz gerekmez.', style: TextStyle(fontSize: 11, color: Colors.grey)),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Tamam'),
-          ),
-        ],
-      ),
+      ],
     );
   }
 }
