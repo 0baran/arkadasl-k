@@ -1,6 +1,6 @@
 {
-    "version": "1.0.44",
-    "build": 45,
+    "version": "1.0.45",
+    "build": 46,
     "apk_url": "https://raw.githubusercontent.com/0baran/arkadasl-k/main/release.apk",
-    "release_notes": "Otomatik İndirme (In-App Downloader) Özelliği Eklendi!\n- Artık güncellemeler tek tıkla uygulamanın içinden inip otomatik kurulacak.\n- Yeni konum bazlı bildirim özellikleri aktif."
+    "release_notes": "Otomatik İndirme TEST Sürümü (v1.0.45)\n- Bu bir test güncellemesidir.\n- Keşfet ekranında başlık 'Keşfet (1.0.45)' olarak değişti."
 }
