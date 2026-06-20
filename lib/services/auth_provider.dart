@@ -38,15 +38,24 @@ class AuthProvider with ChangeNotifier {
   Future<void> _loadUserProfile(String userId) async {
     try {
       _currentUser = await _databaseService.getUser(userId);
+      notifyListeners(); // Profil bilgisi gelir gelmez UI'yi güncelle (Splash ekranından hemen geçmesi için)
+      
       if (_currentUser != null) {
-        String? token = await FirebaseMessaging.instance.getToken();
-        if (token != null && _currentUser!.fcmToken != token) {
-          final updatedUser = _currentUser!.copyWith(fcmToken: token);
-          await _databaseService.updateUser(updatedUser);
-          _currentUser = updatedUser;
-        }
+        // FCM token alma işlemi internet yavaşsa takılabilir, bu yüzden async çalıştırıp UI'yi bekletmiyoruz.
+        Future.microtask(() async {
+          try {
+            String? token = await FirebaseMessaging.instance.getToken();
+            if (token != null && _currentUser!.fcmToken != token) {
+              final updatedUser = _currentUser!.copyWith(fcmToken: token);
+              await _databaseService.updateUser(updatedUser);
+              _currentUser = updatedUser;
+              notifyListeners();
+            }
+          } catch (e) {
+            debugPrint('FCM Token güncellenemedi: $e');
+          }
+        });
       }
-      notifyListeners();
     } catch (e) {
       debugPrint('Kullanıcı profili yüklenemedi: $e');
     }

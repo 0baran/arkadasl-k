@@ -1,6 +1,6 @@
 {
-    "version": "1.0.45",
-    "build": 46,
+    "version": "1.0.46",
+    "build": 47,
     "apk_url": "https://raw.githubusercontent.com/0baran/arkadasl-k/main/release.apk",
-    "release_notes": "Otomatik İndirme TEST Sürümü (v1.0.45)\n- Bu bir test güncellemesidir.\n- Keşfet ekranında başlık 'Keşfet (1.0.45)' olarak değişti."
+    "release_notes": "Hesaptan Çıkma Sorunu Çözüldü (v1.0.46)\n- Yavaş internet bağlantılarında uygulamanın oturumu sonlandırması sorunu giderildi.\n- Açılış hızı iyileştirildi."
 }

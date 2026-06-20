@@ -56,21 +56,24 @@ class _SplashScreenState extends State<SplashScreen>
 
     if (!mounted) return;
 
-    // Firebase Auth'un ilk durumunu bekle (cached token yuklenene kadar)
+    // Firebase Auth'un ilk durumunu bekle
     final auth = firebase_auth.FirebaseAuth.instance;
-    final user = await auth.authStateChanges().first.timeout(
-      const Duration(seconds: 5),
-      onTimeout: () => auth.currentUser,
-    );
+    firebase_auth.User? user;
+    
+    try {
+      user = await auth.authStateChanges().first.timeout(const Duration(seconds: 8));
+    } catch (_) {
+      user = auth.currentUser;
+    }
 
     if (!mounted) return;
 
     if (user != null) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-      // Profilin yuklenmesi icin ek sure ver
+      // Profilin yüklenmesi için ek süre ver (Firebase önbellekten hemen çeker)
       if (!authProvider.isUserProfileComplete) {
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < 40; i++) { // 12 saniye bekleme süresi
           await Future.delayed(const Duration(milliseconds: 300));
           if (!mounted) return;
           if (authProvider.isUserProfileComplete) break;
@@ -78,6 +81,9 @@ class _SplashScreenState extends State<SplashScreen>
       }
 
       if (!mounted) return;
+      
+      // Profil yüklenemediyse bile (internet yoksa), eğer auth varsa içeri al
+      // Uygulama içeride offline çalışabilir
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => const HomeScreen()),
       );
