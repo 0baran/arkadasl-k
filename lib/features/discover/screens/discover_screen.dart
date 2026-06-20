@@ -287,23 +287,45 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
 
     if (_nearbyUsers.isEmpty) {
       return Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
+        body: RefreshIndicator(
+          onRefresh: _loadNearbyUsers,
+          child: ListView(
             children: [
-              Icon(Icons.sentiment_dissatisfied,
-                  size: 64, color: AppTheme.textSecondary),
-              const SizedBox(height: 16),
-              Text(
-                'Yakında kimse yok',
-                style: GoogleFonts.outfit(color: AppTheme.textSecondary, fontSize: 24, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Ayarlarınızı değiştirip tekrar deneyin',
-                style: GoogleFonts.outfit(
-                  color: AppTheme.textSecondary,
-                  fontSize: 14,
+              SizedBox(height: MediaQuery.of(context).size.height * 0.25),
+              Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.explore_outlined, size: 64, color: AppTheme.textSecondary),
+                    const SizedBox(height: 16),
+                    Text(
+                      'Yakında kimse yok',
+                      style: GoogleFonts.outfit(color: AppTheme.textSecondary, fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Mesafe veya yas filtreni genisletip tekrar dene',
+                      style: GoogleFonts.outfit(color: AppTheme.textSecondary, fontSize: 14),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 24),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        OutlinedButton.icon(
+                          onPressed: _loadNearbyUsers,
+                          icon: const Icon(Icons.refresh),
+                          label: const Text('Yenile'),
+                        ),
+                        const SizedBox(width: 12),
+                        OutlinedButton.icon(
+                          onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SettingsScreen())),
+                          icon: const Icon(Icons.tune),
+                          label: const Text('Filtreler'),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -315,71 +337,66 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     return Scaffold(
       backgroundColor: AppTheme.backgroundColor,
       body: SafeArea(
-        child: Stack(
-          children: [
-            Column(
-              children: [
-                const SizedBox(height: 16),
-                // Premium Discover Header
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'Keşfet',
-                        style: GoogleFonts.outfit(
-                          fontSize: 32,
-                          fontWeight: FontWeight.bold,
-                          color: AppTheme.textPrimary,
-                        ),
+        child: RefreshIndicator(
+          onRefresh: _loadNearbyUsers,
+          child: Column(
+            children: [
+              const SizedBox(height: 16),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Kesfet',
+                      style: GoogleFonts.outfit(
+                        fontSize: 32,
+                        fontWeight: FontWeight.bold,
+                        color: AppTheme.textPrimary,
                       ),
-                      Container(
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Colors.white,
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.05),
-                              blurRadius: 10,
-                              offset: const Offset(0, 5),
-                            )
-                          ]
-                        ),
-                        child: IconButton(
-                          icon: const Icon(Icons.tune),
-                          color: AppTheme.primaryColor,
-                          onPressed: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute(builder: (_) => const SettingsScreen()),
-                            );
-                          },
-                        ),
-                      )
-                    ],
-                  ),
+                    ),
+                    Container(
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.05),
+                            blurRadius: 10,
+                            offset: const Offset(0, 5),
+                          )
+                        ]
+                      ),
+                      child: IconButton(
+                        icon: const Icon(Icons.tune),
+                        color: AppTheme.primaryColor,
+                        onPressed: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (_) => const SettingsScreen()),
+                          );
+                        },
+                      ),
+                    )
+                  ],
                 ),
-                const SizedBox(height: 16),
-                Expanded(
-                  child: Swiper(
-                    itemCount: _nearbyUsers.length,
-                    layout: SwiperLayout.TINDER,
-                    itemWidth: MediaQuery.of(context).size.width * 0.9,
-                    itemHeight: MediaQuery.of(context).size.height * 0.65,
-                    itemBuilder: (context, index) {
-                      return _UserProfileCard(user: _nearbyUsers[index]);
-                    },
-                    onIndexChanged: (index) {
-                      // Handle card swipe
-                    },
-                  ),
+              ),
+              const SizedBox(height: 16),
+              Expanded(
+                child: Swiper(
+                  itemCount: _nearbyUsers.length,
+                  layout: SwiperLayout.TINDER,
+                  itemWidth: MediaQuery.of(context).size.width * 0.9,
+                  itemHeight: MediaQuery.of(context).size.height * 0.65,
+                  itemBuilder: (context, index) {
+                    return _UserProfileCard(user: _nearbyUsers[index]);
+                  },
                 ),
-                const SizedBox(height: 20),
-                _buildActionButtons(),
-                const SizedBox(height: 30),
-              ],
-            ),
-          ],
+              ),
+              const SizedBox(height: 20),
+              _buildActionButtons(),
+              const SizedBox(height: 30),
+            ],
+          ),
         ),
       ),
     );

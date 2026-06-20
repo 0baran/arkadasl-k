@@ -1,6 +1,6 @@
 {
-    "version": "1.0.35",
-    "build": 36,
-    "apk_url": "https://github.com/0baran/arkadasl-k/releases/download/v1.0.35/arkadaslik_v1.0.35.apk",
-    "release_notes": "Kesfet Kartina Online Status ve Eslesme Yeniligi:\n- Kesfet kartina online/offline yesil/gri nokta eklendi\n- Online kullanicilarda 'Online' yazisi gosteriliyor\n- Eslesme diyalogu yenilendi: kullanici fotografi + isim + Mesaj Gonder butonu\n- Super eslesme diyalogu da ayni sekilde guncellendi\n- v1.0.34 duzeltmeleri dahil"
+    "version": "1.0.36",
+    "build": 37,
+    "apk_url": "https://github.com/0baran/arkadasl-k/releases/download/v1.0.36/arkadaslik_v1.0.36.apk",
+    "release_notes": "Kullanici Deneyimi Iyilestirmeleri:\n- Discover ekranina pull-to-refresh (asagi cekip yenileme) eklendi\n- Bos durum ekrani yenilendi: Yenile + Filtre butonlari\n- Kesfet kartlarinda online/offline durum isareti\n- Eslesme diyalogu kullanici fotografi ve isimle yenilendi"
 }
