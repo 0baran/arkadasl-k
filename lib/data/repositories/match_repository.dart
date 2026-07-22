@@ -120,10 +120,15 @@ class MatchRepository {
           continue;
         }
 
-        final distance = _calculateDistance(latitude, longitude, user.location.latitude, user.location.longitude);
-        if (distance > maxDistance) {
-          distanceFiltered++;
-          continue;
+        // Konum 0,0 ise (kayıt sırasında henüz GPS alınamamış) mesafe filtresini atla
+        final userLat = user.location.latitude;
+        final userLon = user.location.longitude;
+        if (userLat != 0.0 || userLon != 0.0) {
+          final distance = _calculateDistance(latitude, longitude, userLat, userLon);
+          if (distance > maxDistance) {
+            distanceFiltered++;
+            continue;
+          }
         }
         nearbyUsers.add(user);
       }

@@ -92,7 +92,7 @@ class _UpdateDialog extends StatefulWidget {
   final String releaseNotes;
   final VoidCallback onSkip;
 
-  const _UpdateDialog({super.key, required this.version, required this.apkUrl, required this.releaseNotes, required this.onSkip});
+  const _UpdateDialog({required this.version, required this.apkUrl, required this.releaseNotes, required this.onSkip});
 
   @override
   State<_UpdateDialog> createState() => _UpdateDialogState();

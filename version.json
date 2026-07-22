@@ -1,6 +1,6 @@
 {
-    "version": "1.0.46",
-    "build": 47,
+    "version": "1.0.47",
+    "build": 48,
     "apk_url": "https://raw.githubusercontent.com/0baran/arkadasl-k/main/release.apk",
-    "release_notes": "Hesaptan Çıkma Sorunu Çözüldü (v1.0.46)\n- Yavaş internet bağlantılarında uygulamanın oturumu sonlandırması sorunu giderildi.\n- Açılış hızı iyileştirildi."
+    "release_notes": "v1.0.47 - Kapsamlı Hata Düzeltmeleri\n- Kayıt ekranındaki uygulama çökmesi düzeltildi\n- Eşleşmeler ekranındaki bozuk Türkçe karakter sorunu giderildi\n- Konumu kayıtlı olmayan kullanıcılar da Keşfet'te görünüyor\n- Sürüm numarası Profil ekranında doğru gösteriliyor\n- Chat ekranı performans iyileştirmeleri"
 }

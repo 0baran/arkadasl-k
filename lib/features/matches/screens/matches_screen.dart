@@ -1,4 +1,4 @@
-﻿// ignore_for_file: no_leading_underscores_for_local_identifiers
+// ignore_for_file: no_leading_underscores_for_local_identifiers
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../services/auth_provider.dart';
@@ -18,6 +18,15 @@ class MatchesScreen extends StatefulWidget {
 
 class _MatchesScreenState extends State<MatchesScreen> {
   final DatabaseService _databaseService = DatabaseService();
+  // Gereksiz Firestore okumalarını önlemek için kullanıcı önbelleği
+  final Map<String, User> _userCache = {};
+
+  Future<User?> _getCachedUser(String userId) async {
+    if (_userCache.containsKey(userId)) return _userCache[userId];
+    final user = await _databaseService.getUser(userId);
+    if (user != null) _userCache[userId] = user;
+    return user;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +34,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
     final userId = authProvider.currentUser?.id;
 
     if (userId == null) {
-      return const Center(child: Text('Kullan�c� bulunamad�'));
+      return const Center(child: Text('Kullanıcı bulunamadı'));
     }
 
     return StreamBuilder<List<Match>>(
@@ -36,12 +45,12 @@ class _MatchesScreenState extends State<MatchesScreen> {
         }
 
         if (snapshot.hasError) {
-          return const Center(child: Text('E�le�meler y�klenirken hata olu�tu'));
+          return const Center(child: Text('Eşleşmeler yüklenirken hata oluştu'));
         }
 
-        final _matches = snapshot.data ?? [];
+        final matches = snapshot.data ?? [];
 
-        if (_matches.isEmpty) {
+        if (matches.isEmpty) {
           return Center(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -53,12 +62,12 @@ class _MatchesScreenState extends State<MatchesScreen> {
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'Hen�z e�le�me yok',
+                  'Henüz eşleşme yok',
                   style: TextStyle(color: AppTheme.textSecondary),
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Ke�fet ekran�nda yeni ki�ilerle tan���n!',
+                  'Keşfet ekranında yeni kişilerle tanışın!',
                   style: TextStyle(
                     color: AppTheme.textSecondary,
                     fontSize: 12,
@@ -71,15 +80,15 @@ class _MatchesScreenState extends State<MatchesScreen> {
 
         return ListView.builder(
           padding: const EdgeInsets.all(16),
-          itemCount: _matches.length,
+          itemCount: matches.length,
           itemBuilder: (context, index) {
-            final match = _matches[index];
+            final match = matches[index];
             final otherUserId = match.userId1 == userId ? match.userId2 : match.userId1;
 
             return FutureBuilder<User?>(
-              future: _databaseService.getUser(otherUserId),
+              future: _getCachedUser(otherUserId),
               builder: (context, userSnapshot) {
-                if (!userSnapshot.hasData) return const SizedBox();
+                if (!userSnapshot.hasData) return const SizedBox.shrink();
                 return _buildMatchCard(match, userSnapshot.data!);
               },
             );

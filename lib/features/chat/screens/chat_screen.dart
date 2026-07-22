@@ -123,10 +123,10 @@ class _ChatScreenState extends State<ChatScreen> {
               final currentUserId = currentUser.id;
               if (value == 'block') {
                 await _databaseService.blockUser(currentUserId, widget.otherUser.id);
-                if (mounted) Navigator.pop(context); // Go back to matches screen
+                if (mounted) Navigator.of(context).pop();
               } else if (value == 'report') {
                 await _databaseService.reportUser(currentUserId, widget.otherUser.id, 'Rahatsız Edici / Spam');
-                if (mounted) Navigator.pop(context);
+                if (mounted) Navigator.of(context).pop();
               }
             },
             itemBuilder: (BuildContext context) => [
@@ -213,7 +213,8 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
   Widget _buildMessageBubble(Message message) {
-    final authProvider = Provider.of<AuthProvider>(context);
+    // listen: false — mesaj balonları her değişimde yeniden inşa edilmesin
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final isFromMe = message.senderId == authProvider.currentUser?.id;
     final isDark = Theme.of(context).brightness == Brightness.dark;
 

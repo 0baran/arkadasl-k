@@ -23,11 +23,18 @@ class DiscoverScreen extends StatefulWidget {
 class _DiscoverScreenState extends State<DiscoverScreen> {
   final LocationService _locationService = LocationService();
   final DatabaseService _databaseService = DatabaseService();
+  final SwiperController _swiperController = SwiperController();
+  int _currentIndex = 0;
 
   List<User> _nearbyUsers = [];
   bool _isLoading = true;
   String? _errorMessage;
 
+  @override
+  void dispose() {
+    _swiperController.dispose();
+    super.dispose();
+  }
   @override
   void initState() {
     super.initState();
@@ -350,7 +357,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Keşfet (1.0.45)',
+                      'Keşfet',
                       style: GoogleFonts.outfit(
                         fontSize: 32,
                         fontWeight: FontWeight.bold,
@@ -385,10 +392,14 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
               const SizedBox(height: 16),
               Expanded(
                 child: Swiper(
+                  controller: _swiperController,
                   itemCount: _nearbyUsers.length,
                   layout: SwiperLayout.TINDER,
                   itemWidth: MediaQuery.of(context).size.width * 0.9,
                   itemHeight: MediaQuery.of(context).size.height * 0.65,
+                  onIndexChanged: (index) {
+                    setState(() => _currentIndex = index);
+                  },
                   itemBuilder: (context, index) {
                     return _UserProfileCard(user: _nearbyUsers[index]);
                   },
@@ -416,7 +427,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
             size: 60,
             iconSize: 30,
             onPressed: () {
-              if (_nearbyUsers.isNotEmpty) _handleDislike(_nearbyUsers.first);
+              if (_nearbyUsers.isNotEmpty) {
+                _handleDislike(_nearbyUsers[_currentIndex]);
+              }
             },
           ),
           _buildActionButton(
@@ -425,7 +438,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
             size: 50,
             iconSize: 28,
             onPressed: () {
-              if (_nearbyUsers.isNotEmpty) _handleSuperLike(_nearbyUsers.first);
+              if (_nearbyUsers.isNotEmpty) {
+                _handleSuperLike(_nearbyUsers[_currentIndex]);
+              }
             },
           ),
           _buildActionButton(
@@ -434,7 +449,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
             size: 60,
             iconSize: 30,
             onPressed: () {
-              if (_nearbyUsers.isNotEmpty) _handleLike(_nearbyUsers.first);
+              if (_nearbyUsers.isNotEmpty) {
+                _handleLike(_nearbyUsers[_currentIndex]);
+              }
             },
           ),
         ],

@@ -261,28 +261,40 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 const SizedBox(height: 16),
 
                 // Gender Selection
-                RadioGroup<String>(
-                  groupValue: _selectedGender,
-                  onChanged: (value) {
-                    setState(() {
-                      _selectedGender = value!;
-                    });
-                  },
-                  child: Row(
+                Container(
+                  decoration: BoxDecoration(
+                    color: isDark ? const Color(0xFF2A2A35) : Colors.grey.shade50,
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: isDark ? Colors.white24 : Colors.grey.shade300),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Expanded(
-                        child: RadioListTile<String>(
-                          title: const Text('Erkek'),
-                          value: 'male',
-                          contentPadding: EdgeInsets.zero,
-                        ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 16, top: 12, bottom: 4),
+                        child: Text('Cinsiyet', style: TextStyle(color: AppTheme.textSecondary, fontSize: 12)),
                       ),
-                      Expanded(
-                        child: RadioListTile<String>(
-                          title: const Text('Kadın'),
-                          value: 'female',
-                          contentPadding: EdgeInsets.zero,
-                        ),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: RadioListTile<String>(
+                              title: const Text('Erkek'),
+                              value: 'male',
+                              groupValue: _selectedGender,
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+                              onChanged: (value) => setState(() => _selectedGender = value!),
+                            ),
+                          ),
+                          Expanded(
+                            child: RadioListTile<String>(
+                              title: const Text('Kadın'),
+                              value: 'female',
+                              groupValue: _selectedGender,
+                              contentPadding: const EdgeInsets.symmetric(horizontal: 8),
+                              onChanged: (value) => setState(() => _selectedGender = value!),
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
