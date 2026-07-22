@@ -1,4 +1,4 @@
-import 'dart:ui';
+﻿import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:card_swiper/card_swiper.dart';
@@ -170,7 +170,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final currentUserId = authProvider.currentUser?.id;
     if (currentUserId == null) return;
-    final isMatch = await _databaseService.handleLike(currentUserId, user.id, true);
+    final isMatch = await _databaseService.handleLike(currentUserId, user.id, true, isSuperLike: true);
     
     if (mounted) {
       if (isMatch) {

@@ -1,7 +1,7 @@
 class AppConstants {
   // App Info
   static const String appName = 'Arkadaşlık Uygulaması';
-  static const String appVersion = '1.0.47';
+  static const String appVersion = '1.0.48';
 
   // Firebase Collections
   static const String usersCollection = 'users';
@@ -15,7 +15,7 @@ class AppConstants {
 
   // Distance Settings
   static const double defaultDistance = 50.0; // km
-  static const double maxDistance = 100.0; // km
+  static const double maxDistance = 500.0; // km (genişletildi — kullanıcı isteğe bağlı artırabilir)
   static const double minDistance = 1.0; // km
 
   // Age Settings

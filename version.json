@@ -1,6 +1,6 @@
 {
-    "version": "1.0.47",
-    "build": 48,
+    "version": "1.0.48",
+    "build": 49,
     "apk_url": "https://raw.githubusercontent.com/0baran/arkadasl-k/main/release.apk",
-    "release_notes": "v1.0.47 - Kapsamlı Hata Düzeltmeleri\n- Kayıt ekranındaki uygulama çökmesi düzeltildi\n- Eşleşmeler ekranındaki bozuk Türkçe karakter sorunu giderildi\n- Konumu kayıtlı olmayan kullanıcılar da Keşfet'te görünüyor\n- Sürüm numarası Profil ekranında doğru gösteriliyor\n- Chat ekranı performans iyileştirmeleri"
+    "release_notes": "v1.0.48 - Eşleşme Sistemi Tamamen Yenilendi\n- Eşleşme olduğunda her iki tarafa bildirim gönderiliyor\n- Süper Beğeni artık normal beğeniden ayrı kaydediliyor\n- Çift eşleşme popup sorunu giderildi\n- Mesafe limiti 500km'ye yükseltildi\n- Keşfet'te görünmeme sorunu düzeltildi"
 }

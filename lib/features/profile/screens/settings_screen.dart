@@ -296,13 +296,16 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
-                      title: const Text('Sürüm Notları (v1.0.19)'),
-                      content: const SingleChildScrollView(
+                      title: Text('Sürüm Notları (v${AppConstants.appVersion})'),
+                      content: SingleChildScrollView(
                         child: Text(
-                          '• Alt menü barının karanlık moddaki bembeyaz görünme sorunu çözüldü.\n'
-                          '• Ekranın en altındaki butonların menünün altında kalma sorunu düzeltildi.\n'
-                          '• Ayarlar ve Profil ekranlarına sürüm bilgisi ve sürüm notları eklendi.\n'
-                          '• İki telefonun birbirini test edebilmesi için Yaş ve Mesafe sınırları geçici olarak devre dışı bırakıldı.',
+                          'v${AppConstants.appVersion} Guncellemesi:\n'
+                          '- Esleme olunca her iki tarafa bildirim gonderiliyor.\n'
+                          '- Super Begeni ayri kaydediliyor.\n'
+                          '- Cift esleme popup sorunu giderildi.\n'
+                          '- Mesafe limiti 500km ye yukseltildi.\n'
+                          '- Konumu olmayan kullanicilar Kesfet\'te gorunuyor.\n'
+                          '- Kayit ekrani cokme sorunu duzeltildi.',
                         ),
                       ),
                       actions: [
@@ -331,8 +334,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
             ),
             const SizedBox(height: 24),
             Center(
-              child: Text(
-                'Surum ${AppConstants.appVersion}',
+            child: Text(
+              'Sürüm ${AppConstants.appVersion}',
                 style: TextStyle(
                   color: AppTheme.textSecondary.withValues(alpha: 0.7),
                   fontSize: 12,

@@ -24,7 +24,7 @@ class DatabaseService {
   Future<void> createMatch(Match match) => _matchRepo.createMatch(match);
   Future<List<Match>> getUserMatches(String userId) => _matchRepo.getUserMatches(userId);
   Stream<List<Match>> getUserMatchesStream(String userId) => _matchRepo.getUserMatchesStream(userId);
-  Future<bool> handleLike(String currentUserId, String targetUserId, bool isLike) => _matchRepo.handleLike(currentUserId, targetUserId, isLike);
+  Future<bool> handleLike(String currentUserId, String targetUserId, bool isLike, {bool isSuperLike = false}) => _matchRepo.handleLike(currentUserId, targetUserId, isLike, isSuperLike: isSuperLike);
   Future<List<User>> getNearbyUsers(String currentUserId, double latitude, double longitude, double maxDistance, int minAge, int maxAge, String preferredGender, List<String> blockedUsers) => _matchRepo.getNearbyUsers(currentUserId, latitude, longitude, maxDistance, minAge, maxAge, preferredGender, blockedUsers);
   Future<void> resetSwipes(String currentUserId) => _matchRepo.resetSwipes(currentUserId);
 

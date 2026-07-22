@@ -19,7 +19,9 @@ class UserRepository {
     try {
       final doc = await _firestore.collection('users').doc(userId).get();
       if (doc.exists && doc.data() != null) {
-        return User.fromJson(doc.data()!);
+        final data = doc.data()!;
+        data['id'] = doc.id; // Eski kayıtlarda id alanı olmayabilir
+        return User.fromJson(data);
       }
     } catch (e) {
       debugPrint('Error getting user: $e');
