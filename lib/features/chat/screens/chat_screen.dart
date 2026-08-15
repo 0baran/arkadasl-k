@@ -121,12 +121,13 @@ class _ChatScreenState extends State<ChatScreen> {
               final currentUser = Provider.of<AuthProvider>(context, listen: false).currentUser;
               if (currentUser == null) return;
               final currentUserId = currentUser.id;
+              final navigator = Navigator.of(context); // context'i async öncesi kaydet
               if (value == 'block') {
                 await _databaseService.blockUser(currentUserId, widget.otherUser.id);
-                if (mounted) Navigator.of(context).pop();
+                navigator.pop();
               } else if (value == 'report') {
                 await _databaseService.reportUser(currentUserId, widget.otherUser.id, 'Rahatsız Edici / Spam');
-                if (mounted) Navigator.of(context).pop();
+                navigator.pop();
               }
             },
             itemBuilder: (BuildContext context) => [

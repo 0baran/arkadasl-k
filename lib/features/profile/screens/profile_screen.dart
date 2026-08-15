@@ -190,7 +190,7 @@ class ProfileScreen extends StatelessWidget {
             ),
             const SizedBox(height: 32),
             Text(
-              'Surum ${AppConstants.appVersion}',
+              'Sürüm ${AppConstants.appVersion}',
               style: TextStyle(
                 color: AppTheme.textSecondary,
                 fontSize: 13,

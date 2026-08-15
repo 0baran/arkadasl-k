@@ -13,10 +13,17 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 
 @pragma('vm:entry-point')
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  // If you're going to use other Firebase services in the background, such as Firestore,
-  // make sure you call `initializeApp` before using other Firebase services.
-  // Note: For Android, initializeApp is sometimes needed if we don't have default options.
-  debugPrint("Handling a background message: ${message.messageId}");
+  // Background isolate'de Firebase servisleri kullanılabilmesi için initializeApp gerekli
+  await Firebase.initializeApp(
+    options: const FirebaseOptions(
+      apiKey: 'AIzaSyAMMYVOd7xt16gK_J6_3_IJ0sWTMJ6uegs',
+      appId: '1:745109876782:android:cc224a6aeb8401639b2fbf',
+      messagingSenderId: '745109876782',
+      projectId: 'anonchat-40b98',
+      storageBucket: 'anonchat-40b98.firebasestorage.app',
+    ),
+  );
+  debugPrint("Arka planda mesaj alındı: ${message.messageId}");
 }
 
 void main() async {

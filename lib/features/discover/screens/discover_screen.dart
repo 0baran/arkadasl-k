@@ -1,4 +1,4 @@
-﻿import 'dart:ui';
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:card_swiper/card_swiper.dart';
@@ -12,6 +12,7 @@ import '../../../models/user.dart';
 import '../../../core/theme.dart';
 import '../../../core/utils.dart';
 import '../../profile/screens/settings_screen.dart';
+import '../../chat/screens/chat_screen.dart';
 
 class DiscoverScreen extends StatefulWidget {
   const DiscoverScreen({super.key});
@@ -65,7 +66,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
           ),
         );
         await _databaseService.updateUser(updatedUser);
-        authProvider.updateProfile(updatedUser);
+        await authProvider.updateProfile(updatedUser); // await — konum kaydolmadan kullanıcı listesi çekilmesin
 
         // Get nearby users
         final users = await _databaseService.getNearbyUsers(
@@ -128,6 +129,12 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                       ElevatedButton(
                         onPressed: () {
                           Navigator.pop(context);
+                          // Eşleşme dialogundan doğrudan sohbet ekranına git
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => ChatScreen(otherUser: user),
+                            ),
+                          );
                         },
                         style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primaryColor, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
                         child: const Text('Mesaj Gonder', style: TextStyle(color: Colors.white)),
@@ -200,7 +207,14 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                     children: [
                       TextButton(onPressed: () => Navigator.pop(context), child: const Text('Kapat')),
                       ElevatedButton(
-                        onPressed: () => Navigator.pop(context),
+                        onPressed: () {
+                          Navigator.pop(context);
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (_) => ChatScreen(otherUser: user),
+                            ),
+                          );
+                        },
                         style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primaryColor, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
                         child: const Text('Mesaj Gonder', style: TextStyle(color: Colors.white)),
                       ),

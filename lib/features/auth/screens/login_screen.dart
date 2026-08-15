@@ -1,4 +1,4 @@
-﻿// ignore_for_file: use_build_context_synchronously
+// ignore_for_file: use_build_context_synchronously
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -380,7 +380,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     const SizedBox(height: 16),
                     Text(
-                      'Surum ${AppConstants.appVersion}',
+                      'Sürüm ${AppConstants.appVersion}',
                       style: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontSize: 12),
                     ),
                   ],
