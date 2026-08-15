@@ -1,7 +1,7 @@
 ﻿class AppConstants {
   // App Info
   static const String appName = 'Arkadaşlık Uygulaması';
-  static const String appVersion = '1.0.49';
+  static const String appVersion = '1.0.50';
 
   // Firebase Collections
   static const String usersCollection = 'users';

@@ -10,7 +10,9 @@ class MatchRepository {
 
   Future<void> createMatch(Match match) async {
     try {
-      await _firestore.collection('matches').doc(match.id).set(match.toJson());
+      final data = match.toJson();
+      data['id'] = match.id; // Firestore'dan okurken id alanı güvenilir olsun
+      await _firestore.collection('matches').doc(match.id).set(data);
     } catch (e) {
       debugPrint('Error creating match: $e');
       rethrow;
@@ -134,7 +136,7 @@ class MatchRepository {
       });
     } catch (e) {
       debugPrint('Match notification failed: $e');
-      // Bildirim hatası kritik değil, eşleşmeyi engellemlmeli
+      // Bildirim hatası kritik değil, eşleşmeyi engellemeli
     }
   }
 

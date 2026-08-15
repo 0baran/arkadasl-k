@@ -22,6 +22,19 @@ class _ChatScreenState extends State<ChatScreen> {
   final ScrollController _scrollController = ScrollController();
 
   @override
+  void initState() {
+    super.initState();
+    // Ekran açılınca gelen mesajları okundu olarak işaretle
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final authProvider = Provider.of<AuthProvider>(context, listen: false);
+      final currentUserId = authProvider.currentUser?.id;
+      if (currentUserId != null) {
+        _databaseService.markMessagesAsRead(currentUserId, widget.otherUser.id);
+      }
+    });
+  }
+
+  @override
   void dispose() {
     _messageController.dispose();
     _scrollController.dispose();
@@ -48,12 +61,6 @@ class _ChatScreenState extends State<ChatScreen> {
     try {
       await _databaseService.sendMessage(message);
       _messageController.clear();
-
-      // Mark messages as read
-      await _databaseService.markMessagesAsRead(
-        currentUser.id,
-        widget.otherUser.id,
-      );
 
       // Scroll to bottom
       if (_scrollController.hasClients) {

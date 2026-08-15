@@ -88,7 +88,16 @@ class _MatchesScreenState extends State<MatchesScreen> {
             return FutureBuilder<User?>(
               future: _getCachedUser(otherUserId),
               builder: (context, userSnapshot) {
-                if (!userSnapshot.hasData) return const SizedBox.shrink();
+                if (!userSnapshot.hasData) {
+                  // Match alanı boş kalmasın — hafif placeholder göster
+                  return const Card(
+                    margin: EdgeInsets.only(bottom: 16),
+                    child: ListTile(
+                      leading: CircleAvatar(child: Icon(Icons.person)),
+                      title: SizedBox(height: 12, width: 80, child: DecoratedBox(decoration: BoxDecoration(color: Colors.black12))),
+                    ),
+                  );
+                }
                 return _buildMatchCard(match, userSnapshot.data!);
               },
             );
@@ -115,7 +124,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              AppUtils.formatAge(user.birthDate),
+              '${AppUtils.formatAge(user.birthDate)} yaşında',
               style: const TextStyle(fontSize: 12),
             ),
             if (match.lastMessage != null)
