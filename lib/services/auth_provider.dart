@@ -80,10 +80,10 @@ class AuthProvider with ChangeNotifier {
         name: name,
         birthDate: birthDate,
         gender: gender,
-        bio: 'Yeni kullanıcı',
+        bio: '',
         photoUrls: [],
         interests: [],
-        location: app_user.GeoLocation(latitude: 41.0, longitude: 29.0),
+        location: app_user.GeoLocation(latitude: 0.0, longitude: 0.0), // Kesfet ekrani acilinca gercek GPS'e guncellenir
         createdAt: DateTime.now(),
       );
 
@@ -123,21 +123,24 @@ class AuthProvider with ChangeNotifier {
     await _authService.signInWithCredential(credential);
   }
 
-  Future<void> signInWithGoogle() async {
+  /// Google ile giriş yapar. Yeni kullanici ise [true] döndürür.
+  Future<bool> signInWithGoogle() async {
     final userCredential = await _authService.signInWithGoogle();
+    bool isNewUser = false;
     if (userCredential?.user != null) {
       final existingUser = await _databaseService.getUser(userCredential!.user!.uid);
       if (existingUser == null) {
+        isNewUser = true;
         final user = app_user.User(
           id: userCredential.user!.uid,
           email: userCredential.user!.email ?? '',
-          name: userCredential.user!.displayName ?? 'Google Kullanıcısı',
-          birthDate: DateTime(2000),
+          name: userCredential.user!.displayName ?? 'Google Kullanicisi',
+          birthDate: DateTime(2000), // Profil duzenlemede guncellenmeli
           gender: 'other',
-          bio: 'Google ile katıldı',
+          bio: '',
           photoUrls: userCredential.user!.photoURL != null ? [userCredential.user!.photoURL!] : [],
           interests: [],
-          location: app_user.GeoLocation(latitude: 41.0, longitude: 29.0),
+          location: app_user.GeoLocation(latitude: 0.0, longitude: 0.0), // Kesfet acilinca guncellenir
           createdAt: DateTime.now(),
         );
         await _databaseService.createUser(user);
@@ -147,6 +150,7 @@ class AuthProvider with ChangeNotifier {
       }
       notifyListeners();
     }
+    return isNewUser;
   }
 
   Future<void> signInWithPhoneCredential(firebase_auth.AuthCredential credential) async {
@@ -157,13 +161,13 @@ class AuthProvider with ChangeNotifier {
         final user = app_user.User(
           id: userCredential.user!.uid,
           email: '',
-          name: 'Yeni Kullanici (Tel)',
-          birthDate: DateTime(2000),
+          name: 'Yeni Kullanici',
+          birthDate: DateTime(2000), // Profil duzenlemede guncellenmeli
           gender: 'other',
-          bio: 'Telefonla katıldı',
+          bio: '',
           photoUrls: [],
           interests: [],
-          location: app_user.GeoLocation(latitude: 41.0, longitude: 29.0),
+          location: app_user.GeoLocation(latitude: 0.0, longitude: 0.0), // Kesfet acilinca guncellenir
           createdAt: DateTime.now(),
         );
         await _databaseService.createUser(user);

@@ -321,14 +321,29 @@ class _LoginScreenState extends State<LoginScreen> {
                                   onPressed: () async {
                                     try {
                                       final authProvider = Provider.of<AuthProvider>(context, listen: false);
-                                      await authProvider.signInWithGoogle();
+                                      final isNewUser = await authProvider.signInWithGoogle();
                                       if (mounted) {
                                         ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(content: Text('Google ile giriş başarılı!', style: TextStyle(color: Colors.white)), backgroundColor: AppTheme.successColor),
+                                          const SnackBar(content: Text('Google ile giriş başarili!', style: TextStyle(color: Colors.white)), backgroundColor: AppTheme.successColor),
                                         );
-                                        Navigator.of(context).pushReplacement(
-                                          MaterialPageRoute(builder: (_) => const HomeScreen()),
-                                        );
+                                        if (isNewUser) {
+                                          // Yeni kullanici — cinsiyet ve dogum tarihi doldurmali
+                                          Navigator.of(context).pushAndRemoveUntil(
+                                            MaterialPageRoute(builder: (_) => const HomeScreen()),
+                                            (route) => false,
+                                          );
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(
+                                              content: Text('📅 Lütfen profilinizi tamamlayın (yaş ve cinsiyet gerekli)', style: TextStyle(color: Colors.white)),
+                                              backgroundColor: Colors.orange,
+                                              duration: Duration(seconds: 4),
+                                            ),
+                                          );
+                                        } else {
+                                          Navigator.of(context).pushReplacement(
+                                            MaterialPageRoute(builder: (_) => const HomeScreen()),
+                                          );
+                                        }
                                       }
                                     } catch (e) {
                                       if (mounted) {

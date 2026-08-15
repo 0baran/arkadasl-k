@@ -70,6 +70,10 @@ class AuthService {
   }
 
   Future<void> signOut() async {
+    // Google oturumunu da kapat (hesap değiştirilmek istenirse eski hesap kalmasın)
+    try {
+      await GoogleSignIn.instance.signOut();
+    } catch (_) {}
     await _auth.signOut();
   }
 
