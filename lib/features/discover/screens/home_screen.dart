@@ -22,18 +22,19 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _currentIndex = 0;
   StreamSubscription? _notificationSubscription;
+  final Set<String> _shownNotificationIds = {}; // Tekrar eden bildirimleri önle
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       UpdateService.checkForUpdates(context);
+      _setupNotificationListener(); // context güvenli olduktan sonra başlat
     });
-    NotificationService().initialize();
-    _setupNotificationListener();
   }
 
   void _setupNotificationListener() {
+    if (!mounted) return;
     final currentUser = Provider.of<AuthProvider>(context, listen: false).currentUser;
     if (currentUser == null) return;
 
@@ -41,14 +42,23 @@ class _HomeScreenState extends State<HomeScreen> {
         .getUnreadNotificationsStream(currentUser.id)
         .listen((QuerySnapshot snapshot) {
       for (var doc in snapshot.docs) {
+        // Aynı bildirimi tekrar gösterme
+        if (_shownNotificationIds.contains(doc.id)) continue;
+        _shownNotificationIds.add(doc.id);
+
         final data = doc.data() as Map<String, dynamic>;
-        final title = data['title'] ?? 'Bildirim';
-        final body = data['body'] ?? '';
-        
-        // Bildirimi göster
-        NotificationService().showMessageNotification(title: title, body: body);
-        
-        // Bildirimi okundu olarak işaretle ki bir daha çıkmasın
+        final title = data['title'] as String? ?? 'Bildirim';
+        final body = data['body'] as String? ?? '';
+        final type = data['type'] as String? ?? 'general';
+
+        // Bildirim türüne göre uygun kanal
+        if (type == 'match') {
+          NotificationService().showMatchNotification(title: title, body: body);
+        } else {
+          NotificationService().showMessageNotification(title: title, body: body);
+        }
+
+        // Okundu işaretle
         DatabaseService().markNotificationAsRead(currentUser.id, doc.id);
       }
     });

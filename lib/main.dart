@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'core/theme.dart';
 import 'core/constants.dart';
 import 'services/auth_provider.dart';
+import 'services/notification_service.dart';
 import 'features/auth/screens/splash_screen.dart';
 
 import 'package:flutter/services.dart';
@@ -69,6 +70,8 @@ void main() async {
       provisional: false,
       sound: true,
     );
+    // ✅ Bildirim sistemini başlat (foreground + local notifications)
+    await NotificationService().initialize();
   } catch (e) {
     debugPrint('Firebase initialize hatası: $e');
   }
