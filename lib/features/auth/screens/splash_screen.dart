@@ -56,14 +56,23 @@ class _SplashScreenState extends State<SplashScreen>
 
     if (!mounted) return;
 
-    // Firebase Auth'un ilk durumunu bekle
     final auth = firebase_auth.FirebaseAuth.instance;
-    firebase_auth.User? user;
-    
-    try {
-      user = await auth.authStateChanges().first.timeout(const Duration(seconds: 8));
-    } catch (_) {
-      user = auth.currentUser;
+
+    // Adım 1: Önbellekteki anlık kullanıcıyı kontrol et (internet gerektirmez)
+    firebase_auth.User? user = auth.currentUser;
+
+    // Adım 2: currentUser null ise authStateChanges stream'ini bekle
+    // (Firebase token restore ediliyor olabilir — max 5 saniye)
+    if (user == null) {
+      try {
+        // null olmayan ilk değeri bekle; ilk emit null gelirse geç, sonraki geleni al
+        user = await auth.authStateChanges()
+            .firstWhere((u) => u != null)
+            .timeout(const Duration(seconds: 5))
+            .catchError((_) => null);
+      } catch (_) {
+        user = auth.currentUser; // son çare
+      }
     }
 
     if (!mounted) return;
@@ -71,9 +80,9 @@ class _SplashScreenState extends State<SplashScreen>
     if (user != null) {
       final authProvider = Provider.of<AuthProvider>(context, listen: false);
 
-      // Profilin yüklenmesi için ek süre ver (Firebase önbellekten hemen çeker)
+      // Firestore profil yüklenene kadar bekle (maks 6 saniye)
       if (!authProvider.isUserProfileComplete) {
-        for (int i = 0; i < 40; i++) { // 12 saniye bekleme süresi
+        for (int i = 0; i < 20; i++) {
           await Future.delayed(const Duration(milliseconds: 300));
           if (!mounted) return;
           if (authProvider.isUserProfileComplete) break;
@@ -81,9 +90,8 @@ class _SplashScreenState extends State<SplashScreen>
       }
 
       if (!mounted) return;
-      
-      // Profil yüklenemediyse bile (internet yoksa), eğer auth varsa içeri al
-      // Uygulama içeride offline çalışabilir
+
+      // Auth varsa her zaman içeri al (offline modu için de geçerli)
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (_) => const HomeScreen()),
       );

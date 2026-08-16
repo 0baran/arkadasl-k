@@ -56,6 +56,8 @@ class AuthService {
       );
       final googleUser = await GoogleSignIn.instance.authenticate();
       final GoogleSignInAuthentication googleAuth = googleUser.authentication;
+
+      // google_sign_in v7+: accessToken kaldırıldı, sadece idToken kullanılır
       final AuthCredential credential = GoogleAuthProvider.credential(
         idToken: googleAuth.idToken,
       );
