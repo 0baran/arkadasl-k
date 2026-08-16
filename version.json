@@ -1,6 +1,6 @@
-{
-    "version": "1.0.53",
-    "build": 54,
+﻿{
+    "version": "1.0.54",
+    "build": 55,
     "apk_url": "https://raw.githubusercontent.com/0baran/arkadasl-k/main/release.apk",
     "release_notes": "v1.0.53 - Bildirim sistemi duzeltildi, oturum kaliciligi, Google giris iyilestirmesi, esleme akisi tamamen duzeltildi"
 }

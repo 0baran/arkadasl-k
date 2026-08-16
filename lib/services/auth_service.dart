@@ -51,11 +51,14 @@ class AuthService {
 
   Future<UserCredential?> signInWithGoogle() async {
     try {
-      await GoogleSignIn.instance.initialize(
-        serverClientId: "745109876782-oqap2ve2q2558u738ku25nm1hqb4casc.apps.googleusercontent.com",
-      );
+      await GoogleSignIn.instance.initialize();
       final googleUser = await GoogleSignIn.instance.authenticate();
-      final GoogleSignInAuthentication googleAuth = googleUser.authentication;
+      
+      if (googleUser == null) {
+        return null; // Kullanıcı iptal etti
+      }
+
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
       // google_sign_in v7+: accessToken kaldırıldı, sadece idToken kullanılır
       final AuthCredential credential = GoogleAuthProvider.credential(
