@@ -51,8 +51,8 @@ class AuthService {
 
   Future<UserCredential?> signInWithGoogle() async {
     try {
-      await GoogleSignIn.instance.initialize();
-      final googleUser = await GoogleSignIn.instance.authenticate();
+      final GoogleSignIn googleSignIn = GoogleSignIn();
+      final googleUser = await googleSignIn.signIn();
       
       if (googleUser == null) {
         return null; // Kullanıcı iptal etti
@@ -60,8 +60,8 @@ class AuthService {
 
       final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
 
-      // google_sign_in v7+: accessToken kaldırıldı, sadece idToken kullanılır
       final AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
@@ -77,7 +77,7 @@ class AuthService {
   Future<void> signOut() async {
     // Google oturumunu da kapat (hesap değiştirilmek istenirse eski hesap kalmasın)
     try {
-      await GoogleSignIn.instance.signOut();
+      await GoogleSignIn().signOut();
     } catch (_) {}
     await _auth.signOut();
   }
