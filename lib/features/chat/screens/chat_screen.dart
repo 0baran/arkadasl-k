@@ -6,6 +6,9 @@ import '../../../models/user.dart';
 import '../../../models/message.dart';
 import '../../../core/theme.dart';
 import '../../../core/utils.dart';
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_linkify/flutter_linkify.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class ChatScreen extends StatefulWidget {
   final User otherUser;
@@ -62,18 +65,27 @@ class _ChatScreenState extends State<ChatScreen> {
       await _databaseService.sendMessage(message);
       _messageController.clear();
 
-      // Scroll to bottom
+      // Scroll to bottom (0.0 for reverse ListView)
       if (_scrollController.hasClients) {
         _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
+          0.0,
           duration: const Duration(milliseconds: 300),
           curve: Curves.easeOut,
         );
       }
     } catch (e) {
       if (mounted) {
+        String errorMessage = 'Mesaj gönderilemedi. Lütfen tekrar deneyin.';
+        if (e.toString().contains('network') || e.toString().contains('unavailable') || e.toString().contains('offline')) {
+          errorMessage = 'İnternet bağlantınız zayıf. Mesajınız bağlantı geldiğinde iletilecektir.';
+        }
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Mesaj gönderilemedi: $e')),
+          SnackBar(
+            content: Text(errorMessage),
+            backgroundColor: const Color(0xFFFF5252),
+            behavior: SnackBarBehavior.floating,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          ),
         );
       }
     }
@@ -92,7 +104,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 CircleAvatar(
                   radius: 20,
                   backgroundImage: user.photoUrls.isNotEmpty
-                      ? NetworkImage(user.photoUrls.first)
+                      ? CachedNetworkImageProvider(user.photoUrls.first)
                       : null,
                   child: user.photoUrls.isEmpty
                       ? Text(user.name.substring(0, 1).toUpperCase())
@@ -243,12 +255,23 @@ class _ChatScreenState extends State<ChatScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              message.content,
+            Linkify(
+              onOpen: (link) async {
+                final uri = Uri.parse(link.url);
+                if (await canLaunchUrl(uri)) {
+                  await launchUrl(uri, mode: LaunchMode.externalApplication);
+                }
+              },
+              text: message.content,
               style: TextStyle(
                 color: isFromMe 
                     ? Colors.white 
                     : (isDark ? Colors.white : Colors.black87),
+              ),
+              linkStyle: TextStyle(
+                color: isFromMe ? Colors.white : AppTheme.primaryColor,
+                decoration: TextDecoration.underline,
+                fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 4),

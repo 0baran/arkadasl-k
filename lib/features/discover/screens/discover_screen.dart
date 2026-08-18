@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:card_swiper/card_swiper.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -94,6 +95,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   }
 
   Future<void> _handleLike(User user) async {
+    HapticFeedback.lightImpact();
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final currentUserId = authProvider.currentUser?.id;
     if (currentUserId == null) return;
@@ -101,51 +103,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     
     if (mounted) {
       if (isMatch) {
-        showDialog(
-          context: context,
-          builder: (context) => Dialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text('🎉 EŞLEŞTİNİZ!', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 16),
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundImage: user.photoUrls.isNotEmpty ? CachedNetworkImageProvider(user.photoUrls.first) : null,
-                    child: user.photoUrls.isEmpty ? Text(user.name[0].toUpperCase(), style: const TextStyle(fontSize: 40)) : null,
-                  ),
-                  const SizedBox(height: 12),
-                  Text(user.name, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
-                  const SizedBox(height: 8),
-                  const Text('Artik mesajlasabilirsiniz!', style: TextStyle(color: Colors.grey)),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      TextButton(onPressed: () => Navigator.pop(context), child: const Text('Kapat')),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          // Eşleşme dialogundan doğrudan sohbet ekranına git
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => ChatScreen(otherUser: user),
-                            ),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primaryColor, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
-                        child: const Text('Mesaj Gonder', style: TextStyle(color: Colors.white)),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
+        _showPremiumMatchDialog(user, isSuper: false);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('${user.name} beğenildi'), backgroundColor: AppTheme.successColor, duration: const Duration(seconds: 1)),
@@ -158,6 +116,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   }
 
   Future<void> _handleDislike(User user) async {
+    HapticFeedback.lightImpact();
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final currentUserId = authProvider.currentUser?.id;
     if (currentUserId == null) return;
@@ -174,6 +133,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   }
 
   Future<void> _handleSuperLike(User user) async {
+    HapticFeedback.mediumImpact();
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final currentUserId = authProvider.currentUser?.id;
     if (currentUserId == null) return;
@@ -181,50 +141,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     
     if (mounted) {
       if (isMatch) {
-        showDialog(
-          context: context,
-          builder: (context) => Dialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-            child: Padding(
-              padding: const EdgeInsets.all(24),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const Text('🌟 SUPER ESLESME!', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 16),
-                  CircleAvatar(
-                    radius: 50,
-                    backgroundImage: user.photoUrls.isNotEmpty ? CachedNetworkImageProvider(user.photoUrls.first) : null,
-                    child: user.photoUrls.isEmpty ? Text(user.name[0].toUpperCase(), style: const TextStyle(fontSize: 40)) : null,
-                  ),
-                  const SizedBox(height: 12),
-                  Text(user.name, style: const TextStyle(fontSize: 20, fontWeight: FontWeight.w600)),
-                  const SizedBox(height: 8),
-                  const Text('Super bir eslesme!', style: TextStyle(color: Colors.grey)),
-                  const SizedBox(height: 20),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      TextButton(onPressed: () => Navigator.pop(context), child: const Text('Kapat')),
-                      ElevatedButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => ChatScreen(otherUser: user),
-                            ),
-                          );
-                        },
-                        style: ElevatedButton.styleFrom(backgroundColor: AppTheme.primaryColor, shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12))),
-                        child: const Text('Mesaj Gonder', style: TextStyle(color: Colors.white)),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
+        _showPremiumMatchDialog(user, isSuper: true);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('${user.name} SÜPER BEĞENİLDİ! 🌟'), backgroundColor: AppTheme.accentColor, duration: const Duration(seconds: 1)),
@@ -234,6 +151,132 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     setState(() {
       _nearbyUsers.remove(user);
     });
+  }
+
+  void _showPremiumMatchDialog(User user, {bool isSuper = false}) {
+    HapticFeedback.heavyImpact();
+    showGeneralDialog(
+      context: context,
+      barrierDismissible: true,
+      barrierLabel: 'Kapat',
+      barrierColor: Colors.black.withValues(alpha: 0.6),
+      transitionDuration: const Duration(milliseconds: 400),
+      pageBuilder: (context, animation, secondaryAnimation) {
+        return Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Stack(
+            children: [
+              // Arka plan bluru
+              BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
+                child: Container(color: Colors.transparent),
+              ),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 32),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Eşleşme Başlığı
+                      Text(
+                        isSuper ? 'SÜPER EŞLEŞME!' : 'YENİ EŞLEŞME!',
+                        style: TextStyle(
+                          fontSize: 32,
+                          fontWeight: FontWeight.w900,
+                          letterSpacing: 1.2,
+                          color: isSuper ? AppTheme.accentColor : Colors.white,
+                          shadows: [
+                            Shadow(
+                              color: isSuper ? AppTheme.accentColor.withValues(alpha: 0.5) : Colors.white.withValues(alpha: 0.3),
+                              blurRadius: 20,
+                            )
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        'Sen ve ${user.name} birbirinizi beğendiniz.',
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(fontSize: 16, color: Colors.white70),
+                      ),
+                      const SizedBox(height: 40),
+                      // Fotoğraf Alanı
+                      Container(
+                        width: 160,
+                        height: 160,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(color: Colors.white, width: 4),
+                          boxShadow: [
+                            BoxShadow(
+                              color: (isSuper ? AppTheme.accentColor : AppTheme.primaryColor).withValues(alpha: 0.5),
+                              blurRadius: 40,
+                              spreadRadius: 10,
+                            ),
+                          ],
+                          image: user.photoUrls.isNotEmpty
+                              ? DecorationImage(
+                                  image: CachedNetworkImageProvider(user.photoUrls.first),
+                                  fit: BoxFit.cover,
+                                )
+                              : null,
+                        ),
+                        child: user.photoUrls.isEmpty
+                            ? Center(child: Text(user.name[0].toUpperCase(), style: const TextStyle(fontSize: 60, color: Colors.white)))
+                            : null,
+                      ),
+                      const SizedBox(height: 50),
+                      // Mesaj Gönder Butonu
+                      SizedBox(
+                        width: double.infinity,
+                        height: 56,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                            Navigator.of(context).push(
+                              MaterialPageRoute(builder: (_) => ChatScreen(otherUser: user)),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            foregroundColor: AppTheme.primaryColor,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(28)),
+                            elevation: 0,
+                          ),
+                          child: const Text('Hemen Mesaj Gönder', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        ),
+                      ),
+                      const SizedBox(height: 16),
+                      // Kaydırmaya Devam Et
+                      TextButton(
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Keşfetmeye Devam Et', style: TextStyle(color: Colors.white70, fontSize: 16)),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+      transitionBuilder: (context, animation, secondaryAnimation, child) {
+        return SlideTransition(
+          position: Tween<Offset>(begin: const Offset(0, 0.1), end: Offset.zero).animate(
+            CurvedAnimation(parent: animation, curve: Curves.easeOutQuart),
+          ),
+          child: FadeTransition(
+            opacity: animation,
+            child: ScaleTransition(
+              scale: Tween<double>(begin: 0.9, end: 1.0).animate(
+                CurvedAnimation(parent: animation, curve: Curves.easeOutBack),
+              ),
+              child: child,
+            ),
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -314,37 +357,63 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
           onRefresh: _loadNearbyUsers,
           child: ListView(
             children: [
-              SizedBox(height: MediaQuery.of(context).size.height * 0.25),
+              SizedBox(height: MediaQuery.of(context).size.height * 0.20),
               Center(
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.explore_outlined, size: 64, color: AppTheme.textSecondary),
-                    const SizedBox(height: 16),
+                    Container(
+                      padding: const EdgeInsets.all(32),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppTheme.primaryColor.withValues(alpha: 0.1),
+                        boxShadow: [
+                          BoxShadow(color: AppTheme.primaryColor.withValues(alpha: 0.05), spreadRadius: 20),
+                          BoxShadow(color: AppTheme.primaryColor.withValues(alpha: 0.02), spreadRadius: 40),
+                        ],
+                      ),
+                      child: const Icon(Icons.explore_rounded, size: 72, color: AppTheme.primaryColor),
+                    ),
+                    const SizedBox(height: 40),
                     Text(
                       'Yakında kimse yok',
-                      style: GoogleFonts.outfit(color: AppTheme.textSecondary, fontSize: 24, fontWeight: FontWeight.bold),
+                      style: GoogleFonts.outfit(color: AppTheme.textPrimary, fontSize: 28, fontWeight: FontWeight.bold),
                     ),
-                    const SizedBox(height: 8),
-                    Text(
-                      'Mesafe veya yas filtreni genisletip tekrar dene',
-                      style: GoogleFonts.outfit(color: AppTheme.textSecondary, fontSize: 14),
-                      textAlign: TextAlign.center,
+                    const SizedBox(height: 12),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 40),
+                      child: Text(
+                        'Daha fazla kişiye ulaşmak için mesafe veya yaş filtrelerini genişletmeyi deneyebilirsin.',
+                        style: GoogleFonts.outfit(color: AppTheme.textSecondary, fontSize: 16, height: 1.5),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
-                    const SizedBox(height: 24),
+                    const SizedBox(height: 32),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        OutlinedButton.icon(
+                        ElevatedButton.icon(
                           onPressed: _loadNearbyUsers,
-                          icon: const Icon(Icons.refresh),
+                          icon: const Icon(Icons.refresh, color: Colors.white),
                           label: const Text('Yenile'),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: AppTheme.primaryColor,
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                          ),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: 16),
                         OutlinedButton.icon(
                           onPressed: () => Navigator.of(context).push(MaterialPageRoute(builder: (_) => const SettingsScreen())),
-                          icon: const Icon(Icons.tune),
+                          icon: const Icon(Icons.tune, color: AppTheme.primaryColor),
                           label: const Text('Filtreler'),
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor: AppTheme.primaryColor,
+                            side: const BorderSide(color: AppTheme.primaryColor),
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                          ),
                         ),
                       ],
                     ),

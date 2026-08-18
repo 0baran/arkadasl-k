@@ -74,6 +74,7 @@ class AuthProvider with ChangeNotifier {
     );
 
     if (userCredential.user != null) {
+      await userCredential.user!.updateDisplayName(name);
       final user = app_user.User(
         id: userCredential.user!.uid,
         email: email,
@@ -131,10 +132,18 @@ class AuthProvider with ChangeNotifier {
       final existingUser = await _databaseService.getUser(userCredential!.user!.uid);
       if (existingUser == null) {
         isNewUser = true;
+        
+        String gName = userCredential.user!.displayName ?? '';
+        if (gName.isEmpty || gName.contains('@')) {
+          gName = (userCredential.user!.email != null && userCredential.user!.email!.contains('@')) 
+                  ? userCredential.user!.email!.split('@')[0] 
+                  : 'Kullanıcı';
+        }
+
         final user = app_user.User(
           id: userCredential.user!.uid,
           email: userCredential.user!.email ?? '',
-          name: userCredential.user!.displayName ?? 'Google Kullanicisi',
+          name: gName,
           birthDate: DateTime(2000), // Profil duzenlemede guncellenmeli
           gender: 'other',
           bio: '',
@@ -194,11 +203,20 @@ class AuthProvider with ChangeNotifier {
   }
 
   Future<void> deleteAccount() async {
-    if (_currentUser != null) {
-      await _databaseService.deleteUser(_currentUser!.id);
+    try {
+      if (_currentUser != null) {
+        await _databaseService.deleteUser(_currentUser!.id);
+      }
+      await _authService.deleteAccount();
+      _currentUser = null;
+      notifyListeners();
+    } on firebase_auth.FirebaseAuthException catch (e) {
+      if (e.code == 'requires-recent-login') {
+        throw Exception('Güvenlik nedeniyle hesabınızı silmek için lütfen çıkış yapıp tekrar giriş yapın.');
+      }
+      throw Exception(e.message ?? 'Hesap silinirken bir hata oluştu');
+    } catch (e) {
+      throw Exception('Hesap silinemedi: $e');
     }
-    await _authService.deleteAccount();
-    _currentUser = null;
-    notifyListeners();
   }
 }

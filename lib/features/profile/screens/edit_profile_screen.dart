@@ -7,6 +7,7 @@ import '../../../services/storage_service.dart';
 import '../../../core/constants.dart';
 import '../../../core/theme.dart';
 import '../../../core/utils.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
@@ -81,7 +82,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     try {
       final XFile? image = await _imagePicker.pickImage(
         source: ImageSource.gallery,
-        imageQuality: 80,
+        imageQuality: 60,
+        maxWidth: 1080,
+        maxHeight: 1080,
       );
 
       if (image != null && mounted) {
@@ -460,7 +463,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(12),
         image: DecorationImage(
-          image: NetworkImage(url),
+          image: CachedNetworkImageProvider(url),
           fit: BoxFit.cover,
         ),
       ),

@@ -95,6 +95,13 @@ class AuthService {
   }
 
   Future<void> deleteAccount() async {
+    try {
+      await GoogleSignIn().disconnect();
+    } catch (_) {
+      try {
+        await GoogleSignIn().signOut();
+      } catch (_) {}
+    }
     await _auth.currentUser?.delete();
   }
 }

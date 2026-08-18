@@ -58,9 +58,19 @@ class _PhoneLoginScreenState extends State<PhoneLoginScreen> {
           await _signIn(credential);
         },
         verificationFailed: (FirebaseAuthException e) {
+          String friendlyMessage = 'Doğrulama başarısız oldu. Lütfen tekrar deneyin.';
+          if (e.code == 'too-many-requests') {
+            friendlyMessage = 'Çok fazla SMS talebinde bulundunuz. Güvenlik nedeniyle geçici olarak engellendiniz. Lütfen birkaç saat sonra tekrar deneyin.';
+          } else if (e.code == 'invalid-phone-number') {
+            friendlyMessage = 'Girdiğiniz telefon numarası geçersiz. Lütfen kontrol edip tekrar deneyin.';
+          } else if (e.code == 'network-request-failed') {
+            friendlyMessage = 'İnternet bağlantınızı kontrol edin.';
+          } else if (e.code == 'quota-exceeded') {
+            friendlyMessage = 'Uygulamanın günlük SMS limiti doldu.';
+          }
           setState(() {
             _isLoading = false;
-            _errorMessage = e.message ?? 'Doğrulama başarısız oldu';
+            _errorMessage = friendlyMessage;
           });
         },
         codeSent: (String verificationId, int? resendToken) {

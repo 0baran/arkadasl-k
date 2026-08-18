@@ -7,17 +7,17 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:745109876782:android:cc224a6aeb8401639b2fbf",
+        "mobilesdk_app_id": "1:745109876782:android:c9499cd8614562639b2fbf",
         "android_client_info": {
-          "package_name": "com.example.arkadaslik_uygulamasi"
+          "package_name": "com.baran.arkadaslik"
         }
       },
       "oauth_client": [
         {
-          "client_id": "745109876782-hct5mjtd4cpt3e1t01a12sfa8dsd4qeh.apps.googleusercontent.com",
+          "client_id": "745109876782-umbd84q980v8uoufvilif67c1bgtq25o.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.arkadaslik_uygulamasi",
+            "package_name": "com.baran.arkadaslik",
             "certificate_hash": "f06b536d2f3eb082aedf75c34dd0b89aa32df249"
           }
         },
